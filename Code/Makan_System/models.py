@@ -1,3 +1,13 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from Makan_System.choices import GENDER_CHOICES
 
-# Create your models here.
+
+class CustomUser(AbstractUser):
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='Male')
+    birth_date = models.DateField()
+    image = models.ImageField(upload_to='../media/profile_pics/', default='../media/profile_pics/no-picture.png')
+    is_host = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.username

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<form method="post">
+    {{ form.errors }}
+    {% csrf_token %}
+
+    {% for field in form %}
+        <p>{{ field.name }}:</p>{{ field }}
+    {% endfor %}
+
+    <input type="submit" value="Sign in" name="signinform" class="btn tweet-button" style="display: inline-block">
+</form>
+</body>
+</html>
