@@ -3,6 +3,11 @@ from django.shortcuts import render, redirect
 from Makan_System.forms import CustomUserCreationForm
 
 
+def index(request):
+    # TODO: index.html
+    return render(request, 'base.html')
+
+
 def register(request):
     if request.method == 'POST':
         signupform = CustomUserCreationForm(data=request.POST)

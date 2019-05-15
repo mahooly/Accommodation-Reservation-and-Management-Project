@@ -19,5 +19,6 @@ from Makan_System import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.index, name='home'),
     path('register/', views.register, name='register'),
 ]
