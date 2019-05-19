@@ -1,6 +1,7 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
-from Makan_System.forms import CustomUserCreationForm
+from .forms import *
 
 
 def index(request):
@@ -22,3 +23,5 @@ def register(request):
     else:
         signupform = CustomUserCreationForm()
     return render(request, 'register.html', {'form': signupform})
+
+

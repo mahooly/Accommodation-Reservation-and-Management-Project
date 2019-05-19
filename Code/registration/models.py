@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from Makan_System.choices import GENDER_CHOICES
+from .choices import GENDER_CHOICES
 
 
 class CustomUser(AbstractUser):

@@ -1,5 +1,6 @@
+from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from Makan_System.models import CustomUser
+from .models import CustomUser
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -12,3 +13,9 @@ class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ('email', 'gender', 'image')
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=30, required=True)
+    password = forms.PasswordInput()
+

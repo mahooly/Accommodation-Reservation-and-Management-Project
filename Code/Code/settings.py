@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Makan_System',
+    'registration',
 ]
 
 MIDDLEWARE = [
@@ -119,9 +119,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+AUTH_USER_MODEL = 'registration.CustomUser'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
 
 STATIC_URL = '/static/'
-AUTH_USER_MODEL = 'Makan_System.CustomUser'
+
 
 STATICFILES_DIRS = [
     STATIC_DIR,

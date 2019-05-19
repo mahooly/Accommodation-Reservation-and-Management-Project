@@ -39,8 +39,12 @@
                                 <div class="element">
                                     <a href="{% url 'register' %}">ثبت نام</a>
                                 </div>
+                                {% else %}
+                                    <div class="element">
+                                    <a href="{% url 'logout' %}">خروج</a>
+                                </div>
                                 {% endif %}
-{#                                TODO: Logout and Profile Button#}
+{#                                TODO: Profile Button#}
                             </div>
                         </nav>
                     </div>
@@ -82,7 +86,8 @@
                             </ul>
                         </div>
                         <div class="modal-body">
-                            <form id="form-sign">
+                            <form method="post" id="form-sign" action="{% url 'login' %}">
+                                {% csrf_token %}
                                 <div class="form-group">
                                     <label for="form-sign-in-username" class="pull-right">نام کاربری</label>
                                     <input type="text" class="form-control" id="form-sign-in-username"

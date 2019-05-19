@@ -1,8 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from Makan_System.forms import CustomUserCreationForm, CustomUserChangeForm
-from Makan_System.models import CustomUser
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import CustomUser
 
 
 class CustomUserAdmin(UserAdmin):

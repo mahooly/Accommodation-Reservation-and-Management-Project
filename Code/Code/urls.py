@@ -15,10 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from Makan_System import views
+from registration import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='home'),
     path('register/', views.register, name='register'),
+    path('logout/', auth_views.logout, name='logout'),
+    path('login/', auth_views.login, name='login')
 ]
