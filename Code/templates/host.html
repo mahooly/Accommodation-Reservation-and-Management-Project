@@ -4,7 +4,7 @@
     <div class="main-content">
         <div class="row">
             <div class="pull-right" style="margin-right: 20px;">
-                <h1><a href="{% url 'register' %}" style="color: #488f3e;">اطلاعات اضافه</a></h1>
+                <h1><a href="{% url 'register' %}" style="color: #488f3e;">ثبت صاحب اقامتگاه</a></h1>
             </div>
         </div>
 
@@ -12,41 +12,32 @@
             {% csrf_token %}
             {{ form.errors }}
             <div class="row">
-                <div class="col-md-12 col-sm-12">
+                <div class="col-md-6 col-sm-6 col-sm-offset-3 col-md-offset-3">
                     <section>
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6 pull-right">
-                                <div class="form-group">
-                                    <label for="address" class="pull-right">آدرس</label>
-                                    <input type="text" class="form-control" id="address" name="home_address">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 pull-right">
-                                <div class="form-group">
-                                    <label for="phone_number" class="pull-right">شماره تلفن</label>
-                                    <input type="text" class="form-control" id="phone_number" name="phone_number"
-                                           required>
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label for="city" class="pull-right">شهر</label>
+                            <input type="text" class="form-control" id="city" name="city">
+                        </div>
+                        <div class="form-group">
+                            <label for="address" class="pull-right">آدرس</label>
+                            <textarea type="text" class="form-control" id="address" name="home_address"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone_number" class="pull-right">شماره تلفن</label>
+                            <input type="text" class="form-control" id="phone_number" name="phone_number"
+                                   required>
+                        </div>
+                        <div class="form-group">
+                            <label for="passport_pic" class="pull-right">عکس شناسنامه</label>
+                            <input type="file" class="form-control" id="passport_pic" name="passport_pic"
+                                   required>
                         </div>
                     </section>
-
-                    <section>
-                        <div class="col-md-6">
-                            <div id="passport_pic" class="profile-picture single-file-preview">
-                                <div class="input">
-                                    <input name="passport_pic" type="file">
-                                    <span>برای آپلود عکس کلیک کنید</span>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
                 </div>
             </div>
             <div class="row">
                 <div class="form-group text-center">
-                    <button type="submit" class="btn btn-large btn-primary btn-rounded" id="submit">ثبت نام
+                    <button type="submit" class="btn btn-large btn-primary btn-rounded" id="submit">ثبت
                     </button>
                 </div>
             </div>
