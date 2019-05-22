@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="main-content">
+        <div class="row">
+            <p>USERS</p>
+            {%for user in users%}
+            <p>{{user.first_name}} <a href="{% url 'delete_user' pk=user.pk %}">delete</a></p>
+            
+            {%endfor%}
+            <p>HOUSES</p>
+            {%for acc in accommodations%}
+            <p>{{acc.title}} <a href="{% url 'delete_accommodation' pk=acc.pk %}">delete</a></p>
+            {%endfor%}
+        </div>
+    </div>
+{%endblock%}
