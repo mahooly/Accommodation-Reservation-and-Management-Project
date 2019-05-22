@@ -32,19 +32,21 @@
                         <nav>
                             <div class="right">
                                 {% if not request.user.is_authenticated %}
-                                <div class="element">
-                                    <a href="" data-toggle="modal" data-tab="true"
-                                       data-target="#sign-in-modal">ورود</a>
-                                </div>
-                                <div class="element">
-                                    <a href="{% url 'register' %}">ثبت نام</a>
-                                </div>
+                                    <div class="element">
+                                        <a href="" data-toggle="modal" data-tab="true"
+                                           data-target="#sign-in-modal">ورود</a>
+                                    </div>
+                                    <div class="element">
+                                        <a href="{% url 'register' %}">ثبت نام</a>
+                                    </div>
                                 {% else %}
                                     <div class="element">
-                                    <a href="{% url 'logout' %}">خروج</a>
-                                </div>
+                                        <a href="{% url 'update_profile' %}">ویرایش اطلاعات</a>
+                                    </div>
+                                    <div class="element">
+                                        <a href="{% url 'logout' %}">خروج</a>
+                                    </div>
                                 {% endif %}
-{#                                TODO: Profile Button#}
                             </div>
                         </nav>
                     </div>
@@ -62,6 +64,12 @@
                         <nav id="primary-nav">
                             <ul>
                                 <li class="active"><a href="{% url 'home' %}">خانه</a></li>
+                                {% if request.user.is_authenticated and request.user.is_host %}
+                                    <li class="submit"><a href=""><span>Submit</span><i data-toggle="tooltip"
+                                                                                                   data-placement="top"
+                                                                                                   title="ثبت اقامتگاه"><img
+                                            src="{% static 'assets/img/plus.png' %}" alt=""></i></a></li>
+                                {% endif %}
                             </ul>
                         </nav>
                     </div>
@@ -82,7 +90,8 @@
                             <ul class="nav nav-tabs ">
                                 <li role="presentation" class="active"><a href="#tab-sign-in"
                                                                           aria-controls="tab-sign-in" role="tab"
-                                                                          data-toggle="tab"><h1 style="margin-left: 70px">ورود به حساب کاربری</h1></a></li>
+                                                                          data-toggle="tab"><h1
+                                        style="margin-left: 70px">ورود به حساب کاربری</h1></a></li>
                             </ul>
                         </div>
                         <div class="modal-body">

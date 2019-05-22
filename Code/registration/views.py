@@ -35,25 +35,37 @@ class RegistrationView(View):
         return render(request, self.template_name, {'form': form})
 
 
-def becomeHost(request):
-    if request.method == 'POST':
-        host_form = HostForm(data=request.POST)
+class HostRegistration(View):
+    form_class = HostForm
+    template_name = 'host.html'
 
-        if host_form.is_valid():
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
             user = request.user
-            host = host_form.save(commit=False)
+            host = form.save(commit=False)
             host.user = user
             host.save()
-            return redirect('/')
-        else:
-            print(host_form.errors)
-    else:
-        host_form = HostForm()
-    return render(request, 'host.html', {'form': host_form})
+            user.is_host = True
+            user.save()
+            return HttpResponseRedirect('/')
+
+        return render(request, self.template_name, {'form': form})
 
 
-def updateInformation(request):
-    if request.method == 'POST':
+class EditProfile(View):
+    template_name = 'changeinfo.html'
+
+    def get(self, request, *args, **kwargs):
+        user_form = CustomUserChangeForm()
+        password_form = PasswordChangeForm(request.user)
+        return render(request, self.template_name, {'user_form': user_form, 'password_form': password_form})
+
+    def post(self, request, *args, **kwargs):
         if 'user_form' in request.POST:
             user_form = CustomUserChangeForm(data=request.POST)
             password_form = PasswordChangeForm(request.user)
@@ -67,8 +79,6 @@ def updateInformation(request):
             if password_form.is_valid():
                 user = password_form.save()
                 update_session_auth_hash(request, user)
-    else:
-        user_form = CustomUserChangeForm()
-        password_form = PasswordChangeForm(request.user)
 
-    return render(request, 'changeinfo.html', {'user_form': user_form, 'password_form': password_form})
+        return render(request, self.template_name, {'user_form': user_form, 'password_form': password_form})
+
