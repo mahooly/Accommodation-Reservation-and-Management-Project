@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block main %}
+<div class="main-content">
+    <div class="row">
+        <form method = "post">
+            {%csrf_token%}
+        {%for field in form%}
+        {{field}}
+        {%endfor%}
+        {%for field in amenity_form%}
+        {{field}}
+        {%endfor%}
+        <button type="submit">amenity form submit</button>
+    </form>
+        </div>
+        </div>
+
+
+{% endblock %}

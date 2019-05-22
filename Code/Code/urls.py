@@ -17,7 +17,8 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.urls import include
 from django.urls import path
-from registration import views
+from registration import views as registration_views
+from accommodation import views as accommodation_views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -27,10 +28,13 @@ urlpatterns = [
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         auth_views.password_reset_confirm, name='password_reset_confirm'),
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
-    path('', views.index, name='home'),
-    path('register/', views.RegistrationView.as_view(), name='register'),
+    path('', registration_views.index, name='home'),
+    path('register/', registration_views.RegistrationView.as_view(), name='register'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
-    path('change_profile/', views.updateInformation, name='update_profile'),
+    path('change_profile/', registration_views.updateInformation, name='update_profile'),
+    path('become_host/', registration_views.becomeHost, name='become_host'),
+    path('create_accommodation/', accommodation_views.CreateAccommodationView.as_view(), name='create_accommodation'),
+    path('accommodation/<int:pk>/', accommodation_views.AccommodationDetailView.as_view(), name='accommodation_detail'),
 
 ]
