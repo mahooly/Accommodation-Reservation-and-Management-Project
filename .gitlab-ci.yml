@@ -1,19 +1,18 @@
+image: python:3.7
+
 stages:
-  - test
   - build
-  - deploy
-test:
-  stage: test
-  script: echo "Testing the app"
+
 build:
+  image: docker:git
+  services:
+    - docker:dind
   stage: build
+  before_script:
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
   script:
-  - echo "Building the app"
-  - docker-compose build
-deploy_staiging:
-  stage: deploy
+    - docker login -u armin_gm
+    - docker build -t asd_project_98_6 .
+    - docker push asd_project_98_6
   only:
-  - master
-  script:
-  - echo "Deploying the app"
-  - docker-compose up -d
+    - master
