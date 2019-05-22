@@ -13,7 +13,7 @@ class AccommodationCreationForm(forms.ModelForm):
 class RoomCreationForm(forms.ModelForm):
     class Meta:
         model = Room
-        fields = ['bed_type', 'number_of_guests']
+        fields = ['how_many', 'bed_type', 'number_of_guests']
 
 
 class AmenityForm(forms.ModelForm):

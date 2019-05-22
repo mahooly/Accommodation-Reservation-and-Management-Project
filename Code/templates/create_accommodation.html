@@ -2,7 +2,10 @@
 {% load staticfiles %}
 {% block main %}
     <div class="main-content float-right" dir="rtl">
-        <form class="form-submit labels-uppercase" id="form-submit" enctype="multipart/form-data">
+        <form class="form-submit labels-uppercase" id="form-submit" enctype="multipart/form-data" method="post" >
+            {% csrf_token %}
+            {{form.errors}}
+            {{amenity_form.errors}}
             <section id="main-information">
                 <div class="title">
                     <h2>اطلاعات اصلی</h2>
@@ -141,18 +144,7 @@
                 </div>
             </section>
         </form>
-        <div class="row">
-            <form method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                    {{ field }}
-                {% endfor %}
-                {% for field in amenity_form %}
-                    {{ field }}
-                {% endfor %}
-                <button type="submit">amenity form submit</button>
-            </form>
-        </div>
+        
     </div>
 
 
