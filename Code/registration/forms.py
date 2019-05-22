@@ -12,7 +12,7 @@ class CustomUserCreationForm(UserCreationForm):
 class HostForm(forms.ModelForm):
     class Meta:
         model = Host
-        fields = ('passport_pic', 'home_address', 'phone_number')
+        fields = ('city', 'passport_pic', 'home_address', 'phone_number')
 
 
 class CustomUserChangeForm(UserChangeForm):

@@ -20,3 +20,4 @@ class Host(models.Model):
                                      default='../media/profile_pics/no-picture.png')
     home_address = models.TextField()
     phone_number = models.CharField(max_length=15)
+    city = models.CharField(max_length=40)
