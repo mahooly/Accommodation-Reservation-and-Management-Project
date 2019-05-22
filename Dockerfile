@@ -9,5 +9,5 @@ ADD . /makanapp
 EXPOSE 8000
 # Install all libraries we saved to requirements.txt file
 RUN pip install -r requirements.txt
-RUN python /Code/manage.py collectstatic --noinput
-CMD ["/run.sh"]
+RUN python ./Code/manage.py collectstatic --noinput
+CMD ["./run.sh"]
