@@ -15,7 +15,7 @@ class CustomUser(AbstractUser):
 
 
 class Host(models.Model):
-    user = models.OneToOneField(CustomUser, related_name = 'host', on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, related_name='host', on_delete=models.CASCADE)
     passport_pic = models.ImageField(upload_to='../media/passport_pics/',
                                      default='../media/profile_pics/no-picture.png')
     home_address = models.TextField()
