@@ -9,9 +9,9 @@ build:
     - docker:dind
   stage: build
   before_script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN registry.gitlab.com
+    - docker login registry.gitlab.com
   script:
-    - docker build -t asd_project_98_6 .
-    - docker push asd_project_98_6
+    - docker build -t registry.gitlab.com/armin_gm/asd_project_98_6 .
+    - docker push registry.gitlab.com/armin_gm/asd_project_98_6
   only:
     - master
