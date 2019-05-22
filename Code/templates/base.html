@@ -65,7 +65,7 @@
                             <ul>
                                 <li class="active"><a href="{% url 'home' %}">خانه</a></li>
                                 {% if request.user.is_authenticated and request.user.is_host %}
-                                    <li class="submit"><a href=""><span>Submit</span><i data-toggle="tooltip"
+                                    <li class="submit"><a href="{% url 'create_accommodation' %}"><span>Submit</span><i data-toggle="tooltip"
                                                                                                    data-placement="top"
                                                                                                    title="ثبت اقامتگاه"><img
                                             src="{% static 'assets/img/plus.png' %}" alt=""></i></a></li>

@@ -2506,6 +2506,12 @@ ul.half li {
   display: inline-block;
   margin-right: 15px;
 }
+.main-content .title h2 {
+  margin-top: 0;
+  margin-bottom: 0;
+  display: inline-block;
+  margin-right: 100px;
+}
 .main-content .title .display-selector {
   position: absolute;
   bottom: 0;
@@ -3872,7 +3878,7 @@ ul.half li {
 .title .step {
   position: absolute;
   top: -3px;
-  left: -50px;
+  right: 50px;
 }
 
 .tooltip {
