@@ -9,7 +9,7 @@ build:
     - docker:dind
   stage: build
   script:
-    - docker build -t Dockerfile .
-    - docker push Dockerfile
+    - docker build -t asd_project_98_6 .
+    - docker push asd_project_98_6
   only:
     - master
