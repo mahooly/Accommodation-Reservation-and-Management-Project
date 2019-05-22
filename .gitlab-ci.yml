@@ -9,7 +9,7 @@ build:
     - docker:dind
   stage: build
   script:
-    - docker login
+    - docker login -u armin_gm
     - docker build -t asd_project_98_6 .
     - docker push asd_project_98_6
   only:
