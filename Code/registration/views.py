@@ -1,6 +1,9 @@
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.views import View
+
 from .forms import *
 
 
@@ -11,21 +14,25 @@ def index(request):
     return render(request, 'base.html')
 
 
-def register(request):
-    if request.method == 'POST':
-        signupform = CustomUserCreationForm(data=request.POST)
+class RegistrationView(View):
+    form_class = CustomUserCreationForm
+    template_name = 'register.html'
 
-        if signupform.is_valid():
-            username = signupform.cleaned_data['username']
-            password = signupform.cleaned_data['password1']
-            signupform.save()
+    def get(self, request, *args, **kwargs):
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            form.save()
             user = authenticate(username=username, password=password)
             login(request, user)
-            return redirect('/')
-    else:
-        signupform = CustomUserCreationForm()
-    return render(request, 'register.html', {'form': signupform})
+            return HttpResponseRedirect('/')
 
+        return render(request, self.template_name, {'form': form})
 
 
 def becomeHost(request):
@@ -41,23 +48,27 @@ def becomeHost(request):
         else:
             print(host_form.errors)
     else:
-       host_form = HostForm()
+        host_form = HostForm()
     return render(request, 'host.html', {'form': host_form})
 
 
 def updateInformation(request):
     if request.method == 'POST':
-        userchange_form = CustomUserChangeForm(data=request.POST, instance=request.user, initial={'email':request.user.email, 'gender':request.user.gender})
-        if userchange_form.is_valid():
-            print("I am here!")
-            print(userchange_form)
-            user = userchange_form.save()
-            print(user)
-            # request.user.set_password(userchange_form.cleaned_data['password'])
-            user.save()
-            return redirect('/')
+        if 'user_form' in request.POST:
+            user_form = CustomUserChangeForm(data=request.POST)
+            password_form = PasswordChangeForm(request.user)
+            if user_form.is_valid():
+                user = user_form.save()
+                user.save()
+                return redirect('/')
         else:
-            print("error")
+            password_form = PasswordChangeForm(request.user, request.POST)
+            user_form = CustomUserChangeForm()
+            if password_form.is_valid():
+                user = password_form.save()
+                update_session_auth_hash(request, user)
     else:
-        userchange_form = CustomUserChangeForm(initial={'email':request.user.email, 'gender':request.user.gender})
-    return render(request, 'changeinfo.html' , {'form': userchange_form})
+        user_form = CustomUserChangeForm()
+        password_form = PasswordChangeForm(request.user)
+
+    return render(request, 'changeinfo.html', {'user_form': user_form, 'password_form': password_form})

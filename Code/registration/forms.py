@@ -10,18 +10,17 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class HostForm(forms.ModelForm):
-    class Meta():
+    class Meta:
         model = Host
-        fields = ('passport_pic','home_address','phone_number')
+        fields = ('passport_pic', 'home_address', 'phone_number')
 
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'gender','password')
+        fields = ('email', 'gender', 'image')
 
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=30, required=True)
     password = forms.PasswordInput()
-
