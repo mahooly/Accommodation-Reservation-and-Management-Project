@@ -35,6 +35,8 @@ class Accommodation(models.Model):
     accommodation_type = models.CharField(max_length=20, choices=ACCOMMODATION_TYPE_CHOICES)
     city = models.CharField(max_length=20, default='تهران')
     address = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+    email = models.EmailField()
     amenity = models.OneToOneField(Amenity, related_name='accommodation', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='../media/house_pics/', default='../media/house_pics/no-picture.png')
 

@@ -7,7 +7,7 @@ from .models import Accommodation, Amenity, Room
 class AccommodationCreationForm(forms.ModelForm):
     class Meta:
         model = Accommodation
-        fields = ['accommodation_type', 'title', 'description', 'city', 'address', 'image']
+        fields = ['accommodation_type', 'title', 'description', 'city', 'address', 'image', 'email', 'phone']
 
 
 class RoomCreationForm(forms.ModelForm):

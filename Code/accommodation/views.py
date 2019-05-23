@@ -4,6 +4,7 @@ from django.views.generic.detail import DetailView
 from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm
 from .models import Accommodation
 
+
 # Create your views here.
 
 class CreateAccommodationView(View):
@@ -13,7 +14,7 @@ class CreateAccommodationView(View):
         form = AccommodationCreationForm()
         amenity_form = AmenityForm()
         return render(request, self.template_name, {'form': form, 'amenity_form': amenity_form})
-    
+
     def post(self, request, *args, **kwargs):
         form = AccommodationCreationForm(request.POST, request.FILES)
         amenity_form = AmenityForm(request.POST)
@@ -43,7 +44,7 @@ class CreateRoomView(View):
         form = RoomCreationForm()
         amenity_form = AmenityForm()
         return render(request, self.template_name, {'form': form, 'amenity_form': amenity_form})
-    
+
     def post(self, request, *args, **kwargs):
         form = RoomCreationForm(request.POST)
         amenity_form = AmenityForm(request.POST)
@@ -54,9 +55,8 @@ class CreateRoomView(View):
             room.accommodation = accommodation
             amenity = amenity_form.save()
             room.amenity = amenity
-            house.save()
+            room.save()
             url = '/accommodation/' + str(accommodation_id)
             return redirect(url)
-            # TODO go to detail view of house
         else:
             print('%' * 100)
