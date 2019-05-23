@@ -19,7 +19,6 @@ push_to_heroku:
   stage: push
   services:
   - docker:dind
-  extends: .extendjob
   script:
     # This is for gitlab
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
