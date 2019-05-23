@@ -24,7 +24,7 @@ push_to_heroku:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
     - docker pull  registry.gitlab.com/armin_gm/asd_project_98_6:latest
     # This is for heroku
-    - docker login --username=arminbehnamnia@gmail.com  --password=khalepirezan.909 registry.heroku.com
+    - docker login --username=arminbehnamnia@gmail.com  --password=a4b5e676-51c2-4e7a-9603-9ae2b4b22180 registry.heroku.com
     - docker tag egistry.gitlab.com/armin_gm/asd_project_98_6:latest registry.heroku.com/aqueous-falls-31318/web:latest
     - docker push registry.heroku.com/makan-system/web:latest
 
