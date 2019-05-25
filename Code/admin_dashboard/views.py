@@ -7,12 +7,12 @@ from django.views import View
 
 
 class AdminUserDashboard(ListView):
-    template_name = 'admin_dashboard_users.html'
+    template_name = 'admin_dashboard/admin_dashboard_users.html'
     model = CustomUser
 
 
 class AdminAccommodationDashboard(ListView):
-    template_name = 'admin_dashboard_accommodations.html'
+    template_name = 'admin_dashboard/admin_dashboard_accommodations.html'
     model = Accommodation
 
 
@@ -22,14 +22,6 @@ class DeleteUser(View):
         user = get_object_or_404(CustomUser, pk=user_pk)
         user.delete()
         return redirect('/admin_dashboard/users')
-
-
-class DeleteAccommodation(View):
-    def get(self, request, *args, **kwargs):
-        acc_pk = kwargs['pk']
-        acc = get_object_or_404(Accommodation, pk=acc_pk)
-        acc.delete()
-        return redirect('/admin_dashboard/accommodations')
 
 
 class AuthenticateAccommodation(View):

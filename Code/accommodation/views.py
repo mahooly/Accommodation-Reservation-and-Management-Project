@@ -6,7 +6,7 @@ from .models import Accommodation, Room
 
 
 class CreateAccommodationView(View):
-    template_name = 'create_accommodation.html'
+    template_name = 'accommodation/create_accommodation.html'
 
     def get(self, request, *args, **kwargs):
         form = AccommodationCreationForm()
@@ -31,11 +31,10 @@ class CreateAccommodationView(View):
 
 class AccommodationDetailView(DetailView):
     model = Accommodation
-    template_name = 'accommodation_detail.html'
+    template_name = 'accommodation/accommodation_detail.html'
 
 
 class CreateRoomView(View):
-
     def post(self, request, *args, **kwargs):
         form = RoomCreationForm(request.POST)
         amenity_form = AmenityForm(request.POST)
@@ -51,3 +50,16 @@ class CreateRoomView(View):
             return redirect(url)
         else:
             print('%' * 100)
+
+
+class DeleteAccommodation(View):
+    def get(self, request, *args, **kwargs):
+        acc_pk = kwargs['pk']
+        acc = get_object_or_404(Accommodation, pk=acc_pk)
+        acc.delete()
+        if request.user.is_host:
+            return redirect('/host_dashboard')
+        else:
+            return redirect('/admin_dashboard/accommodations')
+
+

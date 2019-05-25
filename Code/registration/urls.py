@@ -16,5 +16,5 @@ urlpatterns = [
     path('change_profile/', views.EditProfile.as_view(), name='update_profile'),
     path('become_host/', views.HostRegistration.as_view(), name='become_host'),
     path('host_dashboard/', views.HostDashboard.as_view(), name='host_dashboard'),
-    path('host_delete_accommodation/<int:pk>', views.DeleteAccommodation.as_view(), name='host_delete_accommodation'),
+    path('user/<int:pk>/', views.ProfileView.as_view(), name='profile'),
 ]

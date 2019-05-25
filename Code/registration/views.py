@@ -3,8 +3,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views import View
+from django.views.generic import DetailView
 from django.views.generic import ListView
-from accommodation.models import Accommodation
 from .forms import *
 from accommodation.models import Accommodation
 
@@ -18,7 +18,7 @@ class MainPageView(ListView):
 
 class RegistrationView(View):
     form_class = CustomUserCreationForm
-    template_name = 'register.html'
+    template_name = 'registration/register.html'
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
@@ -39,7 +39,7 @@ class RegistrationView(View):
 
 class HostRegistration(View):
     form_class = HostForm
-    template_name = 'host.html'
+    template_name = 'registration/host.html'
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
@@ -60,10 +60,12 @@ class HostRegistration(View):
 
 
 class EditProfile(View):
-    template_name = 'changeinfo.html'
+    template_name = 'registration/changeinfo.html'
 
     def get(self, request, *args, **kwargs):
-        user_form = CustomUserChangeForm(instance=request.user, initial={'email': request.user.email, 'gender': request.user.gender, 'image': request.user.image})
+        user_form = CustomUserChangeForm(instance=request.user,
+                                         initial={'email': request.user.email, 'gender': request.user.gender,
+                                                  'image': request.user.image})
         password_form = PasswordChangeForm(request.user)
         return render(request, self.template_name, {'user_form': user_form, 'password_form': password_form})
 
@@ -77,7 +79,9 @@ class EditProfile(View):
                 return redirect('/')
         else:
             password_form = PasswordChangeForm(request.user, request.POST)
-            user_form = CustomUserChangeForm(instance=request.user, initial={'email': request.user.email, 'gender': request.user.gender, 'image': request.user.image})
+            user_form = CustomUserChangeForm(instance=request.user,
+                                             initial={'email': request.user.email, 'gender': request.user.gender,
+                                                      'image': request.user.image})
             if password_form.is_valid():
                 user = password_form.save()
                 update_session_auth_hash(request, user)
@@ -85,17 +89,13 @@ class EditProfile(View):
         return render(request, self.template_name, {'user_form': user_form, 'password_form': password_form})
 
 
-class HostDashboard(View):
-    def get(self, request, *args, **kwargs):
-        host = request.user.host
-        accs = Accommodation.objects.filter(owner = host)
-        context = {'accs': accs}
+class HostDashboard(ListView):
+    template_name = 'registration/host_dashboard.html'
 
-        return render(request, 'host_dashboard.html', context=context)
+    def get_queryset(self):
+        return Accommodation.objects.filter(owner=self.request.user.host)
 
-class DeleteAccommodation(View):
-    def get(self, request, *args, **kwargs):
-        acc_pk = kwargs['pk']
-        acc = get_object_or_404(Accommodation, pk=acc_pk)
-        acc.delete()
-        return redirect('/host_dashboard')
+
+class ProfileView(DetailView):
+    template_name = 'registration/profile.html'
+    model = CustomUser

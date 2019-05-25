@@ -52,12 +52,9 @@
                                         </div>
                                     {% elif request.user.is_host %}
                                         <div class="element">
-                                            <a href="{% url 'update_profile' %}">داشبورد</a>
+                                            <a href="{% url 'host_dashboard' %}">داشبورد</a>
                                         </div>
                                     {% else %}
-                                        <div class="element">
-                                            <a href="{% url 'admin_dashboard' %}">داشبورد</a>
-                                        </div>
                                     {% endif %}
                                 {% endif %}
                             </div>

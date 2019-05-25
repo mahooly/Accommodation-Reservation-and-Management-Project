@@ -6,9 +6,9 @@
                 <div class="item big equal-height" data-id="6">
                     <div class="item-wrapper">
                         <div class="image">
-                            <a href="detail.html" class="wrapper">
+                            <a href="{% url 'profile' pk=user.pk %}" class="wrapper">
                                 <div class="profile-pic">
-                                    <img src="{{ user.image.url }}" alt="" style="height: 280px; width: 280px;">
+                                    <img src="{{ user.image }}" alt="" style="height: 280px; width: 280px;">
                                 </div>
                             </a>
                         </div>
@@ -24,7 +24,7 @@
                             </div>
                             <div class="info">
                                 <figure class="label label-info">{{ user.username }}</figure>
-                                <a href="detail.html"><h3>{{ user.first_name }}&nbsp;{{ user.last_name }}</h3></a>
+                                <a href="{% url 'profile' pk=user.pk %}"><h3>{{ user.first_name }}&nbsp;{{ user.last_name }}</h3></a>
                                 <a href="{% url 'delete_user' pk=user.pk %}" class="btn btn-danger btn-rounded scroll">حذف کاربر</a>
                             </div>
                         </div>

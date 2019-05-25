@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="container">
+        <div class="col-md-12 col-sm-12 pull-right" dir="rtl">
+            <div class="quick-navigation" data-fixed-after-touch="">
+            </div>
+            <div class="main-content">
+                <div class="title">
+                    <div class="left">
+                        <h1>{{ customuser.username }}</h1>
+                        <span>
+                        {% if customuser.is_host %}
+                            (صاحب اقامتگاه)
+                        {% else %}
+                        {% endif %}
+                    </span>
+                    </div>
+                </div>
+                <section id="gallery">
+                    <div class="gallery-detail">
+                        <div class="one-item-carousel">
+                            <div class="image">
+                                <img src="{{ user.image.url }}" alt="">
+                                {% if user.is_host %}
+                                    <img src="{{ user.host.passport_pic.url }}" alt="">
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <h2>مشخصات</h2>
+                <div class="row">
+                    <div class="col-md-8 pull-right">
+                        <section id="description">
+                            <ul class="bullets">
+                                <li>&nbsp;&nbsp;نام: {{ user.first_name }}</li>
+                                <li>&nbsp;&nbsp;نام خانوادگی: {{ user.last_name }}</li>
+                                <li>&nbsp;&nbsp;تاریخ تولد: {{ user.birth_date }}</li>
+                                <li>&nbsp;&nbsp;جنسیت: {{ user.gender }}</li>
+                                {% if user.is_host %}
+                                    <li>&nbsp;&nbsp;شهر: {{ user.host.city }}</li>
+                                    <li>&nbsp;&nbsp;آدرس: {{ user.host.home_address }}</li>
+                                    <li>&nbsp;&nbsp;تلفن: {{ user.host.phone_number }}</li>
+                                {% endif %}
+                            </ul>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
