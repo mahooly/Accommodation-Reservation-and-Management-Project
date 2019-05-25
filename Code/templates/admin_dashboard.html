@@ -10,7 +10,7 @@
             {%endfor%}
             <p>HOUSES</p>
             {%for acc in accommodations%}
-            <p>{{acc.title}} <a href="{% url 'delete_accommodation' pk=acc.pk %}">delete</a></p>
+            <p>{{acc.title}}folan  {{acc.is_authenticated}} folan<a href="{% url 'delete_accommodation' pk=acc.pk %}">delete</a> <a href="{% url 'authenticate_accommodation' pk=acc.pk %}">authenticate</a> </p>
             {%endfor%}
         </div>
     </div>

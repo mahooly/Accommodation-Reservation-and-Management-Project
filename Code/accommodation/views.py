@@ -32,10 +32,6 @@ class CreateAccommodationView(View):
             print('%' * 100)
 
 
-# class AccommodationDetailView(DetailView):
-#     model = Accommodation
-#     template_name = 'accommodation_detail.html'
-
 class AccommodationDetailView(View):
     # model = Accommodation
     template_name = 'accommodation_detail.html'

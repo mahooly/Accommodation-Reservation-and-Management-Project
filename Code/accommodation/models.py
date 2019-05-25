@@ -40,6 +40,8 @@ class Accommodation(models.Model):
     amenity = models.OneToOneField(Amenity, related_name='accommodation', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='../media/house_pics/', default='../media/house_pics/no-picture.png')
 
+    is_authenticated = models.BooleanField(default=False)
+
 
 class Room(models.Model):
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)

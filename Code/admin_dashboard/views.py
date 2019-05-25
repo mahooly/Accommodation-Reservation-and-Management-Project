@@ -28,3 +28,11 @@ class DeleteAccommodation(View):
         acc = get_object_or_404(Accommodation, pk=acc_pk)
         acc.delete()
         return redirect('/admin_dashboard')
+
+class AuthenticateAccommodation(View):
+    def get(self, request, *args, **kwargs):
+        acc_pk = kwargs['pk']
+        acc = get_object_or_404(Accommodation, pk=acc_pk)
+        acc.is_authenticated = True
+        acc.save()
+        return redirect('/admin_dashboard')
