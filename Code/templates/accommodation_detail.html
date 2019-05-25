@@ -2,192 +2,207 @@
 {% load staticfiles %}
 
 {% block main %}
-    <div class="col-md-12 col-sm-12 pull-right" dir="rtl">
-        <div class="quick-navigation" data-fixed-after-touch="">
-            <div class="wrapper">
-                <ul>
-                    <li><a href="#description" class="scroll">توضیحات</a></li>
-                    <li><a href="#map" class="scroll">نقشه</a></li>
-                    <li><a href="#facilities" class="scroll">امکانات</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="main-content">
-            <div class="title">
-                <div class="left">
-                    <h1>{{ accommodation.title }}</h1><span>&nbsp;({{ accommodation.accommodation_type }})</span>
-                </div>
-                <div class="right">
-                    <a href="#map" class="icon scroll"><i class="fa fa-map-marker"></i>روی نقشه ببینید</a>
-                    {% if request.user.is_authenticated %}
-                        {% ifequal request.user.username accommodation.owner.user.username %}
-                            <a href="" data-toggle="modal" data-tab="true"
-                               data-target="#add-room-modal">اضافه کردن اتاق</a>
-                        {% endifequal %}
-                    {% endif %}
+    <div class="container">
+        <div class="col-md-12 col-sm-12 pull-right" dir="rtl">
+            <div class="quick-navigation" data-fixed-after-touch="">
+                <div class="wrapper">
+                    <ul>
+                        <li><a href="#description" class="scroll">توضیحات</a></li>
+                        <li><a href="#map" class="scroll">نقشه</a></li>
+                        <li><a href="#facilities" class="scroll">امکانات</a></li>
+                    </ul>
                 </div>
             </div>
-            <section id="gallery">
-                <div class="gallery-detail">
-                    <div class="one-item-carousel">
-                        <div class="image">
-                            <img src="{{ accommodation.image.url }}" alt="">
+            <div class="main-content">
+                <div class="title">
+                    <div class="left">
+                        <h1>{{ accommodation.title }}</h1><span>&nbsp;({{ accommodation.accommodation_type }})</span>
+                    </div>
+                    <div class="right">
+                        <a href="#map" class="icon scroll"><i class="fa fa-map-marker"></i>روی نقشه ببینید</a>
+                        {% if request.user.is_authenticated %}
+                            {% ifequal request.user.username accommodation.owner.user.username %}
+                                <a href="" data-toggle="modal" data-tab="true"
+                                   data-target="#add-room-modal" class="btn btn-primary btn-rounded scroll">اضافه کردن
+                                    اتاق</a>
+                            {% endifequal %}
+                        {% endif %}
+                    </div>
+                </div>
+                <section id="gallery">
+                    <div class="gallery-detail">
+                        <div class="one-item-carousel">
+                            <div class="image">
+                                <img src="{{ accommodation.image.url }}" alt="">
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-            <h2>توضیحات</h2>
-            <div class="row">
-                <div class="col-md-8 pull-right">
-                    <section id="description">
-                        {{ accommodation.description }}
-                    </section>
-                    <section id="facilities">
-                        <h2>امکانات</h2>
-                        <ul class="bullets half">
-                            {% if accommodation.amenity.has_cool_ac %}
-                                <li>تهویه‌ی هوای سرد</li>{% endif %}
-                            {% if accommodation.amenity.has_warm_ac %}
-                                <li>تهویه‌ی هوای گرم</li>{% endif %}
-                            {% if accommodation.amenity.has_elevator %}
-                                <li>آسانسور</li>{% endif %}
-                            {% if accommodation.amenity.has_kitchen %}
-                                <li>آشپزخانه</li>{% endif %}
-                            {% if accommodation.amenity.has_fridge %}
-                                <li>یخچال</li>{% endif %}
-                            {% if accommodation.amenity.has_oven %}
-                                <li>گاز</li>{% endif %}
-                            {% if accommodation.amenity.has_utensils %}
-                                <li>وسایل آشپزی</li>{% endif %}
-                            {% if accommodation.amenity.has_safe %}
-                                <li>صندوق امانات</li>{% endif %}
-                            {% if accommodation.amenity.has_tv %}
-                                <li>تلویزیون</li>{% endif %}
-                            {% if accommodation.amenity.has_wifi %}
-                                <li>اینترنت</li>{% endif %}
-                            {% if accommodation.amenity.has_roomservice %}
-                                <li>سرویس نظافت اتاق</li>{% endif %}
-                            {% if accommodation.amenity.has_laundry %}
-                                <li>شست و شوی لباس</li>{% endif %}
-                            {% if accommodation.amenity.has_parking %}
-                                <li>پارکینگ</li>{% endif %}
-                            {% if accommodation.amenity.has_iron %}
-                                <li>اتو</li>{% endif %}
-                        </ul>
-                    </section>
-                    <section id="map">
-                        <h2>نقشه</h2>
-                        <div id="map-item" class="map height-300 box"></div>
-                    </section>
-                </div>
-                <div class="col-md-4">
-                    <div class="sidebar">
-                        <aside class="box">
-                            <dl>
-                                <dt>Rooms</dt>
-                                <dd>{{accommodation_details.room_num}}</dd>
-                                <dt>Guests</dt>
-                                <dd>{{accommodation_details.guest_num}}</dd>
-                                <dt>Single Beds</dt>
-                                <dd>{{accommodation_details.single_num}}</dd>
-                                <dt>Double Beds</dt>
-                                <dd>{{accommodation_details.double_num}}</dd>
-                                <dt>Twin Beds</dt>
-                                <dd>{{accommodation_details.twin_num}}</dd>
-                                
-                            </dl>
-                        </aside>
-                        <aside class="text-center">
-                            <h2>راه‌های ارتباطی</h2>
-                            <address>
-                                {{ accommodation.city }}<br>
-                                {{ accommodation.address }}<br>
-                                <br>
-                                {{ accommodation.phone }}<br>
-                                <a href="#">{{ accommodation.email }}</a><br>
-                            </address>
-                        </aside>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="add-room-modal" role="dialog"
-         aria-labelledby="sign-in-register-modal">
-        <div class="wrapper">
-            <div class="inner">
-                <div class="modal-dialog width-600px" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span></button>
-                            <ul class="nav nav-tabs ">
-                                <li role="presentation" class="active"><a href="#tab-sign-in"
-                                                                          aria-controls="tab-sign-in" role="tab"
-                                                                          data-toggle="tab"><h1
-                                        style="margin-left: 200px">اضافه کردن اتاق</h1></a></li>
+                </section>
+                <h2>توضیحات</h2>
+                <div class="row">
+                    <div class="col-md-8 pull-right">
+                        <section id="description">
+                            {{ accommodation.description }}
+                        </section>
+                        <section id="facilities">
+                            <h2>امکانات</h2>
+                            <ul class="bullets half">
+                                {% if accommodation.amenity.has_cool_ac %}
+                                    <li>&nbsp;&nbsp;تهویه‌ی هوای سرد</li>{% endif %}
+                                {% if accommodation.amenity.has_warm_ac %}
+                                    <li>&nbsp;&nbsp;تهویه‌ی هوای گرم</li>{% endif %}
+                                {% if accommodation.amenity.has_elevator %}
+                                    <li>&nbsp;&nbsp;آسانسور</li>{% endif %}
+                                {% if accommodation.amenity.has_kitchen %}
+                                    <li>&nbsp;&nbsp;آشپزخانه</li>{% endif %}
+                                {% if accommodation.amenity.has_fridge %}
+                                    <li>&nbsp;&nbsp;یخچال</li>{% endif %}
+                                {% if accommodation.amenity.has_oven %}
+                                    <li>&nbsp;&nbsp;گاز</li>{% endif %}
+                                {% if accommodation.amenity.has_utensils %}
+                                    <li&nbsp;&nbsp;>وسایل آشپزی</li>{% endif %}
+                                {% if accommodation.amenity.has_safe %}
+                                    <li>&nbsp;&nbsp;صندوق امانات</li>{% endif %}
+                                {% if accommodation.amenity.has_tv %}
+                                    <li>&nbsp;تلویزیون</li>{% endif %}
+                                {% if accommodation.amenity.has_wifi %}
+                                    <li>&nbsp;&nbsp;اینترنت</li>{% endif %}
+                                {% if accommodation.amenity.has_roomservice %}
+                                    <li>&nbsp;&nbsp;سرویس نظافت اتاق</li>{% endif %}
+                                {% if accommodation.amenity.has_laundry %}
+                                    <li>&nbsp;&nbsp;شست و شوی لباس</li>{% endif %}
+                                {% if accommodation.amenity.has_parking %}
+                                    <li>&nbsp;&nbsp;پارکینگ</li>{% endif %}
+                                {% if accommodation.amenity.has_iron %}
+                                    <li>&nbsp;&nbsp;اتو</li>{% endif %}
                             </ul>
+                        </section>
+                        <section id="map">
+                            <h2>نقشه</h2>
+                            <div id="main-map" class="map height-300 box"></div>
+                        </section>
+                    </div>
+                    <div class="col-md-4 pull-right">
+                        <div class="sidebar">
+                            <aside class="box">
+                                <dl>
+                                    <dt>تعداد اتاق‌ها</dt>
+                                    <dd>{{ accommodation.rooms }}</dd>
+                                    <dt>ظرفیت مهمان</dt>
+                                    <dd>{{ accommodation.guests }}</dd>
+                                    <dt>اتاق یک نفره</dt>
+                                    <dd>{{ accommodation.single_beds }}</dd>
+                                    <dt>اتاق دو نفره</dt>
+                                    <dd>{{ accommodation.double_beds }}</dd>
+                                    <dt>اتاق دو نفره (تخت جدا)</dt>
+                                    <dd>{{ accommodation.twin_beds }}</dd>
+                                </dl>
+                            </aside>
+                            <aside class="text-center">
+                                <address>
+                                    {{ accommodation.city }}<br>
+                                    {{ accommodation.address }}<br>
+                                    <br>
+                                    {{ accommodation.phone }}<br>
+                                    <a href="#">{{ accommodation.email }}</a><br>
+                                </address>
+                            </aside>
                         </div>
-                        <div class="modal-body">
-                            <form class="form-submit labels-uppercase" id="form-submit" enctype="multipart/form-data"
-                                  method="post" action="{% url 'create_room' accid=accommodation.pk %}">
-                                {% csrf_token %}
-                                {{ form.errors }}
-                                {{ amenity_form.errors }}
-                                <div class="row">
-                                    <div class="col-md-12 text-center">
-                                        <div class="form-group-inline">
-                                            <div class="form-group width-60">
-                                                <label class="pull-right">تعداد و نوع تخت</label>
-                                                <select class="framed width-100" name="bed_type" id="room-type_1">
-                                                    <option value="Single">تخت یک نفره</option>
-                                                    <option value="Double">تخت دو نفره</option>
-                                                    <option value="Twin">دو تخت یک نفره</option>
-                                                </select>
-                                            </div>
-                                            <div class="form-group" style="padding-right: 20px">
-                                                <label for="number-of-rooms_1" class="pull-right">تعداد اتاق</label>
-                                                <input type="number" class="form-control" id="number-of-rooms_1"
-                                                       name="how_many"
-                                                       placeholder="1">
-                                            </div>
-                                            <div class="form-group" style="padding-right: 20px">
-                                                <label for="number-of-guests_1">تعداد مهمان</label>
-                                                <input type="number" class="form-control" id="number-of-guests_1"
-                                                       name="number_of_guests"
-                                                       placeholder="1">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="add-room-modal" role="dialog"
+             aria-labelledby="sign-in-register-modal">
+            <div class="wrapper">
+                <div class="inner">
+                    <div class="modal-dialog width-600px" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <ul class="nav nav-tabs ">
+                                    <li role="presentation" class="active"><a href="#tab-sign-in"
+                                                                              aria-controls="tab-sign-in" role="tab"
+                                                                              data-toggle="tab"><h1
+                                            style="margin-left: 200px">اضافه کردن اتاق</h1></a></li>
+                                </ul>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-submit labels-uppercase" id="form-submit"
+                                      enctype="multipart/form-data"
+                                      method="post" action="{% url 'create_room' accid=accommodation.pk %}">
+                                    {% csrf_token %}
+                                    {{ form.errors }}
+                                    {{ amenity_form.errors }}
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group-inline">
+                                                <div class="form-group width-60">
+                                                    <label class="pull-right">تعداد و نوع تخت</label>
+                                                    <select class="framed width-100" name="bed_type" id="room-type_1"
+                                                            dir="rtl">
+                                                        <option value="Single">تخت یک نفره</option>
+                                                        <option value="Double">تخت دو نفره</option>
+                                                        <option value="Twin">دو تخت یک نفره</option>
+                                                    </select>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <section id="facilities">
-                                    <div class="title">
-                                        <h3 class="pull-right">امکانات</h3>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-8 pull-right">
-                                            <div class="row">
-                                                <h5 class="pull-right">حمام و دستشویی</h5>
+                                        <div class="col-md-12 text-center">
+                                            <div class="col-md-6">
+                                                <div class="form-group" style="padding-right: 20px">
+                                                    <label for="number-of-rooms_1">تعداد اتاق</label>
+                                                    <input type="number" class="form-control" id="number-of-rooms_1"
+                                                           name="how_many"
+                                                           placeholder="1">
+                                                </div>
                                             </div>
-                                            <ul class="checkboxes inline half list-unstyled pull-right">
-                                                <li><label><input type="checkbox" name="has_toilet">توالت</label></li>
-                                                <li><label><input type="checkbox" name="has_bathroom">حمام</label></li>
-                                                <li><label><input type="checkbox" name="has_shower">دوش</label></li>
-                                                <li><label><input type="checkbox" name="has_tub">وان</label></li>
-                                                <li><label><input type="checkbox" name="has_hairdryer">سشوار</label>
-                                                </li>
-                                            </ul>
+                                            <div class="col-md-6">
+                                                <div class="form-group" style="padding-right: 20px">
+                                                    <label for="number-of-guests_1">تعداد مهمان</label>
+                                                    <input type="number" class="form-control" id="number-of-guests_1"
+                                                           name="number_of_guests"
+                                                           placeholder="1">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </section>
-                                <hr>
-                                <section>
-                                    <div class="form-group center">
-                                        <button type="submit" class="btn btn-primary btn-rounded btn-large">ثبت اتاق
-                                        </button>
-                                    </div>
-                                </section>
-                            </form>
+                                    <section id="facilities">
+                                        <div class="row">
+                                            <div class="pull-right" style="margin-right: 20px;">
+                                                <h4 style="color: #488f3e;">امکانات</h4>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-8 pull-right">
+                                                <div class="row">
+                                                    <h5 class="pull-right">حمام و دستشویی</h5>
+                                                </div>
+                                                <ul class="checkboxes inline half list-unstyled">
+                                                    <li><label><input type="checkbox" name="has_toilet">سرویس بهداشتی</label>
+                                                    </li>
+                                                    <li><label><input type="checkbox" name="has_bathroom">حمام</label>
+                                                    </li>
+                                                    <li><label><input type="checkbox" name="has_shower">دوش</label></li>
+                                                    <li><label><input type="checkbox" name="has_tub">وان</label></li>
+                                                    <li><label><input type="checkbox" name="has_hairdryer">سشوار</label>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </section>
+                                    <hr>
+                                    <section>
+                                        <div class="form-group center">
+                                            <button type="submit" class="btn btn-primary btn-rounded btn-large">ثبت اتاق
+                                            </button>
+                                        </div>
+                                    </section>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>

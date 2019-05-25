@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css">
 
 
-    <title>Makan</title>
+    <title>مکان</title>
 
 </head>
 
@@ -41,10 +41,10 @@
                                     </div>
                                 {% else %}
                                     <div class="element">
-                                        <a href="{% url 'update_profile' %}">ویرایش اطلاعات</a>
+                                        <a href="{% url 'logout' %}">خروج</a>
                                     </div>
                                     <div class="element">
-                                        <a href="{% url 'logout' %}">خروج</a>
+                                        <a href="{% url 'update_profile' %}">ویرایش اطلاعات</a>
                                     </div>
                                 {% endif %}
                             </div>
@@ -56,7 +56,8 @@
             <div class="container">
                 <div class="primary-nav">
                     <div class="left">
-                        <a href="{% url 'home' %}" id="brand"><img src="{% static 'assets/img/logo.png' %}" alt=""></a>
+                        <a href="{% url 'home' %}" id="brand"><img src="{% static 'assets/img/logo.png' %}" alt=""
+                                                                   style="height: 25px; width: 100px"></a>
                         <a class="nav-trigger" data-toggle="collapse" href="#primary-nav" aria-expanded="false"
                            aria-controls="primary-nav"><i class="fa fa-navicon"></i></a>
                     </div>
@@ -65,9 +66,10 @@
                             <ul>
                                 <li class="active"><a href="{% url 'home' %}">خانه</a></li>
                                 {% if request.user.is_authenticated and request.user.is_host %}
-                                    <li class="submit"><a href="{% url 'create_accommodation' %}"><span>Submit</span><i data-toggle="tooltip"
-                                                                                                   data-placement="top"
-                                                                                                   title="ثبت اقامتگاه"><img
+                                    <li class="submit"><a href="{% url 'create_accommodation' %}"><span>Submit</span><i
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="ثبت اقامتگاه"><img
                                             src="{% static 'assets/img/plus.png' %}" alt=""></i></a></li>
                                 {% endif %}
                             </ul>
@@ -128,10 +130,8 @@
     </div>
 
     <div id="page-content">
-        <div class="container">
-            {% block main %}
-            {% endblock %}
-        </div>
+        {% block main %}
+        {% endblock %}
     </div>
 
     <footer id="page-footer">
@@ -151,7 +151,6 @@
 
 <script type="text/javascript" src="{% static 'assets/js/jquery-2.2.1.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/jquery-migrate-1.2.1.min.js' %}"></script>
-<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&libraries=places"></script>
 <script type="text/javascript" src="{% static 'assets/js/infobox.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/markerclusterer_packed.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/richmarker-compiled.js' %}"></script>
@@ -162,19 +161,22 @@
 <script type="text/javascript" src="{% static 'assets/js/icheck.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/owl.carousel.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/masonry.pkgd.min.js' %}"></script>
-
-<script type="text/javascript" src="{% static 'assets/js/maps.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/custom.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type="text/javascript" src="{% static 'assets/js/ir-city-select.js' %}"></script>
 
 <!--[if lte IE 9]>
 <script src="assets/js/ie.js"></script>
 <![endif]-->
-
 <script>
-    var _latitude = 48.47292127;
-    var _longitude = 4.28672791;
-    var element = "map-item";
-    var useAjax = true;
-    bigMap(_latitude, _longitude, element, useAjax);
+    function initMap() {
+        var iran = {lat: 32.4279, lng: 53.6880};
+        var map = new google.maps.Map(
+            document.getElementById('main-map'), {zoom: 4, center: iran});
+        var marker = new google.maps.Marker({position: iran, map: map});
+    }
+</script>
+<script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCTZV4M-PTZDNf6oPOMn3JIgYtzV3lfaDk&callback=initMap">
 </script>
 </body>

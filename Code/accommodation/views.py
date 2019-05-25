@@ -5,8 +5,6 @@ from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm
 from .models import Accommodation, Room
 
 
-# Create your views here.
-
 class CreateAccommodationView(View):
     template_name = 'create_accommodation.html'
 
@@ -27,38 +25,14 @@ class CreateAccommodationView(View):
             house.save()
             url = '/accommodation/' + str(house.pk)
             return redirect(url)
-            # TODO go to detail view of house
         else:
-            print('%' * 100)
+            return render(request, self.template_name, {'form': form, 'amenity_form': amenity_form})
 
 
-class AccommodationDetailView(View):
-    # model = Accommodation
+class AccommodationDetailView(DetailView):
+    model = Accommodation
     template_name = 'accommodation_detail.html'
 
-    def get(self, request, *args, **kwargs):
-        acc_id = kwargs['pk']
-        acc = get_object_or_404(Accommodation, pk=acc_id)
-        guest_num, room_num, twin_num, single_num, double_num = 0, 0, 0, 0, 0
-        rooms = Room.objects.filter(accommodation=acc)
-        for r in rooms:
-            room_num += r.how_many
-            guest_num += (r.how_many * r.number_of_guests)
-            if r.bed_type == 'Single':
-                single_num += r.how_many
-            elif r.bed_type == 'Double':
-                double_num += r.how_many
-            elif r.bed_type == 'Twin':
-                twin_num += r.how_many
-        acc_d = {}
-        acc_d['room_num'] = room_num
-        acc_d['single_num'] = single_num
-        acc_d['double_num'] = double_num
-        acc_d['twin_num'] = twin_num
-        acc_d['guest_num'] = guest_num
-
-        context = {'accommodation': acc, 'accommodation_details': acc_d}
-        return render(request, self.template_name, context=context)
 
 class CreateRoomView(View):
     template_name = 'create_room.html'
