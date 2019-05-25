@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="hero-section" data-height="600">
+        <form id="form-hero">
+            <div class="hero-inner">
+                <div class="hero-wrapper">
+                    <div class="caption">
+                        <div class="inner">
+                            <div class="container">
+                                <h1 class="center">Find Your Best Holiday</h1>
+                                <div class="row no-gutters">
+                                    <div class="col-md-6 col-sm-6">
+                                        <div class="form-group">
+                                            <label class="label-on-input" for="address-autocomplete">Location</label>
+                                            <input type="text" class="form-control" id="address-autocomplete"
+                                                   name="location" placeholder="Enter Location or Place Name">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2">
+                                        <div class="form-group">
+                                            <label class="label-on-input" for="form-check-in">Check In</label>
+                                            <input type="text" class="form-control date" id="form-check-in"
+                                                   name="nights" placeholder="Check In Date">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2">
+                                        <div class="form-group">
+                                            <label class="label-on-input" for="form-nights">Nights</label>
+                                            <input type="number" class="form-control" id="form-nights" name="nights"
+                                                   placeholder="Nights">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-default">Search</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="favorite-search">
+                                    <span>Favorite Searches</span>
+                                    <a href="">Bourges</a>
+                                    <a href="">Orléans</a>
+                                    <a href="">Rouen</a>
+                                    <a href="">Toulouse</a>
+                                </div>
+                                <!--end favorite-searches-->
+                            </div>
+                            <!--end container-->
+                            <div class="bg-transfer"><img src="assets/img/bg-hero.jpg" alt=""></div>
+                            <!--end bg-transfer-->
+                        </div>
+                        <!--end inner-->
+                    </div>
+                    <!--end caption-->
+                    <div class="options">
+                        <div class="container">
+                            <div class="wrapper">
+                                <h2>Further Options</h2>
+                                <div class="row">
+                                    <div class="col-md-8 col-sm-7">
+                                        <ul class="checkboxes inline list-unstyled">
+                                            <li><label><input type="checkbox" name="hotel">Hotel</label></li>
+                                            <li><label><input type="checkbox" name="apartment">Apartment</label></li>
+                                            <li><label><input type="checkbox" name="breakfast-only">Breakfast
+                                                Only</label></li>
+                                            <li><label><input type="checkbox" name="spa-wellness">Spa & Wellness</label>
+                                            </li>
+                                            <li><label><input type="checkbox" name="ski-center">Ski Center</label></li>
+                                            <li><label><input type="checkbox" name="cottage">Cottage</label></li>
+                                            <li><label><input type="checkbox" name="hostel">Hostel</label></li>
+                                            <li><label><input type="checkbox" name="boat">Boat</label></li>
+                                        </ul>
+                                        <!--end checkboxes-->
+                                    </div>
+                                    <!--end col-md-8-->
+                                    <div class="col-md-4 col-sm-5">
+                                        <div class="row">
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Rate (per Night)</label>
+                                                    <select class="form-control framed white">
+                                                        <option value="">$0 - $100</option>
+                                                        <option value="">$100 - $200</option>
+                                                        <option value="">$200+</option>
+                                                    </select>
+                                                </div>
+                                                <!--end form-group-->
+                                            </div>
+                                            <!--end col-md-6-->
+                                            <div class="col-md-6 col-sm-6">
+                                                <div class="form-group">
+                                                    <label>Star Rating</label>
+                                                    <select class="form-control framed white">
+                                                        <option value="">1</option>
+                                                        <option value="">2</option>
+                                                        <option value="">3</option>
+                                                        <option value="">4</option>
+                                                        <option value="">5</option>
+                                                    </select>
+                                                </div>
+                                                <!--end form-group-->
+                                            </div>
+                                            <!--end col-md-6-->
+                                        </div>
+                                        <!--end row-->
+                                    </div>
+                                    <!--end col-md-4-->
+                                </div>
+                                <!--end row-->
+                            </div>
+                            <!--end wrapper-->
+                        </div>
+                        <!--end container-->
+                    </div>
+                    <!--end options-->
+                </div>
+                <!--end hero-wrapper-->
+                <div id="options-hidden" class="collapse">
+                    <div class="container">
+                        <div class="wrapper">
+                            <h2>Facilities</h2>
+                            <div class="row">
+                                <div class="col-md-8 col-sm-6">
+                                    <ul class="checkboxes inline">
+                                        <li><label><input type="checkbox" name="wi-fi">Wi-fi</label></li>
+                                        <li><label><input type="checkbox" name="free-parking">Free Parking</label></li>
+                                        <li><label><input type="checkbox" name="airport">Airport Shuttle</label></li>
+                                        <li><label><input type="checkbox" name="family-rooms">Family Rooms</label></li>
+                                        <li><label><input type="checkbox" name="pets">Pets Allowed</label></li>
+                                        <li><label><input type="checkbox" name="restaurant">Restaurant</label></li>
+                                        <li><label><input type="checkbox" name="indoor-pool">Indoor Pool</label></li>
+                                        <li><label><input type="checkbox" name="brakfast-only">Breakfast Only</label>
+                                        </li>
+                                    </ul>
+                                    <!--end checkboxes-->
+                                </div>
+                                <!--end col-md-8-->
+                                <div class="col-md-4"></div>
+                                <!--end col-md-4-->
+                            </div>
+                            <!--end row-->
+                        </div>
+                        <!--end wrapper-->
+                    </div>
+                    <!--end container-->
+                </div>
+            </div>
+            <!--end hero-inner-->
+            <div class="plate">
+                <a data-toggle="collapse" href="#options-hidden" aria-expanded="false" aria-controls="options-hidden">View
+                    Further Options</a>
+            </div>
+            <!--end plate-->
+        </form>
+        <!--end form-->
+        <div class="map-wrapper">
+            <div class="plate white">
+                <a href="#" data-switch="#form-hero">Show Map</a>
+            </div>
+            <!--end plate-->
+            <div id="map-item" class="map height-100"></div>
+            <!--<img src="assets/img/map.jpg" alt="">-->
+        </div>
+    </div>
+
+    <div class="block">
+        <div class="container">
+            <div class="row">
+            <div class="pull-right" style="margin-right: 20px;">
+                <h2>اقامتگاه‌ها</h2>
+            </div>
+        </div>
+            <div class="row">
+                {% for accommodation in object_list %}
+                    <div class="col-md-3 col-sm-6 pull-right">
+                        <div class="item big equal-height" data-map-latitude="48.87" data-map-longitude="2.29"
+                             data-id="1">
+                            <div class="item-wrapper">
+                                <div class="image">
+                                    <div class="mark-circle description" data-toggle="tooltip" data-placement="right"
+                                         title="{{ accommodation.description }}">
+                                        <i class="fa fa-question"></i></div>
+                                    <div class="mark-circle map" data-toggle="tooltip" data-placement="right"
+                                         title="نمایش روی نقشه"><i class="fa fa-map-marker"></i></div>
+                                    <div class="mark-circle top" data-toggle="tooltip" data-placement="right"
+                                         title="اقامتگاه نمونه"><i class="fa fa-thumbs-up"></i></div>
+                                    <a href="{% url 'accommodation_detail' pk=accommodation.pk %}" class="wrapper">
+                                        <div class="profile-pic">
+                                            <img class="image" src="{{ accommodation.image.url }}" alt="" style="height: 280px; width: 280px;">
+                                        </div>
+                                    </a>
+                                    <div class="owl-navigation"></div>
+                                </div>
+                                <div class="description">
+                                    <div class="meta">
+                                        <span><i class="fa fa-bed"></i>365</span>
+                                    </div>
+                                    <div class="info">
+                                        <figure class="label label-info">{{ accommodation.accommodation_type }}</figure>
+                                        <a href="{% url 'accommodation_detail' pk=accommodation.pk %}">
+                                            <h3>{{ accommodation.title }}</h3></a>
+                                        <figure class="location">{{ accommodation.city }}</figure>
+                                    </div>
+                                </div>
+                                <div class="map-item">
+                                    <button class="btn btn-close"><i class="fa fa-close"></i></button>
+                                    <div class="map-wrapper"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

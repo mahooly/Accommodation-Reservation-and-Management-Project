@@ -1,63 +1,66 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block main %}
-    <div class="main-content">
-        <div class="row">
-            <div class="pull-right" style="margin-right: 20px;">
-                <h1><a href="{% url 'register' %}" style="color: #488f3e;">ثبت صاحب اقامتگاه</a></h1>
+    <div class="container">
+        <div class="main-content">
+            <div class="row">
+                <div class="pull-right" style="margin-right: 20px;">
+                    <h1><a href="{% url 'register' %}" style="color: #488f3e;">ثبت صاحب اقامتگاه</a></h1>
+                </div>
             </div>
-        </div>
 
-        <form id="form-profile" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% if form.errors %}
-                {% for field in form %}
-                    {% for error in field.errors %}
+            <form id="form-profile" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger" dir="rtl" role="alert"
+                                 style="padding: 5px; text-align: center;">
+                                <b style="display: inline-block;">خطا! </b>
+                                <p style="display: inline-block;">{{ error|escape }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
                         <div class="alert alert-danger" dir="rtl" role="alert"
                              style="padding: 5px; text-align: center;">
                             <b style="display: inline-block;">خطا! </b>
                             <p style="display: inline-block;">{{ error|escape }}</p>
                         </div>
                     {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <div class="alert alert-danger" dir="rtl" role="alert"
-                         style="padding: 5px; text-align: center;">
-                        <b style="display: inline-block;">خطا! </b>
-                        <p style="display: inline-block;">{{ error|escape }}</p>
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-6 col-sm-6 col-sm-offset-3 col-md-offset-3">
+                        <section>
+                            <div class="form-group">
+                                <label for="city" class="pull-right">شهر</label>
+                                <input type="text" class="form-control" id="city" name="city">
+                            </div>
+                            <div class="form-group">
+                                <label for="address" class="pull-right">آدرس</label>
+                                <textarea type="text" class="form-control" id="address" name="home_address" required
+                                          oninvalid="this.setCustomValidity('این فیلد لازم است.')"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone_number" class="pull-right">شماره تلفن</label>
+                                <input type="text" class="form-control" id="phone_number" name="phone_number"
+                                       required oninvalid="this.setCustomValidity('این فیلد لازم است.')">
+                            </div>
+                            <div class="form-group">
+                                <label for="passport_pic" class="pull-right">عکس شناسنامه</label>
+                                <input type="file" class="form-control" id="passport_pic" name="passport_pic"
+                                       required oninvalid="this.setCustomValidity('این فیلد لازم است.')">
+                            </div>
+                        </section>
                     </div>
-                {% endfor %}
-            {% endif %}
-            <div class="row">
-                <div class="col-md-6 col-sm-6 col-sm-offset-3 col-md-offset-3">
-                    <section>
-                        <div class="form-group">
-                            <label for="city" class="pull-right">شهر</label>
-                            <input type="text" class="form-control" id="city" name="city">
-                        </div>
-                        <div class="form-group">
-                            <label for="address" class="pull-right">آدرس</label>
-                            <textarea type="text" class="form-control" id="address" name="home_address" required oninvalid="this.setCustomValidity('این فیلد لازم است.')"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone_number" class="pull-right">شماره تلفن</label>
-                            <input type="text" class="form-control" id="phone_number" name="phone_number"
-                                   required oninvalid="this.setCustomValidity('این فیلد لازم است.')">
-                        </div>
-                        <div class="form-group">
-                            <label for="passport_pic" class="pull-right">عکس شناسنامه</label>
-                            <input type="file" class="form-control" id="passport_pic" name="passport_pic"
-                                   required oninvalid="this.setCustomValidity('این فیلد لازم است.')">
-                        </div>
-                    </section>
                 </div>
-            </div>
-            <div class="row">
-                <div class="form-group text-center">
-                    <button type="submit" class="btn btn-large btn-primary btn-rounded" id="submit">ثبت
-                    </button>
+                <div class="row">
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-large btn-primary btn-rounded" id="submit">ثبت
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% load staticfiles %}
 {% block main %}
-    <div class="main-content">
+    <div class="container">
+        <div class="main-content">
         <div class="row">
             <div class="pull-right" style="margin-right: 20px;">
                 <h1><a href="{% url 'update_profile' %}" style="color: #488f3e;">تغییر مشخصات کاربری</a></h1>
@@ -103,5 +103,6 @@
                 </form>
             </div>
         </div>
+    </div>
     </div>
 {% endblock %}

@@ -1,107 +1,113 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block main %}
-    <div class="main-content">
-        <div class="row">
-            <div class="pull-right" style="margin-right: 20px;">
-                <h1><a href="{% url 'register' %}" style="color: #488f3e;">ثبت نام</a></h1>
+    <div class="container">
+        <div class="main-content">
+            <div class="row">
+                <div class="pull-right" style="margin-right: 20px;">
+                    <h1><a href="{% url 'register' %}" style="color: #488f3e;">ثبت نام</a></h1>
+                </div>
             </div>
-        </div>
 
-        <form id="form-profile" method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% if form.errors %}
-                {% for field in form %}
-                    {% for error in field.errors %}
-                        <div class="alert alert-danger" dir="rtl" role="alert" style="padding: 5px; text-align: center;">
+            <form id="form-profile" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger" dir="rtl" role="alert"
+                                 style="padding: 5px; text-align: center;">
+                                <b style="display: inline-block;">خطا! </b>
+                                <p style="display: inline-block;">{{ error|escape }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
                             <b style="display: inline-block;">خطا! </b>
                             <p style="display: inline-block;">{{ error|escape }}</p>
                         </div>
                     {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <div class="alert alert-danger" dir="rtl" role="alert" style="padding: 5px; text-align: center;">
-                        <b style="display: inline-block;">خطا! </b>
-                        <p style="display: inline-block;">{{ error|escape }}</p>
-                    </div>
-                {% endfor %}
-            {% endif %}
-            <div class="row">
-                <div class="col-md-9 col-sm-9">
-                    <section>
-                        <div class="row">
-                            <div class="col-md-6 col-sm-6 pull-right">
-                                <div class="form-group">
-                                    <label for="name" class="pull-right">نام کاربری</label>
-                                    <input type="text" class="form-control" id="name" name="username">
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-9 col-sm-9">
+                        <section>
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6 pull-right">
+                                    <div class="form-group">
+                                        <label for="name" class="pull-right">نام کاربری</label>
+                                        <input type="text" class="form-control" id="name" name="username">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 pull-right">
+                                    <div class="form-group">
+                                        <label for="email" class="pull-right">ایمیل</label>
+                                        <input type="email" class="form-control" id="email" name="email">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 pull-right">
+                                    <div class="form-group">
+                                        <label for="first_name" class="pull-right">نام</label>
+                                        <input type="text" class="form-control" id="first_name" name="first_name"
+                                               dir="rtl">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 pull-right">
+                                    <div class="form-group">
+                                        <label for="last_name" class="pull-right">نام خانوادگی</label>
+                                        <input type="text" class="form-control" id="last_name" name="last_name"
+                                               dir="rtl">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 pull-right">
+                                    <div class="form-group">
+                                        <label for="password" class="pull-right">رمز عبور</label>
+                                        <input type="password" class="form-control" id="password" name="password1">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 pull-right">
+                                    <div class="form-group">
+                                        <label for="confirm-password" class="pull-right">تکرار رمز عبور</label>
+                                        <input type="password" class="form-control" id="confirm-password"
+                                               name="password2">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 pull-right">
+                                    <div class="form-group">
+                                        <label for="birthday" class="pull-right">تاریخ تولد</label>
+                                        <input type="date" class="form-control" id="birthday" name="birth_date">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6 pull-right">
+                                    <div class="form-group">
+                                        <label for="gender" class="pull-right">جنسیت</label>
+                                        <select name="gender" id="gender" class="framed width-100" dir="rtl">
+                                            <option name="male" value="male">مرد</option>
+                                            <option name="female" value="female">زن</option>
+                                            <option name="other" value="Other">سایر</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6 col-sm-6 pull-right">
-                                <div class="form-group">
-                                    <label for="email" class="pull-right">ایمیل</label>
-                                    <input type="email" class="form-control" id="email" name="email">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 pull-right">
-                                <div class="form-group">
-                                    <label for="first_name" class="pull-right">نام</label>
-                                    <input type="text" class="form-control" id="first_name" name="first_name" dir="rtl">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 pull-right">
-                                <div class="form-group">
-                                    <label for="last_name" class="pull-right">نام خانوادگی</label>
-                                    <input type="text" class="form-control" id="last_name" name="last_name" dir="rtl">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 pull-right">
-                                <div class="form-group">
-                                    <label for="password" class="pull-right">رمز عبور</label>
-                                    <input type="password" class="form-control" id="password" name="password1">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 pull-right">
-                                <div class="form-group">
-                                    <label for="confirm-password" class="pull-right">تکرار رمز عبور</label>
-                                    <input type="password" class="form-control" id="confirm-password"
-                                           name="password2">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 pull-right">
-                                <div class="form-group">
-                                    <label for="birthday" class="pull-right">تاریخ تولد</label>
-                                    <input type="date" class="form-control" id="birthday" name="birth_date">
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-sm-6 pull-right">
-                                <div class="form-group">
-                                    <label for="gender" class="pull-right">جنسیت</label>
-                                    <select name="gender" id="gender" class="framed width-100" dir="rtl">
-                                        <option name="male" value="male">مرد</option>
-                                        <option name="female" value="female">زن</option>
-                                        <option name="other" value="Other">سایر</option>
-                                    </select>
-                                </div>
-                            </div>
+                        </section>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-large btn-primary btn-rounded" id="submit">ثبت نام
+                            </button>
                         </div>
-                    </section>
-                    <div class="form-group text-center">
-                        <button type="submit" class="btn btn-large btn-primary btn-rounded" id="submit">ثبت نام
-                        </button>
+                    </div>
+                    <div class="col-md-3 col-sm-3">
+                        <section>
+                            <div id="profile-picture" class="profile-picture single-file-preview">
+                                <img src="{% static 'assets/img/person-01.jpg' %}" alt="" class="image">
+                                <div class="input">
+                                    <input name="image" type="file">
+                                    <span>برای آپلود عکس کلیک کنید</span>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
-                <div class="col-md-3 col-sm-3">
-                    <section>
-                        <div id="profile-picture" class="profile-picture single-file-preview">
-                            <img src="{% static 'assets/img/person-01.jpg' %}" alt="" class="image">
-                            <div class="input">
-                                <input name="image" type="file">
-                                <span>برای آپلود عکس کلیک کنید</span>
-                            </div>
-                        </div>
-                    </section>
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 {% endblock %}

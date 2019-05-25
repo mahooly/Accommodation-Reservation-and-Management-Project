@@ -1,182 +1,193 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block main %}
-    <div class="main-content float-right" dir="rtl">
-        <form class="form-submit labels-uppercase" id="form-submit" enctype="multipart/form-data" method="post">
-            {% csrf_token %}
-            {% if form.errors %}
-                {% for field in form %}
-                    {% for error in field.errors %}
+    <div class="container">
+        <div class="main-content float-right" dir="rtl">
+            <form class="form-submit labels-uppercase" id="form-submit" enctype="multipart/form-data" method="post">
+                {% csrf_token %}
+                {% if form.errors %}
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger" dir="rtl" role="alert"
+                                 style="padding: 5px; text-align: center;">
+                                <b style="display: inline-block;">خطا! </b>
+                                <p style="display: inline-block;">{{ error|escape }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
                         <div class="alert alert-danger" dir="rtl" role="alert"
                              style="padding: 5px; text-align: center;">
                             <b style="display: inline-block;">خطا! </b>
                             <p style="display: inline-block;">{{ error|escape }}</p>
                         </div>
                     {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                    <div class="alert alert-danger" dir="rtl" role="alert" style="padding: 5px; text-align: center;">
-                        <b style="display: inline-block;">خطا! </b>
-                        <p style="display: inline-block;">{{ error|escape }}</p>
-                    </div>
-                {% endfor %}
-            {% endif %}
-            {% if amenity_form.errors %}
-                {% for field in amenity_form %}
-                    {% for error in field.errors %}
+                {% endif %}
+                {% if amenity_form.errors %}
+                    {% for field in amenity_form %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger" dir="rtl" role="alert"
+                                 style="padding: 5px; text-align: center;">
+                                <b style="display: inline-block;">خطا! </b>
+                                <p style="display: inline-block;">{{ error|escape }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in amenity_form.non_field_errors %}
                         <div class="alert alert-danger" dir="rtl" role="alert"
                              style="padding: 5px; text-align: center;">
                             <b style="display: inline-block;">خطا! </b>
                             <p style="display: inline-block;">{{ error|escape }}</p>
                         </div>
                     {% endfor %}
-                {% endfor %}
-                {% for error in amenity_form.non_field_errors %}
-                    <div class="alert alert-danger" dir="rtl" role="alert" style="padding: 5px; text-align: center;">
-                        <b style="display: inline-block;">خطا! </b>
-                        <p style="display: inline-block;">{{ error|escape }}</p>
+                {% endif %}
+                <section id="main-information">
+                    <div class="title">
+                        <h2>اطلاعات اصلی</h2>
+                        <aside class="step">1</aside>
                     </div>
-                {% endfor %}
-            {% endif %}
-            <section id="main-information">
-                <div class="title">
-                    <h2>اطلاعات اصلی</h2>
-                    <aside class="step">1</aside>
-                </div>
-                <div class="row">
-                    <div class="col-md-7 pull-right">
-                        <div class="form-group">
-                            <label for="form-submit-title">نام<em>*</em></label>
-                            <input type="text" class="form-control" id="form-submit-title" name="title"
-                                   placeholder="نام اقامتگاه" required oninvalid="this.setCustomValidity('این فیلد لازم است.')">
+                    <div class="row">
+                        <div class="col-md-7 pull-right">
+                            <div class="form-group">
+                                <label for="form-submit-title">نام<em>*</em></label>
+                                <input type="text" class="form-control" id="form-submit-title" name="title"
+                                       placeholder="نام اقامتگاه" required
+                                       oninvalid="this.setCustomValidity('این فیلد لازم است.')">
+                            </div>
+                        </div>
+                        <div class="col-md-5 pull-right">
+                            <div class="form-group">
+                                <label for="object-type">نوع اقامتگاه</label>
+                                <select class="framed width-100 align-left" name="accommodation_type" id="object-type"
+                                        style="-webkit-appearance: none;" required>
+                                    <option value="Hotel">هتل</option>
+                                    <option value="Motel">اقامتگاه بومی (متل)</option>
+                                    <option value="House">منزل شخصی</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-5 pull-right">
-                        <div class="form-group">
-                            <label for="object-type">نوع اقامتگاه</label>
-                            <select class="framed width-100 align-left" name="accommodation_type" id="object-type"
-                                    style="-webkit-appearance: none;" required>
-                                <option value="Hotel">هتل</option>
-                                <option value="Motel">اقامتگاه بومی (متل)</option>
-                                <option value="House">منزل شخصی</option>
-                            </select>
+                    <div class="row">
+                        <div class="col-md-7 pull-right">
+                            <div class="form-group">
+                                <label for="form-submit-description">توضیحات<em>*</em></label>
+                                <textarea class="form-control" id="form-submit-description" rows="10" name="description"
+                                          required oninvalid="this.setCustomValidity('این فیلد لازم است.')"
+                                          placeholder="اقامتگاه خود را توصیف کنید"></textarea>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-7 pull-right">
-                        <div class="form-group">
-                            <label for="form-submit-description">توضیحات<em>*</em></label>
-                            <textarea class="form-control" id="form-submit-description" rows="10" name="description"
-                                      required oninvalid="this.setCustomValidity('این فیلد لازم است.')" placeholder="اقامتگاه خود را توصیف کنید"></textarea>
+                </section>
+                <section id="location">
+                    <div class="row">
+                        <div class="col-md-7 pull-right">
+                            <div class="title">
+                                <h2>موقعیت</h2>
+                                <aside class="step">2</aside>
+                            </div>
+                            <div class="form-group">
+                                <label for="city-autocomplete">شهر<em>*</em></label>
+                                <input type="text" class="form-control" id="city-autocomplete" name="city"
+                                       placeholder="شهر" required
+                                       oninvalid="this.setCustomValidity('این فیلد لازم است.')">
+                            </div>
+                            <div class="form-group">
+                                <label for="address-autocomplete">آدرس<em>*</em></label>
+                                <input type="text" class="form-control" id="address-autocomplete" name="address"
+                                       placeholder="آدرس اقامتگاه" required
+                                       oninvalid="this.setCustomValidity('این فیلد لازم است.')">
+                            </div>
+                            <div class="form-group text-center">
+                                <label>محل روی نقشه</label>
+                                <div class="map height-300 box" id="main-map"></div>
+                            </div>
+                            <div class="form-group hidden">
+                                <input type="text" class="form-control" id="latitude" name="latitude" hidden="">
+                                <input type="text" class="form-control" id="longitude" name="longitude" hidden="">
+                            </div>
+                        </div>
+                        <div class="col-md-5 pull-right">
+                            <h2>راه‌های ارتباطی</h2>
+                            <div class="form-group">
+                                <label for="form-submit-email">ایمیل</label>
+                                <input type="email" class="form-control" id="form-submit-email" name="email"
+                                       placeholder="hello@example.com"
+                                       oninvalid="this.setCustomValidity('ایمیل معتبر نیست.')">
+                            </div>
+                            <div class="form-group">
+                                <label for="form-submit-mobile-phone">تلفن</label>
+                                <input type="text" class="form-control" id="form-submit-mobile-phone" name="phone"
+                                       placeholder="12 123 456 789"
+                                       oninvalid="this.setCustomValidity('این فیلد لازم است.')">
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-            <section id="location">
-                <div class="row">
-                    <div class="col-md-7 pull-right">
-                        <div class="title">
-                            <h2>موقعیت</h2>
-                            <aside class="step">2</aside>
-                        </div>
-                        <div class="form-group">
-                            <label for="city-autocomplete">شهر<em>*</em></label>
-                            <input type="text" class="form-control" id="city-autocomplete" name="city"
-                                   placeholder="شهر" required oninvalid="this.setCustomValidity('این فیلد لازم است.')">
-                        </div>
-                        <div class="form-group">
-                            <label for="address-autocomplete">آدرس<em>*</em></label>
-                            <input type="text" class="form-control" id="address-autocomplete" name="address"
-                                   placeholder="آدرس اقامتگاه" required oninvalid="this.setCustomValidity('این فیلد لازم است.')">
-                        </div>
-                        <div class="form-group text-center">
-                            <label>محل روی نقشه</label>
-                            <div class="map height-300 box" id="main-map"></div>
-                        </div>
-                        <div class="form-group hidden">
-                            <input type="text" class="form-control" id="latitude" name="latitude" hidden="">
-                            <input type="text" class="form-control" id="longitude" name="longitude" hidden="">
+                </section>
+                <section id="gallery">
+                    <div class="title">
+                        <h2>گالری</h2>
+                        <aside class="step">3</aside>
+                    </div>
+                    <div class="file-upload-previews"></div>
+                    <div class="file-upload">
+                        <input type="file" name="image" class="file-upload-input with-preview"
+                               title="برای اضافه کردن عکس کلیک کنید" accept="gif|jpg|png">
+                        <span>برای اضافه کردن عکس کلیک کنید</span>
+                    </div>
+                </section>
+                <section id="facilities">
+                    <div class="title">
+                        <h2>امکانات</h2>
+                        <aside class="step">4</aside>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 pull-right">
+                            <h3>تکنولوژی و چندرسانه‌ای</h3>
+                            <ul class="checkboxes inline half list-unstyled">
+                                <li><label><input type="checkbox" name="has_tv">&nbsp;تلویزیون</label></li>
+                                <li><label><input type="checkbox" name="has_wifi">&nbsp;اینترنت</label></li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="col-md-5 pull-right">
-                        <h2>راه‌های ارتباطی</h2>
-                        <div class="form-group">
-                            <label for="form-submit-email">ایمیل</label>
-                            <input type="email" class="form-control" id="form-submit-email" name="email"
-                                   placeholder="hello@example.com" oninvalid="this.setCustomValidity('ایمیل معتبر نیست.')">
+                    <div class="row">
+                        <div class="col-md-4 pull-right">
+                            <h3>سرویس‌ها</h3>
+                            <ul class="checkboxes inline half list-unstyled">
+                                <li><label><input type="checkbox" name="has_roomservice">&nbsp;سرویس نظافت اتاق</label>
+                                </li>
+                                <li><label><input type="checkbox" name="has_laundry">&nbsp;شست و شوی لباس</label></li>
+                            </ul>
                         </div>
-                        <div class="form-group">
-                            <label for="form-submit-mobile-phone">تلفن</label>
-                            <input type="text" class="form-control" id="form-submit-mobile-phone" name="phone"
-                                   placeholder="12 123 456 789" oninvalid="this.setCustomValidity('این فیلد لازم است.')">
+                        <div class="col-md-4 pull-right">
+                            <h3>عمومی</h3>
+                            <ul class="checkboxes inline half list-unstyled">
+                                <li><label><input type="checkbox" name="has_parking">&nbsp;پارکینگ</label></li>
+                                <li><label><input type="checkbox" name="has_safe">&nbsp;صندوق امانات</label></li>
+                                <li><label><input type="checkbox" name="has_elevator">&nbsp;آسانسور</label></li>
+                                <li><label><input type="checkbox" name="has_warm_ac">&nbsp;تهویه‌ی هوای گرم</label></li>
+                                <li><label><input type="checkbox" name="has_cool_ac">&nbsp;تهویه‌ی هوای سرد</label></li>
+                                <li><label><input type="checkbox" name="has_iron">&nbsp;اتو</label></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 pull-right">
+                            <h3>پخت و پز</h3>
+                            <ul class="checkboxes inline half list-unstyled">
+                                <li><label><input type="checkbox" name="has_kitchen">&nbsp;آشپزخانه</label></li>
+                                <li><label><input type="checkbox" name="has_utensils">&nbsp;وسابل آشپزی</label></li>
+                                <li><label><input type="checkbox" name="has_fridge">&nbsp;یخچال</label></li>
+                                <li><label><input type="checkbox" name="has_oven">&nbsp;گاز</label></li>
+                            </ul>
                         </div>
                     </div>
-                </div>
-            </section>
-            <section id="gallery">
-                <div class="title">
-                    <h2>گالری</h2>
-                    <aside class="step">3</aside>
-                </div>
-                <div class="file-upload-previews"></div>
-                <div class="file-upload">
-                    <input type="file" name="image" class="file-upload-input with-preview"
-                           title="برای اضافه کردن عکس کلیک کنید" accept="gif|jpg|png">
-                    <span>برای اضافه کردن عکس کلیک کنید</span>
-                </div>
-            </section>
-            <section id="facilities">
-                <div class="title">
-                    <h2>امکانات</h2>
-                    <aside class="step">4</aside>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 pull-right">
-                        <h3>تکنولوژی و چندرسانه‌ای</h3>
-                        <ul class="checkboxes inline half list-unstyled">
-                            <li><label><input type="checkbox" name="has_tv">&nbsp;تلویزیون</label></li>
-                            <li><label><input type="checkbox" name="has_wifi">&nbsp;اینترنت</label></li>
-                        </ul>
+                </section>
+                <hr>
+                <section>
+                    <div class="form-group center">
+                        <button type="submit" class="btn btn-primary btn-rounded btn-xlarge">ثبت اقامتگاه</button>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4 pull-right">
-                        <h3>سرویس‌ها</h3>
-                        <ul class="checkboxes inline half list-unstyled">
-                            <li><label><input type="checkbox" name="has_roomservice">&nbsp;سرویس نظافت اتاق</label></li>
-                            <li><label><input type="checkbox" name="has_laundry">&nbsp;شست و شوی لباس</label></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 pull-right">
-                        <h3>عمومی</h3>
-                        <ul class="checkboxes inline half list-unstyled">
-                            <li><label><input type="checkbox" name="has_parking">&nbsp;پارکینگ</label></li>
-                            <li><label><input type="checkbox" name="has_safe">&nbsp;صندوق امانات</label></li>
-                            <li><label><input type="checkbox" name="has_elevator">&nbsp;آسانسور</label></li>
-                            <li><label><input type="checkbox" name="has_warm_ac">&nbsp;تهویه‌ی هوای گرم</label></li>
-                            <li><label><input type="checkbox" name="has_cool_ac">&nbsp;تهویه‌ی هوای سرد</label></li>
-                            <li><label><input type="checkbox" name="has_iron">&nbsp;اتو</label></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-4 pull-right">
-                        <h3>پخت و پز</h3>
-                        <ul class="checkboxes inline half list-unstyled">
-                            <li><label><input type="checkbox" name="has_kitchen">&nbsp;آشپزخانه</label></li>
-                            <li><label><input type="checkbox" name="has_utensils">&nbsp;وسابل آشپزی</label></li>
-                            <li><label><input type="checkbox" name="has_fridge">&nbsp;یخچال</label></li>
-                            <li><label><input type="checkbox" name="has_oven">&nbsp;گاز</label></li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-            <hr>
-            <section>
-                <div class="form-group center">
-                    <button type="submit" class="btn btn-primary btn-rounded btn-xlarge">ثبت اقامتگاه</button>
-                </div>
-            </section>
-        </form>
+                </section>
+            </form>
 
+        </div>
     </div>
 {% endblock %}

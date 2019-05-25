@@ -3,15 +3,14 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.views import View
-
+from django.views.generic import ListView
+from accommodation.models import Accommodation
 from .forms import *
 
 
-def index(request):
-    # TODO: index.html
-    print('&' * 100)
-    # print(request.user)
-    return render(request, 'base.html')
+class MainPageView(ListView):
+    model = Accommodation
+    template_name = 'index.html'
 
 
 class RegistrationView(View):
