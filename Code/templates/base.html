@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css">
 
 
-    <title>Makan</title>
+    <title>مکان</title>
 
 </head>
 
@@ -162,12 +162,13 @@
 <script type="text/javascript" src="{% static 'assets/js/owl.carousel.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/masonry.pkgd.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/custom.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script type="text/javascript" src="{% static 'assets/js/ir-city-select.js' %}"></script>
 
 <!--[if lte IE 9]>
 <script src="assets/js/ie.js"></script>
 <![endif]-->
 <script>
-    // Initialize and add the map
     function initMap() {
         var iran = {lat: 32.4279, lng: 53.6880};
         var map = new google.maps.Map(

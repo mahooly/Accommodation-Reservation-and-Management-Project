@@ -26,7 +26,7 @@ class CreateAccommodationView(View):
             url = '/accommodation/' + str(house.pk)
             return redirect(url)
         else:
-            print('%' * 100)
+            return render(request, self.template_name, {'form': form, 'amenity_form': amenity_form})
 
 
 class AccommodationDetailView(DetailView):

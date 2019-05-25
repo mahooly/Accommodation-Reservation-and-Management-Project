@@ -87,7 +87,7 @@
                             <aside class="box">
                                 <dl>
                                     <dt>تعداد اتاق‌ها</dt>
-                                    <dd>{{ accommodation.rooms}}</dd>
+                                    <dd>{{ accommodation.rooms }}</dd>
                                     <dt>ظرفیت مهمان</dt>
                                     <dd>{{ accommodation.guests }}</dd>
                                     <dt>اتاق یک نفره</dt>
@@ -99,7 +99,6 @@
                                 </dl>
                             </aside>
                             <aside class="text-center">
-                                <h2>راه‌های ارتباطی</h2>
                                 <address>
                                     {{ accommodation.city }}<br>
                                     {{ accommodation.address }}<br>
@@ -141,18 +140,27 @@
                                             <div class="form-group-inline">
                                                 <div class="form-group width-60">
                                                     <label class="pull-right">تعداد و نوع تخت</label>
-                                                    <select class="framed width-100" name="bed_type" id="room-type_1">
+                                                    <select class="framed width-100" name="bed_type" id="room-type_1"
+                                                            dir="rtl">
                                                         <option value="Single">تخت یک نفره</option>
                                                         <option value="Double">تخت دو نفره</option>
                                                         <option value="Twin">دو تخت یک نفره</option>
                                                     </select>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <div class="col-md-6">
                                                 <div class="form-group" style="padding-right: 20px">
-                                                    <label for="number-of-rooms_1" class="pull-right">تعداد اتاق</label>
+                                                    <label for="number-of-rooms_1">تعداد اتاق</label>
                                                     <input type="number" class="form-control" id="number-of-rooms_1"
                                                            name="how_many"
                                                            placeholder="1">
                                                 </div>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="form-group" style="padding-right: 20px">
                                                     <label for="number-of-guests_1">تعداد مهمان</label>
                                                     <input type="number" class="form-control" id="number-of-guests_1"
@@ -163,16 +171,18 @@
                                         </div>
                                     </div>
                                     <section id="facilities">
-                                        <div class="title">
-                                            <h3 class="pull-right">امکانات</h3>
+                                        <div class="row">
+                                            <div class="pull-right" style="margin-right: 20px;">
+                                                <h4 style="color: #488f3e;">امکانات</h4>
+                                            </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-8 pull-right">
                                                 <div class="row">
                                                     <h5 class="pull-right">حمام و دستشویی</h5>
                                                 </div>
-                                                <ul class="checkboxes inline half list-unstyled pull-right">
-                                                    <li><label><input type="checkbox" name="has_toilet">توالت</label>
+                                                <ul class="checkboxes inline half list-unstyled">
+                                                    <li><label><input type="checkbox" name="has_toilet">سرویس بهداشتی</label>
                                                     </li>
                                                     <li><label><input type="checkbox" name="has_bathroom">حمام</label>
                                                     </li>
