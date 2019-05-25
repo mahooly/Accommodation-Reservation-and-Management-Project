@@ -6,6 +6,7 @@ from django.views import View
 from django.views.generic import ListView
 from accommodation.models import Accommodation
 from .forms import *
+from accommodation.models import Accommodation
 
 
 class MainPageView(ListView):
@@ -81,3 +82,18 @@ class EditProfile(View):
 
         return render(request, self.template_name, {'user_form': user_form, 'password_form': password_form})
 
+
+class HostDashboard(View):
+    def get(self, request, *args, **kwargs):
+        host = request.user.host
+        accs = Accommodation.objects.filter(owner = host)
+        context = {'accs': accs}
+
+        return render(request, 'host_dashboard.html', context=context)
+
+class DeleteAccommodation(View):
+    def get(self, request, *args, **kwargs):
+        acc_pk = kwargs['pk']
+        acc = get_object_or_404(Accommodation, pk=acc_pk)
+        acc.delete()
+        return redirect('/host_dashboard')
