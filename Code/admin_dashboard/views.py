@@ -1,19 +1,15 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView
+
 from registration.models import CustomUser
 from accommodation.models import Accommodation
 from django.views import View
 
-# Create your views here.
 
-class AdminDashboard(View):
-    template_name = 'admin_dashboard.html'
+class AdminUserDashboard(ListView):
+    template_name = 'admin_dashboard_users.html'
+    model = CustomUser
 
-    all_users = CustomUser.objects.all()
-    all_accommodations = Accommodation.objects.all()
-
-    def get(self, request, *args, **kwargs):
-        context = {'users': self.all_users, 'accommodations':self.all_accommodations}
-        return render(request, self.template_name, context=context)
 
 class DeleteUser(View):
     def get(self, request, *args, **kwargs):
@@ -21,6 +17,7 @@ class DeleteUser(View):
         user = get_object_or_404(CustomUser, pk=user_pk)
         user.delete()
         return redirect('/admin_dashboard')
+
 
 class DeleteAccommodation(View):
     def get(self, request, *args, **kwargs):

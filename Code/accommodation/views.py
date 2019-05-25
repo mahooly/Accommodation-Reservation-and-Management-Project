@@ -35,12 +35,6 @@ class AccommodationDetailView(DetailView):
 
 
 class CreateRoomView(View):
-    template_name = 'create_room.html'
-
-    def get(self, request, *args, **kwargs):
-        form = RoomCreationForm()
-        amenity_form = AmenityForm()
-        return render(request, self.template_name, {'form': form, 'amenity_form': amenity_form})
 
     def post(self, request, *args, **kwargs):
         form = RoomCreationForm(request.POST)

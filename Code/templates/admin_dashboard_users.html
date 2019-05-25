@@ -1,0 +1,36 @@
+{% extends 'admin_dashboard.html' %}
+{% block contents %}
+    <div class="main-content">
+        {% for user in object_list %}
+            <div class="col-md-4 col-sm-6">
+                <div class="item big equal-height" data-id="6">
+                    <div class="item-wrapper">
+                        <div class="image">
+                            <a href="detail.html" class="wrapper">
+                                <div class="profile-pic">
+                                    <img src="{{ user.image.url }}" alt="" style="height: 280px; width: 280px;">
+                                </div>
+                            </a>
+                        </div>
+                        <div class="description">
+                            <div class="meta">
+                                <span>
+                                    {% if user.is_host %}
+                                        <i class="fa fa-user"></i>
+                                    {% else %}
+                                        <i class="fa fa-hotel"></i>
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="info">
+                                <figure class="label label-info">{{ user.username }}</figure>
+                                <a href="detail.html"><h3>{{ user.first_name }}&nbsp;{{ user.last_name }}</h3></a>
+                                <a href="{% url 'delete_user' pk=user.pk %}" class="btn btn-danger btn-rounded scroll">حذف کاربر</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
