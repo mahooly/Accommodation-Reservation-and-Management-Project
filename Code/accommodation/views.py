@@ -64,6 +64,7 @@ class AccommodationDetailView(View):
         context = {'accommodation': acc, 'accommodation_details': acc_d}
         return render(request, self.template_name, context=context)
 
+
 class CreateRoomView(View):
     template_name = 'create_room.html'
 

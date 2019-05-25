@@ -61,13 +61,13 @@ class EditProfile(View):
     template_name = 'changeinfo.html'
 
     def get(self, request, *args, **kwargs):
-        user_form = CustomUserChangeForm()
+        user_form = CustomUserChangeForm(instance=request.user, initial={'email': request.user.email, 'gender': request.user.gender, 'image': request.user.image})
         password_form = PasswordChangeForm(request.user)
         return render(request, self.template_name, {'user_form': user_form, 'password_form': password_form})
 
     def post(self, request, *args, **kwargs):
         if 'user_form' in request.POST:
-            user_form = CustomUserChangeForm(data=request.POST)
+            user_form = CustomUserChangeForm(request.POST, request.FILES, instance=request.user)
             password_form = PasswordChangeForm(request.user)
             if user_form.is_valid():
                 user = user_form.save()
@@ -75,7 +75,7 @@ class EditProfile(View):
                 return redirect('/')
         else:
             password_form = PasswordChangeForm(request.user, request.POST)
-            user_form = CustomUserChangeForm()
+            user_form = CustomUserChangeForm(instance=request.user, initial={'email': request.user.email, 'gender': request.user.gender, 'image': request.user.image})
             if password_form.is_valid():
                 user = password_form.save()
                 update_session_auth_hash(request, user)

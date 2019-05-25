@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block main %}
+    <div class="main-content">
+        <div class="row">
+            <div class="pull-right" style="margin-right: 20px;">
+                <h1><a href="{% url 'login' %}" style="color: #488f3e;">ورود</a></h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-8 col-md-offset-3 col-sm-offset-2">
+                <form method="post" id="form-sign">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="alert alert-danger" dir="rtl" role="alert"
+                                     style="padding: 5px; text-align: center;">
+                                    <b style="display: inline-block;">خطا! </b>
+                                    <p style="display: inline-block;">{{ error|escape }}</p>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger" dir="rtl" role="alert"
+                                 style="padding: 5px; text-align: center;">
+                                <b style="display: inline-block;">خطا! </b>
+                                <p style="display: inline-block;">{{ error|escape }}</p>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="form-sign-in-username" class="pull-right">نام کاربری</label>
+                        <input type="text" class="form-control" id="form-sign-in-username"
+                               name="username" placeholder="نام کاربری">
+                    </div>
+                    <div class="form-group">
+                        <label for="form-sign-in-password" class="pull-right">رمز عبور</label>
+                        <input type="password" class="form-control" id="form-sign-in-password"
+                               name="password" placeholder="*****">
+                    </div>
+                    <div class="clearfix action">
+                        <div class="form-group center">
+                            <button type="submit" class="btn btn-primary btn-rounded">ورود
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

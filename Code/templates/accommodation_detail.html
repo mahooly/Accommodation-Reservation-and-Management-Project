@@ -22,7 +22,7 @@
                     {% if request.user.is_authenticated %}
                         {% ifequal request.user.username accommodation.owner.user.username %}
                             <a href="" data-toggle="modal" data-tab="true"
-                               data-target="#add-room-modal">اضافه کردن اتاق</a>
+                               data-target="#add-room-modal" class="btn btn-primary btn-rounded scroll">اضافه کردن اتاق</a>
                         {% endifequal %}
                     {% endif %}
                 </div>
@@ -46,53 +46,53 @@
                         <h2>امکانات</h2>
                         <ul class="bullets half">
                             {% if accommodation.amenity.has_cool_ac %}
-                                <li>تهویه‌ی هوای سرد</li>{% endif %}
+                                <li>&nbsp;&nbsp;تهویه‌ی هوای سرد</li>{% endif %}
                             {% if accommodation.amenity.has_warm_ac %}
-                                <li>تهویه‌ی هوای گرم</li>{% endif %}
+                                <li>&nbsp;&nbsp;تهویه‌ی هوای گرم</li>{% endif %}
                             {% if accommodation.amenity.has_elevator %}
-                                <li>آسانسور</li>{% endif %}
+                                <li>&nbsp;&nbsp;آسانسور</li>{% endif %}
                             {% if accommodation.amenity.has_kitchen %}
-                                <li>آشپزخانه</li>{% endif %}
+                                <li>&nbsp;&nbsp;آشپزخانه</li>{% endif %}
                             {% if accommodation.amenity.has_fridge %}
-                                <li>یخچال</li>{% endif %}
+                                <li>&nbsp;&nbsp;یخچال</li>{% endif %}
                             {% if accommodation.amenity.has_oven %}
-                                <li>گاز</li>{% endif %}
+                                <li>&nbsp;&nbsp;گاز</li>{% endif %}
                             {% if accommodation.amenity.has_utensils %}
-                                <li>وسایل آشپزی</li>{% endif %}
+                                <li&nbsp;&nbsp;>وسایل آشپزی</li>{% endif %}
                             {% if accommodation.amenity.has_safe %}
-                                <li>صندوق امانات</li>{% endif %}
+                                <li>&nbsp;&nbsp;صندوق امانات</li>{% endif %}
                             {% if accommodation.amenity.has_tv %}
-                                <li>تلویزیون</li>{% endif %}
+                                <li>&nbsp;تلویزیون</li>{% endif %}
                             {% if accommodation.amenity.has_wifi %}
-                                <li>اینترنت</li>{% endif %}
+                                <li>&nbsp;&nbsp;اینترنت</li>{% endif %}
                             {% if accommodation.amenity.has_roomservice %}
-                                <li>سرویس نظافت اتاق</li>{% endif %}
+                                <li>&nbsp;&nbsp;سرویس نظافت اتاق</li>{% endif %}
                             {% if accommodation.amenity.has_laundry %}
-                                <li>شست و شوی لباس</li>{% endif %}
+                                <li>&nbsp;&nbsp;شست و شوی لباس</li>{% endif %}
                             {% if accommodation.amenity.has_parking %}
-                                <li>پارکینگ</li>{% endif %}
+                                <li>&nbsp;&nbsp;پارکینگ</li>{% endif %}
                             {% if accommodation.amenity.has_iron %}
-                                <li>اتو</li>{% endif %}
+                                <li>&nbsp;&nbsp;اتو</li>{% endif %}
                         </ul>
                     </section>
                     <section id="map">
                         <h2>نقشه</h2>
-                        <div id="map-item" class="map height-300 box"></div>
+                        <div id="main-map" class="map height-300 box"></div>
                     </section>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 pull-right">
                     <div class="sidebar">
                         <aside class="box">
                             <dl>
-                                <dt>Rooms</dt>
+                                <dt>تعداد اتاق‌ها</dt>
                                 <dd>{{accommodation_details.room_num}}</dd>
-                                <dt>Guests</dt>
+                                <dt>ظرفیت مهمان</dt>
                                 <dd>{{accommodation_details.guest_num}}</dd>
-                                <dt>Single Beds</dt>
+                                <dt>اتاق یک نفره</dt>
                                 <dd>{{accommodation_details.single_num}}</dd>
-                                <dt>Double Beds</dt>
+                                <dt>اتاق دو نفره</dt>
                                 <dd>{{accommodation_details.double_num}}</dd>
-                                <dt>Twin Beds</dt>
+                                <dt>اتاق دو نفره (تخت جدا)</dt>
                                 <dd>{{accommodation_details.twin_num}}</dd>
                                 
                             </dl>
