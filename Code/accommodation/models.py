@@ -41,6 +41,7 @@ class Accommodation(models.Model):
     amenity = models.OneToOneField(Amenity, related_name='accommodation', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='../media/house_pics/', default='../media/house_pics/no-picture.png')
 
+    is_authenticated = models.BooleanField(default=False)
     def _get_singles(self):
         try:
             return Room.objects.get(accommodation=self, bed_type='Single').how_many
