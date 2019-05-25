@@ -41,10 +41,10 @@
                                     </div>
                                 {% else %}
                                     <div class="element">
-                                        <a href="{% url 'update_profile' %}">ویرایش اطلاعات</a>
+                                        <a href="{% url 'logout' %}">خروج</a>
                                     </div>
                                     <div class="element">
-                                        <a href="{% url 'logout' %}">خروج</a>
+                                        <a href="{% url 'update_profile' %}">ویرایش اطلاعات</a>
                                     </div>
                                 {% endif %}
                             </div>
@@ -56,7 +56,8 @@
             <div class="container">
                 <div class="primary-nav">
                     <div class="left">
-                        <a href="{% url 'home' %}" id="brand"><img src="{% static 'assets/img/logo.png' %}" alt=""></a>
+                        <a href="{% url 'home' %}" id="brand"><img src="{% static 'assets/img/logo.png' %}" alt=""
+                                                                   style="height: 25px; width: 100px"></a>
                         <a class="nav-trigger" data-toggle="collapse" href="#primary-nav" aria-expanded="false"
                            aria-controls="primary-nav"><i class="fa fa-navicon"></i></a>
                     </div>
