@@ -1,17 +1,27 @@
 {% extends 'base.html' %}
 
 {% block main %}
-    <div class="main-content">
+    <div class="container">
         <div class="row">
-            <p>USERS</p>
-            {%for user in users%}
-            <p>{{user.first_name}} <a href="{% url 'delete_user' pk=user.pk %}">delete</a></p>
-            
-            {%endfor%}
-            <p>HOUSES</p>
-            {%for acc in accommodations%}
-            <p>{{acc.title}} <a href="{% url 'delete_accommodation' pk=acc.pk %}">delete</a></p>
-            {%endfor%}
+            <div class="pull-right" style="margin-right: 20px;">
+                <h1></h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                {% block contents %}
+                {% endblock %}
+            </div>
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <div class="box filter">
+                        <ul class="links" dir="rtl">
+                            <li><a href="{% url 'admin_dashboard_users' %}">کاربران</a></li>
+                            <li><a href="#">اقامتگاه‌ها</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-{%endblock%}
+{% endblock %}

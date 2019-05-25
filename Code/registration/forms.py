@@ -25,7 +25,3 @@ class HostForm(forms.ModelForm):
         model = Host
         fields = ('city', 'passport_pic', 'home_address', 'phone_number')
 
-
-class LoginForm(forms.Form):
-    username = forms.CharField(max_length=30, required=True)
-    password = forms.PasswordInput()
