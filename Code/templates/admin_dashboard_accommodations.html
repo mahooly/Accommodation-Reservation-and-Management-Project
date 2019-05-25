@@ -1,0 +1,42 @@
+{% extends 'admin_dashboard.html' %}
+{% block contents %}
+    <div class="main-content">
+        {% for accommodation in object_list %}
+            <div class="col-md-4 col-sm-6 pull-right">
+                <div class="item big equal-height" data-map-latitude="48.87" data-map-longitude="2.29"
+                     data-id="1">
+                    <div class="item-wrapper">
+                        <div class="image">
+                            <div class="mark-circle top" data-toggle="tooltip" data-placement="right"
+                                 title="{{ accommodation.description }}"><i class="fa fa-question"></i></div>
+                            <a href="{% url 'accommodation_detail' pk=accommodation.pk %}" class="wrapper">
+                                <div class="profile-pic">
+                                    <img class="image" src="{{ accommodation.image.url }}" alt=""
+                                         style="height: 280px; width: 280px;">
+                                </div>
+                            </a>
+                            <div class="owl-navigation"></div>
+                        </div>
+                        <div class="description">
+                            <div class="meta">
+                                <span><i class="fa fa-bed"></i>{{ accommodation.rooms }}</span>
+                            </div>
+                            <div class="info">
+                                <figure class="label label-info">{{ accommodation.accommodation_type }}</figure>
+                                <a href="{% url 'accommodation_detail' pk=accommodation.pk %}">
+                                    <h3>{{ accommodation.title }}</h3></a>
+                                <figure class="location" style="margin-bottom: 10px">{{ accommodation.city }}</figure>
+                                {% if not accommodation.is_authenticated %}
+                                    <a href="{% url 'authenticate_accommodation' pk=accommodation.pk %}"
+                                       class="btn btn-primary btn-rounded btn-sm scroll">تایید محل اقامت</a>
+                                {% endif %}
+                                <a href="{% url 'delete_accommodation' pk=accommodation.pk %}"
+                                   class="btn btn-danger btn-rounded btn-sm scroll">حذف محل اقامت</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

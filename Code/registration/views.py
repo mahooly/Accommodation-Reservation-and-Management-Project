@@ -9,8 +9,10 @@ from .forms import *
 
 
 class MainPageView(ListView):
-    model = Accommodation
     template_name = 'index.html'
+
+    def get_queryset(self):
+        return Accommodation.objects.filter(is_authenticated=True)
 
 
 class RegistrationView(View):

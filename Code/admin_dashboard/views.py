@@ -11,12 +11,17 @@ class AdminUserDashboard(ListView):
     model = CustomUser
 
 
+class AdminAccommodationDashboard(ListView):
+    template_name = 'admin_dashboard_accommodations.html'
+    model = Accommodation
+
+
 class DeleteUser(View):
     def get(self, request, *args, **kwargs):
         user_pk = kwargs['pk']
         user = get_object_or_404(CustomUser, pk=user_pk)
         user.delete()
-        return redirect('/admin_dashboard')
+        return redirect('/admin_dashboard/users')
 
 
 class DeleteAccommodation(View):
@@ -24,7 +29,8 @@ class DeleteAccommodation(View):
         acc_pk = kwargs['pk']
         acc = get_object_or_404(Accommodation, pk=acc_pk)
         acc.delete()
-        return redirect('/admin_dashboard')
+        return redirect('/admin_dashboard/accommodations')
+
 
 class AuthenticateAccommodation(View):
     def get(self, request, *args, **kwargs):
@@ -32,4 +38,4 @@ class AuthenticateAccommodation(View):
         acc = get_object_or_404(Accommodation, pk=acc_pk)
         acc.is_authenticated = True
         acc.save()
-        return redirect('/admin_dashboard')
+        return redirect('/admin_dashboard/accommodations')

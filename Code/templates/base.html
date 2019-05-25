@@ -46,6 +46,19 @@
                                     <div class="element">
                                         <a href="{% url 'update_profile' %}">ویرایش اطلاعات</a>
                                     </div>
+                                    {% if request.user.is_superuser %}
+                                        <div class="element">
+                                            <a href="{% url 'admin_dashboard' %}">داشبورد</a>
+                                        </div>
+                                    {% elif request.user.is_host %}
+                                        <div class="element">
+                                            <a href="{% url 'update_profile' %}">داشبورد</a>
+                                        </div>
+                                    {% else %}
+                                        <div class="element">
+                                            <a href="{% url 'admin_dashboard' %}">داشبورد</a>
+                                        </div>
+                                    {% endif %}
                                 {% endif %}
                             </div>
                         </nav>
