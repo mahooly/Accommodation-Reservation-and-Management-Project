@@ -130,6 +130,7 @@ LOGOUT_REDIRECT_URL = '/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
+STATIC_ROOT = '/static/'
 
 STATICFILES_DIRS = [
     STATIC_DIR,
