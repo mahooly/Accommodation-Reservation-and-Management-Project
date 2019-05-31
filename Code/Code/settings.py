@@ -27,7 +27,7 @@ SECRET_KEY = 't5e8^w_h%xp9m7#&iyyu55j8whfj^&-wokth#w)=fa7curyf^2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['makan-system.herokuapp.com']
 
 
 # Application definition
@@ -130,6 +130,7 @@ LOGOUT_REDIRECT_URL = '/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
+STATIC_ROOT = STATIC_DIR
 
 STATICFILES_DIRS = [
     STATIC_DIR,
