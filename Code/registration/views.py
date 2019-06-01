@@ -9,13 +9,6 @@ from .forms import *
 from accommodation.models import Accommodation
 
 
-class MainPageView(ListView):
-    template_name = 'index.html'
-
-    def get_queryset(self):
-        return Accommodation.objects.filter(is_authenticated=True)
-
-
 class RegistrationView(View):
     form_class = CustomUserCreationForm
     template_name = 'registration/register.html'

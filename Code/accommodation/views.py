@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
+from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm
 from .models import Accommodation, Room, Amenity

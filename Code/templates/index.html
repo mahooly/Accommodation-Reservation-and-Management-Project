@@ -1,19 +1,36 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block main %}
-    <div class="hero-section" data-height="300">
-        <div class="hero-inner">
-            <div class="hero-wrapper">
-                <div class="caption">
-                    <div class="inner">
-                        <div class="container">
-                            <h1 class="center" dir="rtl">بهترین مکان برای تعطیلات خود را پیدا کنید!</h1>
+    <div class="hero-section" data-height="400">
+        <form id="form-hero">
+            <div class="hero-inner">
+                <div class="hero-wrapper">
+                    <div class="caption">
+                        <div class="inner">
+                            <div class="container">
+                                <h1 class="center" dir="rtl">بهترین مکان برای تعطیلات خود را پیدا کنید!</h1>
+                                <div class="row no-gutters" style="padding-top: 30px">
+                                    <div class="col-md-10 col-sm-10 pull-right">
+                                        <div class="form-group">
+                                            <label class="label-on-input" for="address-autocomplete" style="margin-left: 854px;">محل اقامت</label>
+                                            <input type="text" class="form-control" id="address-autocomplete"
+                                                   name="location"
+                                                   placeholder="نام مکان یا شهر مورد نظر خود را وارد کنید" dir="rtl">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-2">
+                                        <div class="form-group">
+                                            <button type="submit" class="btn btn-default" dir="rtl">جست و جو</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-transfer"><img src="{% static 'assets/img/bg-hero.jpg' %}" alt=""></div>
                         </div>
-                        <div class="bg-transfer"><img src="{% static 'assets/img/bg-hero.jpg' %}" alt=""></div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 
     <div class="block">
