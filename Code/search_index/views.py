@@ -26,7 +26,13 @@ class SearchView(View):
 
     def get(self, request, *args, **kwargs):
         f = AccommodationFilter(request.GET, queryset=Accommodation.objects.all())
-        return render(request, self.template_name, {'filter': f})
+        if len(args) > 0:
+            dummy = args[0]
+            init = args[1]
+        else: 
+            dummy = []
+            init = False
+        return render(request, self.template_name, {'filter': f, 'results': dummy, 'init': init})
 
 class LocationSearchView(View):
 
@@ -39,5 +45,9 @@ class LocationSearchView(View):
             print('%' * 10)
             print(qs)
             print(exp)
-            return render(request, 'search_index/search_results.html', {'results': qs})
+
+            sv = SearchView()
+            response = sv.get(request, qs, True)
+            return response
+            # return render(request, 'search_index/search.html', {'results': qs, 'filter': f, 'init': True})
             
