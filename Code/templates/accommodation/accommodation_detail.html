@@ -25,6 +25,7 @@
                                 <a href="" data-toggle="modal" data-tab="true"
                                    data-target="#add-room-modal" class="btn btn-primary btn-rounded scroll">اضافه کردن
                                     اتاق</a>
+                                <a href="{% url 'edit_accommodation' pk=accommodation.pk %}" class="btn btn-primary btn-rounded scroll">تغییر مشخصات اقامتگاه</a>
                             {% endifequal %}
                         {% endif %}
                     </div>

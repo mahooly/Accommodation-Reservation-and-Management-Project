@@ -73,16 +73,19 @@
                     </div>
                     <div class="right">
                         <nav id="primary-nav">
-                            <ul class="nav nav-pills">
-                                <li class="active"><a data-toggle="pill" href="{% url 'home' %}">خانه</a></li>
+                            <ul>
+                                <li><a href="{% url 'home' %}">خانه</a></li>
                                 {% if request.user.is_authenticated and request.user.is_host %}
-                                    <li class="submit"><a data-toggle="pill" href="{% url 'create_accommodation' %}"><span>Submit</span><i
+                                    <li><a href="{% url 'create_accommodation' %}"><i
                                             data-toggle="tooltip"
                                             data-placement="top"
                                             title="ثبت اقامتگاه"><img
                                             src="{% static 'assets/img/plus.png' %}" alt=""></i></a></li>
                                 {% elif request.user.is_authenticated %}
-                                <li dir="rtl" class="btn btn-success btn-rounded btn-small"><a data-toggle="pill" href="{% url 'become_host' %}" style="color: white; padding-left: 2px">میزبان شوید!</a></li>
+                                    <li dir="rtl" class="btn btn-success btn-rounded btn-small"><a
+                                            href="{% url 'become_host' %}"
+                                            style="color: white; padding-left: 2px">میزبان
+                                        شوید!</a></li>
                                 {% endif %}
                             </ul>
                         </nav>
