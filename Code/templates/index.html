@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block main %}
     <div class="hero-section" data-height="400">
-        <form id="form-hero">
+        <form id="form-hero" method='GET' action="{% url 'search_location' %}">
             <div class="hero-inner">
                 <div class="hero-wrapper">
                     <div class="caption">
@@ -14,7 +14,7 @@
                                         <div class="form-group">
                                             <label class="label-on-input" for="address-autocomplete" style="margin-left: 854px;">محل اقامت</label>
                                             <input type="text" class="form-control" id="address-autocomplete"
-                                                   name="location"
+                                                   name="expression"
                                                    placeholder="نام مکان یا شهر مورد نظر خود را وارد کنید" dir="rtl">
                                         </div>
                                     </div>

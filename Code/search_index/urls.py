@@ -6,4 +6,5 @@ from search_index import views
 urlpatterns = [
     path('', views.MainPageView.as_view(), name='home'),
     path('search/', views.SearchView.as_view(), name='search'),
+    path('search_location/', views.LocationSearchView.as_view(), name='search_location'),
 ]
