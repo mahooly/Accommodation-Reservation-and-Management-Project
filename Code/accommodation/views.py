@@ -110,5 +110,5 @@ class AccommodationRoomsView(ListView):
     template_name = 'accommodation/room_list.html'
 
     def get_queryset(self):
-        acc = get_object_or_404(Accommodation, pk=kwargs['pk'])
+        acc = get_object_or_404(Accommodation, pk=self.kwargs['pk'])
         return Room.objects.filter(accommodation=acc)
