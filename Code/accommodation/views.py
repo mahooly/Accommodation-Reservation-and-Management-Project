@@ -103,3 +103,11 @@ class EditAccommodation(View):
             url = '/accommodation/' + str(accommodation.pk)
             return redirect(url)
         return render(request, self.template_name, {'form': form, 'amenity_form': amenity_form})
+
+
+class AccommodationRoomsView(ListView):
+    template_name = 'accommodation/room_list.html'
+
+    def get_queryset(self):
+        acc = get_object_or_404(Accommodation, pk=kwargs['pk'])
+        return Room.objects.filter(accommodation=acc)
