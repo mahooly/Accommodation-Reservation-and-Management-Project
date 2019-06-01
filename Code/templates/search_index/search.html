@@ -1,20 +1,156 @@
 {% extends "base.html" %}
 
-{% block main%}
-<div class="container">
-    <div class="row">
-    <form action="{% url 'search' %}" method="get">
-        {{ filter.form.as_p }}
-        <input type="submit" />
-    </form>
-    {% if not init %}
-    {% for obj in filter.qs %}
-        {{ obj.title }} - ${{ obj.description }}<br />
-    {% endfor %}
-    {%endif%}
-    <br/>
-    {% for obj in results %}
-        {{ obj.title }} - ${{ obj.description }}<br />
-    {% endfor %}
-    </div></div>
+{% block main %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 pull-right" dir="rtl">
+                <div class="sidebar">
+                    <div class="box filter">
+                        <h2>جست و جو</h2>
+                        <form id="form-filter" class="labels-uppercase" method="get"
+                              action="{% url 'search_location' %}">
+                            <div class="form-group">
+                                <label for="form-filter-destination">نام مکان یا شهر</label>
+                                <input type="text" class="form-control" id="form-filter-destination" name="expression"
+                                       placeholder="نام مکان یا شهر">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-rounded form-control">جست و جو</button>
+                        </form>
+                        <form id="form-filter" class="labels-uppercase" method="get" action="{% url 'search' %}">
+                            <div class="center">
+                                <a href="#filter-advanced-search" class="link icon" data-toggle="collapse"
+                                   aria-expanded="false" aria-controls="filter-advanced-search">جست و جوی پیشرفته<i
+                                        class="fa fa-plus"></i></a>
+                            </div>
+                            <div class="collapse in" id="filter-advanced-search">
+                                <div class="wrapper">
+                                    <h2>فیلتر</h2>
+                                    <section dir="rtl">
+                                        <h3>نوع اقامتگاه </h3>
+                                        <ul class="checkboxes">
+                                            <li><label><input type="checkbox"
+                                                              name="هتل">&nbsp;&nbsp;هتل</label></li>
+                                            <li><label><input type="checkbox"
+                                                              name="اقامتگاه">&nbsp;&nbsp;اقامتگاه محلی (متل)</label></li>
+                                            <li><label><input type="checkbox" name="منزل شخصی">&nbsp;&nbsp;منزل شخصی</label>
+                                            </li>
+                                        </ul>
+                                    </section>
+                                    <section>
+                                        <h3>موقعیت </h3>
+                                        <div class="ir-select">
+                                            <label for="province">استان</label>
+                                            <select class="ir-province framed width-100" id="province"
+                                                    name="province"></select>
+                                            <label for="city">شهر</label>
+                                            <select class="ir-city framed width-100" id="city" name="city"></select>
+                                        </div>
+                                    </section>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-rounded form-control">اعمال فیلتر
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 pull-right">
+                <div class="main-content">
+                    <div class="row">
+                        <div class="pull-right" style="margin-right: 20px;">
+                            <h1>نتایج جست و جو</h1>
+                        </div>
+                    </div>
+                    {% if not init %}
+                        {% for obj in filter.qs %}
+                            <div class="item list">
+                                <div class="image-wrapper">
+                                    <div class="image">
+                                        <a href="{% url 'accommodation_detail' pk=obj.pk %}" class="wrapper">
+                                            <div class="gallery">
+                                                <img src="{{ obj.image.url }}" alt="">
+                                            </div>
+                                        </a>
+                                        <div class="map-item">
+                                            <button class="btn btn-close"><i class="fa fa-close"></i></button>
+                                            <div class="map-wrapper"></div>
+                                        </div>
+                                        <div class="owl-navigation"></div>
+                                    </div>
+                                </div>
+                                <div class="description" dir="rtl">
+                                    <div class="meta">
+                                        <span><i class="fa fa-bed"></i>{{ obj.rooms }}</span>
+                                    </div>
+                                    <div class="info">
+                                        <a href="{% url 'accommodation_detail' pk=obj.pk %}"><h3>{{ obj.title }}</h3>
+                                        </a>
+                                        <figure class="location">{{ obj.city }}</figure>
+                                        <figure class="label label-info">{{ obj.accommodation_type }}</figure>
+                                        <p>
+                                            {{ obj.description }}
+                                        </p>
+                                        <a href="{% url 'accommodation_detail' pk=obj.pk %}"
+                                           class="btn btn-rounded btn-default btn-framed btn-small">جزئیات بیشتر</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    <br/>
+                    {% for obj in results %}
+                        <div class="item list">
+                            <div class="image-wrapper">
+                                <div class="image">
+                                    <a href="{% url 'accommodation_detail' pk=obj.pk %}" class="wrapper">
+                                        <div class="gallery">
+                                            <img src="{{ obj.image.url }}" alt="">
+                                            <img src="#" class="owl-lazy" alt="" data-src="assets/img/items/02.jpg">
+                                            <img src="#" class="owl-lazy" alt="" data-src="assets/img/items/03.jpg">
+                                        </div>
+                                    </a>
+                                    <div class="map-item">
+                                        <button class="btn btn-close"><i class="fa fa-close"></i></button>
+                                        <div class="map-wrapper"></div>
+                                    </div>
+                                    <div class="owl-navigation"></div>
+                                </div>
+                            </div>
+                            <div class="description" dir="rtl">
+                                <div class="meta">
+                                    <span><i class="fa fa-bed"></i>{{ obj.rooms }}</span>
+                                </div>
+                                <div class="info">
+                                    <a href="{% url 'accommodation_detail' pk=obj.pk %}"><h3>{{ obj.title }}</h3></a>
+                                    <figure class="location">{{ obj.city }}</figure>
+                                    <figure class="label label-info">{{ obj.accommodation_type }}</figure>
+                                    <p>
+                                        {{ obj.description }}
+                                    </p>
+                                    <a href="{% url 'accommodation_detail' pk=obj.pk %}"
+                                       class="btn btn-rounded btn-default btn-framed btn-small" style="float: left;">جزئیات
+                                        بیشتر</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="center">
+                        <ul class="pagination">
+                            <li class="prev">
+                                <a href="#"><i class="arrow_left"></i></a>
+                            </li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li class="next">
+                                <a href="#"><i class="arrow_right"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}  

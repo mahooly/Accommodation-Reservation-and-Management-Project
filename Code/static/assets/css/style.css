@@ -2667,7 +2667,7 @@ ul.half li {
     position: relative;
     height: 100%;
     width: 270px;
-    float: left;
+    float: right;
 }
 
 .item.list .image {
@@ -2675,13 +2675,13 @@ ul.half li {
 }
 
 .item.list > .description {
-    margin-left: 270px;
+    margin-right: 270px;
     padding: 25px;
     height: 200px;
 }
 
 .item.list > .description .info {
-    text-align: left;
+    text-align: right;
     padding: 0;
 }
 
@@ -2705,8 +2705,8 @@ ul.half li {
 }
 
 .item.list .meta {
-    text-align: left;
-    float: right;
+    text-align: right;
+    float: left;
     border: none;
 }
 
@@ -2718,7 +2718,6 @@ ul.half li {
 }
 
 .item.list .info > .btn {
-    position: absolute;
     right: 20px;
     bottom: 20px;
 }
