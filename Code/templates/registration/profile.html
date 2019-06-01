@@ -20,11 +20,13 @@
                 <section id="gallery">
                     <div class="gallery-detail">
                         <div class="one-item-carousel">
+                            {% if user.is_host %}
+                                <div class="image">
+                                    <img src="{{ user.host.passport_pic.url }}" alt="">
+                                </div>
+                            {% endif %}
                             <div class="image">
                                 <img src="{{ user.image.url }}" alt="">
-                                {% if user.is_host %}
-                                    <img src="{{ user.host.passport_pic.url }}" alt="">
-                                {% endif %}
                             </div>
                         </div>
                     </div>
