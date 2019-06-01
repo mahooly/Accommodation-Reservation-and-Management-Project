@@ -4,6 +4,7 @@ from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm
 from .models import Accommodation, Room, Amenity
+from django.views.generic import ListView
 
 
 class CreateAccommodationView(View):
@@ -110,5 +111,5 @@ class AccommodationRoomsView(ListView):
     template_name = 'accommodation/room_list.html'
 
     def get_queryset(self):
-        acc = get_object_or_404(Accommodation, pk=kwargs['pk'])
+        acc = get_object_or_404(Accommodation, pk=self.kwargs['pk'])
         return Room.objects.filter(accommodation=acc)
