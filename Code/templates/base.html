@@ -11,9 +11,10 @@
     <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700,900,400italic' rel='stylesheet'
           type='text/css'>
     <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'assets/css/zabuto_calendar.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.transitions.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 
 
     <title>مکان</title>
@@ -175,6 +176,21 @@
 <script type="text/javascript" src="{% static 'assets/js/bootstrap-datepicker.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/icheck.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/owl.carousel.js' %}"></script>
+<script>
+    $(document).ready(function () {
+
+        $("#owl-demo").owlCarousel({
+            interval: 2,
+            margin: 10,
+            nav: true,
+            dots: false,
+            lazyLoad : true,
+            singleItem: true
+
+        });
+
+    });
+</script>
 <script type="text/javascript" src="{% static 'assets/js/masonry.pkgd.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/ir-city-select.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/custom.js' %}"></script>

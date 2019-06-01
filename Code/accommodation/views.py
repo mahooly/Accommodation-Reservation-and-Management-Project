@@ -1,9 +1,11 @@
+from django.forms import modelformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm
-from .models import Accommodation, Room, Amenity
+from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm, ImageForm, \
+    FileFieldForm
+from .models import Accommodation, Room, Amenity, Images
 from django.views.generic import ListView
 
 
@@ -13,27 +15,40 @@ class CreateAccommodationView(View):
     def get(self, request, *args, **kwargs):
         form = AccommodationCreationForm()
         amenity_form = AmenityForm()
-        return render(request, self.template_name, {'form': form, 'amenity_form': amenity_form})
+        image_form = FileFieldForm()
+        return render(request, self.template_name,
+                      {'form': form, 'amenity_form': amenity_form, 'image_form': image_form})
 
     def post(self, request, *args, **kwargs):
         form = AccommodationCreationForm(request.POST, request.FILES)
         amenity_form = AmenityForm(request.POST)
-        if form.is_valid() and amenity_form.is_valid():
+        image_form = FileFieldForm(request.POST, request.FILES)
+        if form.is_valid() and amenity_form.is_valid() and image_form.is_valid():
             owner = request.user.host
             house = form.save(commit=False)
             house.owner = owner
             amenity = amenity_form.save()
             house.amenity = amenity
             house.save()
+            files = request.FILES.getlist('image')
+            for f in files:
+                Images.objects.create(accommodation=house, image=f)
             url = '/accommodation/' + str(house.pk)
             return redirect(url)
         else:
-            return render(request, self.template_name, {'form': form, 'amenity_form': amenity_form})
+            return render(request, self.template_name,
+                          {'form': form, 'amenity_form': amenity_form, 'image_form': image_form})
 
 
 class AccommodationDetailView(DetailView):
     model = Accommodation
     template_name = 'accommodation/accommodation_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(AccommodationDetailView, self).get_context_data(**kwargs)
+        context['images'] = Images.objects.filter(accommodation_id=self.kwargs['pk'])
+        print(context['images'])
+        return context
 
 
 class CreateRoomView(View):

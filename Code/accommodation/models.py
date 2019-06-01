@@ -90,3 +90,8 @@ class Room(models.Model):
     number_of_guests = models.IntegerField()
 
     how_many = models.IntegerField(default=1)
+
+
+class Images(models.Model):
+    accommodation = models.ForeignKey(Accommodation, default=None, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='../media/house_pics/')
