@@ -3,6 +3,7 @@ from django.views import View
 from django.views.generic.detail import DetailView
 from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm
 from .models import Accommodation, Room, Amenity
+from django.views.generic import ListView
 
 
 class CreateAccommodationView(View):
