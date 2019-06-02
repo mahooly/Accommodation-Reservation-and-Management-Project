@@ -1,11 +1,9 @@
-from django.forms import modelformset_factory
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from django.views.generic import ListView
 from django.views.generic.detail import DetailView
 from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm, ImageForm, \
     FileFieldForm
-from .models import Accommodation, Room, Amenity, Images
+from .models import Accommodation, Room, Amenity, Image
 from django.views.generic import ListView
 
 
@@ -32,7 +30,7 @@ class CreateAccommodationView(View):
             house.save()
             files = request.FILES.getlist('image')
             for f in files:
-                Images.objects.create(accommodation=house, image=f)
+                Image.objects.create(accommodation=house, image=f)
             url = '/accommodation/' + str(house.pk)
             return redirect(url)
         else:
@@ -43,12 +41,6 @@ class CreateAccommodationView(View):
 class AccommodationDetailView(DetailView):
     model = Accommodation
     template_name = 'accommodation/accommodation_detail.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(AccommodationDetailView, self).get_context_data(**kwargs)
-        context['images'] = Images.objects.filter(accommodation_id=self.kwargs['pk'])
-        print(context['images'])
-        return context
 
 
 class CreateRoomView(View):
@@ -85,17 +77,18 @@ class EditAccommodation(View):
 
     def get(self, request, *args, **kwargs):
         accommodation_id = kwargs['pk']
+        images = Image.objects.filter(accommodation_id=self.kwargs['pk'])
         accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
         amenity = accommodation.amenity
         form = AccommodationChangeForm(instance=accommodation,
                                        initial={'title': accommodation.title,
                                                 'accommodation_type': accommodation.accommodation_type,
-                                                'image': accommodation.image,
                                                 'description': accommodation.description,
                                                 'address': accommodation.address, 'email': accommodation.email,
                                                 'phone': accommodation.phone,
                                                 'city': accommodation.city,
-                                                'province': accommodation.province})
+                                                'province': accommodation.province,
+                                                'images': images})
         amenity_form = AmenityForm(instance=amenity,
                                    initial={'has_tv': amenity.has_tv, 'has_wifi': amenity.has_wifi,
                                             'has_warm_ac': amenity.has_warm_ac,
@@ -106,7 +99,9 @@ class EditAccommodation(View):
                                             'has_roomservice': amenity.has_roomservice,
                                             'has_safe': amenity.has_safe, 'has_iron': amenity.has_iron
                                             })
-        return render(request, self.template_name, {'form': form, 'amenity_form': amenity_form})
+        image_form = FileFieldForm()
+        return render(request, self.template_name,
+                      {'form': form, 'amenity_form': amenity_form, 'image_form': image_form})
 
     def post(self, request, *args, **kwargs):
         accommodation_id = kwargs['pk']
@@ -114,10 +109,14 @@ class EditAccommodation(View):
         amenity = accommodation.amenity
         form = AccommodationChangeForm(request.POST, request.FILES, instance=accommodation)
         amenity_form = AmenityForm(request.POST, instance=amenity)
-        if form.is_valid() and amenity_form.is_valid():
+        image_form = FileFieldForm(request.POST, request.FILES)
+        if form.is_valid() and amenity_form.is_valid() and image_form.is_valid():
             form.save()
             amenity_form.save()
-            url = '/accommodation/' + str(accommodation.pk)
+            files = request.FILES.getlist('image')
+            for f in files:
+                Image.objects.create(accommodation=accommodation, image=f)
+            url = '/edit_accommodation/' + str(accommodation.pk)
             return redirect(url)
         return render(request, self.template_name, {'form': form, 'amenity_form': amenity_form})
 
@@ -128,3 +127,13 @@ class AccommodationRoomsView(ListView):
     def get_queryset(self):
         acc = get_object_or_404(Accommodation, pk=self.kwargs['pk'])
         return Room.objects.filter(accommodation=acc)
+
+
+class DeleteImage(View):
+    def get(self, request, *args, **kwargs):
+        img_pk = kwargs['pk']
+        img = get_object_or_404(Image, pk=img_pk)
+        accommodation = img.accommodation
+        img.delete()
+        url = '/edit_accommodation/' + str(accommodation.pk)
+        return redirect(url)

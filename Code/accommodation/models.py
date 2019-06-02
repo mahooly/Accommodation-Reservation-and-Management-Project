@@ -39,7 +39,6 @@ class Accommodation(models.Model):
     phone = models.CharField(max_length=15)
     email = models.EmailField()
     amenity = models.OneToOneField(Amenity, related_name='accommodation', on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='../media/house_pics/', default='../media/house_pics/no-picture.png')
 
     is_authenticated = models.BooleanField(default=False)
 
@@ -92,6 +91,6 @@ class Room(models.Model):
     how_many = models.IntegerField(default=1)
 
 
-class Images(models.Model):
+class Image(models.Model):
     accommodation = models.ForeignKey(Accommodation, default=None, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='../media/house_pics/')

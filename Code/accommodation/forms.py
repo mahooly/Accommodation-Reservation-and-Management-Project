@@ -1,5 +1,5 @@
 from django import forms
-from .models import Accommodation, Amenity, Room, Images
+from .models import Accommodation, Amenity, Room, Image
 
 
 class AccommodationCreationForm(forms.ModelForm):
@@ -24,15 +24,14 @@ class AmenityForm(forms.ModelForm):
 class AccommodationChangeForm(forms.ModelForm):
     class Meta:
         model = Accommodation
-        fields = ['accommodation_type', 'title', 'description', 'address', 'image', 'email',
+        fields = ['accommodation_type', 'title', 'description', 'address', 'email',
                   'phone']
 
 
 class ImageForm(forms.ModelForm):
-    image = forms.ImageField(label='Image')
 
     class Meta:
-        model = Images
+        model = Image
         fields = ('image',)
 
 

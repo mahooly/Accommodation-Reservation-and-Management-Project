@@ -9,4 +9,5 @@ urlpatterns = [
     path('delete_accommodation/<int:pk>/', views.DeleteAccommodation.as_view(), name='delete_accommodation'),
     path('edit_accommodation/<int:pk>/', views.EditAccommodation.as_view(), name='edit_accommodation'),
     path('accommodation_rooms/<int:pk>/', views.AccommodationRoomsView.as_view(), name='accommodation_rooms'),
+    path('image/<int:pk>/', views.DeleteImage.as_view(), name='delete_image'),
 ]

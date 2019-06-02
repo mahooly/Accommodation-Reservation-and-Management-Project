@@ -11,8 +11,10 @@
                                  title="{{ accommodation.description }}"><i class="fa fa-question"></i></div>
                             <a href="{% url 'accommodation_detail' pk=accommodation.pk %}" class="wrapper">
                                 <div class="profile-pic">
-                                    <img class="image" src="{{ accommodation.image.url }}" alt=""
-                                         style="height: 280px; width: 280px;">
+                                    {% with accommodation.image_set.all|first as image %}
+                                        <img class="image" src="{{ image.image.url }}" alt=""
+                                             style="height: 280px; width: 280px;">
+                                    {% endwith %}
                                 </div>
                             </a>
                             <div class="owl-navigation"></div>

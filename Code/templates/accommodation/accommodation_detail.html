@@ -35,18 +35,18 @@
                 <section>
                     <div id="demo" class="carousel slide" data-ride="carousel">
 
-                        <ul class="carousel-indicators">
-                            {% for image in images %}
+                        <ul class="carousel-indicators" style="margin-bottom: -20px">
+                            {% for image in accommodation.image_set.all %}
                                 {% ifequal forloop.counter0 0 %}
-                                    <li data-target="#demo" data-slide-to="0" class="active"></li>
+                                    <li data-target="#demo" data-slide-to="0" class="active" style="border-color: black"></li>
                                 {% else %}
-                                    <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}"></li>
+                                    <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}" style="border-color: black"></li>
                                 {% endifequal %}
                             {% endfor %}
                         </ul>
 
                         <div class="carousel-inner">
-                            {% for image in images %}
+                            {% for image in accommodation.image_set.all %}
                                 {% ifequal forloop.counter0 0 %}
                                     <div class="item active image">
                                         <img src="{{ image.image.url }}" alt="" style="width: 1100px; height: 600px">

@@ -12,7 +12,8 @@
                                 <div class="row no-gutters" style="padding-top: 30px">
                                     <div class="col-md-10 col-sm-10 pull-right">
                                         <div class="form-group">
-                                            <label class="label-on-input" for="address-autocomplete" style="margin-left: 854px;">محل اقامت</label>
+                                            <label class="label-on-input" for="address-autocomplete"
+                                                   style="margin-left: 854px;">محل اقامت</label>
                                             <input type="text" class="form-control" id="address-autocomplete"
                                                    name="expression"
                                                    placeholder="نام مکان یا شهر مورد نظر خود را وارد کنید" dir="rtl">
@@ -51,11 +52,12 @@
                                          title="{{ accommodation.description }}"><i class="fa fa-question"></i></div>
                                     <a href="{% url 'accommodation_detail' pk=accommodation.pk %}" class="wrapper">
                                         <div class="profile-pic">
-                                            <img class="image" src="{{ accommodation.image.url }}" alt=""
-                                                 style="height: 280px; width: 280px;">
+                                            {% with accommodation.image_set.all|first as image %}
+                                                <img class="image" src="{{ image.image.url }}" alt=""
+                                                     style="height: 280px; width: 280px;">
+                                            {% endwith %}
                                         </div>
                                     </a>
-                                    <div class="owl-navigation"></div>
                                 </div>
                                 <div class="description">
                                     <div class="meta">

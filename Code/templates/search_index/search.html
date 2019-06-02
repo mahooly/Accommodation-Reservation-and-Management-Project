@@ -31,8 +31,10 @@
                                             <li><label><input type="checkbox"
                                                               name="هتل">&nbsp;&nbsp;هتل</label></li>
                                             <li><label><input type="checkbox"
-                                                              name="اقامتگاه">&nbsp;&nbsp;اقامتگاه محلی (متل)</label></li>
-                                            <li><label><input type="checkbox" name="منزل شخصی">&nbsp;&nbsp;منزل شخصی</label>
+                                                              name="اقامتگاه">&nbsp;&nbsp;اقامتگاه محلی (متل)</label>
+                                            </li>
+                                            <li><label><input type="checkbox" name="منزل شخصی">&nbsp;&nbsp;منزل
+                                                شخصی</label>
                                             </li>
                                         </ul>
                                     </section>
@@ -68,7 +70,10 @@
                                     <div class="image">
                                         <a href="{% url 'accommodation_detail' pk=obj.pk %}" class="wrapper">
                                             <div class="gallery">
-                                                <img src="{{ obj.image.url }}" alt="">
+                                                {% with obj.image_set.all|first as image %}
+                                                    <img class="image" src="{{ image.image.url }}" alt=""
+                                                         style="height: 280px; width: 280px;">
+                                                {% endwith %}
                                             </div>
                                         </a>
                                         <div class="map-item">
@@ -104,9 +109,10 @@
                                 <div class="image">
                                     <a href="{% url 'accommodation_detail' pk=obj.pk %}" class="wrapper">
                                         <div class="gallery">
-                                            <img src="{{ obj.image.url }}" alt="">
-                                            <img src="#" class="owl-lazy" alt="" data-src="assets/img/items/02.jpg">
-                                            <img src="#" class="owl-lazy" alt="" data-src="assets/img/items/03.jpg">
+                                            {% with obj.image_set.all|first as image %}
+                                                <img class="image" src="{{ image.image.url }}" alt=""
+                                                     style="height: 280px; width: 280px;">
+                                            {% endwith %}
                                         </div>
                                     </a>
                                     <div class="map-item">
