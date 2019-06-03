@@ -28,12 +28,5 @@ class AccommodationChangeForm(forms.ModelForm):
                   'phone']
 
 
-class ImageForm(forms.ModelForm):
-
-    class Meta:
-        model = Image
-        fields = ('image',)
-
-
 class FileFieldForm(forms.Form):
     image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))

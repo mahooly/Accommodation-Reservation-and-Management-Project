@@ -1,8 +1,10 @@
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.detail import DetailView
-from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm, ImageForm, \
-    FileFieldForm
+
+from Code.settings import DEFAULT_FROM_EMAIL
+from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm, FileFieldForm
 from .models import Accommodation, Room, Amenity, Image
 from django.views.generic import ListView
 
@@ -65,6 +67,13 @@ class DeleteAccommodation(View):
     def get(self, request, *args, **kwargs):
         acc_pk = kwargs['pk']
         acc = get_object_or_404(Accommodation, pk=acc_pk)
+        send_mail(
+            'حذف محل اقامت',
+            'محل اقامت شما حذف شده است.',
+            DEFAULT_FROM_EMAIL,
+            [acc.email],
+            fail_silently=False,
+        )
         acc.delete()
         if request.user.is_host:
             return redirect('/host_dashboard')
