@@ -25,4 +25,4 @@ urlpatterns = [
     path('', include('accommodation.urls')),
     path('', include('admin_dashboard.urls')),
     path('', include('search_index.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
