@@ -1,1 +1,1 @@
-web: gunicorn makan-system.wsgi --log-file -
+web: gunicorn makan-system:app --log-file -
