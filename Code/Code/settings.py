@@ -134,7 +134,7 @@ MEDIA_URL = '/media/'
 STATIC_ROOT = STATIC_DIR
 
 STATICFILES_DIRS = [
-    STATIC_DIR,
+#    STATIC_DIR,
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
