@@ -90,12 +90,13 @@
                                 <img src="{{ user_form.initial.image }}" alt="" class="image">
                                 <div class="input">
                                     <input name="image" type="file">
-                                    <span>برای آپلود عکس کلیک کنید</span>
+                                    <span>برای تغییر عکس کلیک کنید</span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="form-group text-center">
+                        <a class="btn btn-large btn-rounded btn-danger" href="{% url 'profile' pk=user.pk %}">بازگشت</a>
                         <button type="submit" class="btn btn-large btn-primary btn-rounded" id="submit"
                                 name="user_form">ذخیره تغییرات
                         </button>

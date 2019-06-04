@@ -75,6 +75,14 @@
                     <div class="right">
                         <nav id="primary-nav">
                             <ul>
+                                <li>
+                                    <a href="{% url 'search' %}" class="has-child">اقامتگاه‌ها</a>
+                                    <ul class="child-nav">
+                                        <li><a href="{% url 'search' %}?hotel=on" style="padding-left: 150px">هتل</a></li>
+                                        <li><a href="{% url 'search' %}?motel=on" style="padding-left: 140px">مهمانسرا</a></li>
+                                        <li><a href="{% url 'search' %}?house=on" style="padding-left: 102px">اقامتگاه خصوصی</a></li>
+                                    </ul>
+                                </li>
                                 <li><a href="{% url 'home' %}">خانه</a></li>
                                 {% if request.user.is_authenticated and request.user.is_host %}
                                     <li><a href="{% url 'create_accommodation' %}"><i
@@ -184,7 +192,7 @@
             margin: 10,
             nav: true,
             dots: false,
-            lazyLoad : true,
+            lazyLoad: true,
             singleItem: true
 
         });

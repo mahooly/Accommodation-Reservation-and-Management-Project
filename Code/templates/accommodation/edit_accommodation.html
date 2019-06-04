@@ -59,9 +59,21 @@
                                 <label for="object-type">نوع اقامتگاه</label>
                                 <select class="framed width-100 align-left" name="accommodation_type" id="object-type"
                                         style="-webkit-appearance: none;">
-                                    <option value="هتل">هتل</option>
-                                    <option value="اقامتگاه">اقامتگاه بومی (متل)</option>
-                                    <option value="منزل شخصی">منزل شخصی</option>
+                                    {% ifequal form.initial.accommodation_type 'هتل' %}
+                                        <option value="هتل" selected>هتل</option>
+                                        <option value="اقامتگاه">اقامتگاه بومی (متل)</option>
+                                        <option value="منزل شخصی">منزل شخصی</option>
+                                    {% endifequal %}
+                                    {% ifequal form.initial.accommodation_type 'اقامتگاه' %}
+                                        <option value="اقامتگاه" selected>اقامتگاه بومی (متل)</option>
+                                        <option value="هتل">هتل</option>
+                                        <option value="منزل شخصی">منزل شخصی</option>
+                                    {% endifequal %}
+                                    {% ifequal form.initial.accommodation_type 'منزل شخصی' %}
+                                        <option value="منزل شخصی" selected>منزل شخصی</option>
+                                        <option value="هتل">هتل</option>
+                                        <option value="اقامتگاه">اقامتگاه بومی (متل)</option>
+                                    {% endifequal %}
                                 </select>
                             </div>
                         </div>
@@ -219,6 +231,10 @@
                 <section>
                     <div class="form-group center">
                         <button type="submit" class="btn btn-primary btn-rounded btn-xlarge">ثبت تغییرات</button>
+                        <div class="row" style="margin: 10px">
+                            <a class="btn btn-large btn-rounded btn-danger"
+                               href="{% url 'accommodation_detail' pk=form.instance.pk %}">بازگشت</a>
+                        </div>
                     </div>
                 </section>
             </form>
