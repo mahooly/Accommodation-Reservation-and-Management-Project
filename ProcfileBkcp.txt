@@ -1,1 +1,1 @@
-web: waitress-serve --port=$PORT makan-system.wsgi:application
+web: gunicorn djangoherokuapp.wsgi --log-file -
