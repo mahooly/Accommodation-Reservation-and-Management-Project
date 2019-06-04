@@ -6,6 +6,7 @@ from registration.models import CustomUser
 from accommodation.models import Accommodation
 from django.views import View
 from Code.settings import DEFAULT_FROM_EMAIL
+from search_index.filters import AccommodationFilter
 
 
 class AdminUserDashboard(ListView):
@@ -16,6 +17,25 @@ class AdminUserDashboard(ListView):
 class AdminAccommodationDashboard(ListView):
     template_name = 'admin_dashboard/admin_dashboard_accommodations.html'
     model = Accommodation
+
+    def get_queryset(self):
+        auth = self.request.GET.get('is_authenticated', '')
+        q = Accommodation.objects.all()
+        if auth:
+            if auth == 'True':
+                q = q.filter(is_authenticated=True)
+            else:
+                q = q.filter(is_authenticated=False)
+        f = AccommodationFilter(self.request.GET, queryset=q)
+        return f.qs
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['type'] = self.request.GET.get('type', '')
+        context['province'] = self.request.GET.get('province', '')
+        context['city'] = self.request.GET.get('city', '')
+        context['is_authenticated'] = self.request.GET.get('is_authenticated', '')
+        return context
 
 
 class DeleteUser(View):

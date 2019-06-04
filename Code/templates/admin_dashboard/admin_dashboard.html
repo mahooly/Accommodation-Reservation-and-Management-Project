@@ -17,10 +17,17 @@
                     <div class="box filter">
                         <ul class="links" dir="rtl">
                             <li><a href="{% url 'admin_dashboard_users' %}">کاربران</a></li>
-                            <li><a href="{% url 'admin_dashboard_accommodations' %}">اقامتگاه‌ها</a></li>
+                            <li><a href="{% url 'admin_dashboard_accommodations' %}">اقامتگاه‌ها</a>
+                                <ul class="links" dir="rtl">
+                                    {% block auth %}
+                                    {% endblock %}
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                 </div>
+                {% block sidebar %}
+                {% endblock %}
             </div>
         </div>
     </div>

@@ -6002,3 +6002,13 @@ body::before {
         text-align: center;
     }
 }
+
+.link-button {
+    background: none;
+    border: none;
+    padding: 0 !important;
+    font: inherit;
+    cursor: pointer;
+    color: #488f3e;
+    margin-bottom: 10px;
+}
