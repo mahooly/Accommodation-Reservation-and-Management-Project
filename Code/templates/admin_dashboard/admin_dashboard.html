@@ -7,6 +7,14 @@
                 <h1></h1>
             </div>
         </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning" dir="rtl" role="alert"
+                     style="padding: 5px; text-align: center;">
+                    <p style="display: inline-block;">{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
         <div class="row">
             <div class="col-md-9">
                 {% block contents %}

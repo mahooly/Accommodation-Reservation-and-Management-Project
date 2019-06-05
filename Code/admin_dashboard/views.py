@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView
@@ -50,6 +51,7 @@ class DeleteUser(View):
             fail_silently=False,
         )
         user.delete()
+        messages.success(request, 'حساب کاربری با موفقیت حذف شد.')
         return redirect('/admin_dashboard/users')
 
 
@@ -66,4 +68,5 @@ class AuthenticateAccommodation(View):
             [acc.email],
             fail_silently=False,
         )
+        messages.success(request, 'اقامتگاه با موفقیت تایید شد.')
         return redirect('/admin_dashboard/accommodations')

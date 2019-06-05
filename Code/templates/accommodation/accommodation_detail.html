@@ -13,6 +13,22 @@
                     </ul>
                 </div>
             </div>
+            {% if messages %}
+                {% for message in messages %}
+                    {% ifequal message.tags 'success' %}
+                        <div class="alert alert-success" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                    {% ifequal message.tags 'error' %}
+                        <div class="alert alert-danger" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                {% endfor %}
+            {% endif %}
             <div class="main-content">
                 <div class="title">
                     <div class="left">
@@ -38,9 +54,11 @@
                         <ul class="carousel-indicators" style="margin-bottom: -20px">
                             {% for image in accommodation.image_set.all %}
                                 {% ifequal forloop.counter0 0 %}
-                                    <li data-target="#demo" data-slide-to="0" class="active" style="border-color: black"></li>
+                                    <li data-target="#demo" data-slide-to="0" class="active"
+                                        style="border-color: black"></li>
                                 {% else %}
-                                    <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}" style="border-color: black"></li>
+                                    <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}"
+                                        style="border-color: black"></li>
                                 {% endifequal %}
                             {% endfor %}
                         </ul>

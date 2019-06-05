@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseRedirect
@@ -69,7 +70,7 @@ class EditProfile(View):
             if user_form.is_valid():
                 user = user_form.save()
                 user.save()
-                return redirect('/')
+                messages.success(request, 'اطلاعات شما با موفقیت ثبت شد.')
         else:
             password_form = PasswordChangeForm(request.user, request.POST)
             user_form = CustomUserChangeForm(instance=request.user,
@@ -78,6 +79,7 @@ class EditProfile(View):
             if password_form.is_valid():
                 user = password_form.save()
                 update_session_auth_hash(request, user)
+                messages.success(request, 'اطلاعات شما با موفقیت ثبت شد.')
 
         return render(request, self.template_name, {'user_form': user_form, 'password_form': password_form})
 

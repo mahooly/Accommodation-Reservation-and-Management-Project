@@ -29,4 +29,4 @@ class AccommodationChangeForm(forms.ModelForm):
 
 
 class FileFieldForm(forms.Form):
-    image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}))
+    image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)

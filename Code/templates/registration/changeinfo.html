@@ -2,108 +2,117 @@
 {% block main %}
     <div class="container">
         <div class="main-content">
-        <div class="row">
-            <div class="pull-right" style="margin-right: 20px;">
-                <h1><a href="{% url 'update_profile' %}" style="color: #488f3e;">تغییر مشخصات کاربری</a></h1>
+            <div class="row">
+                <div class="pull-right" style="margin-right: 20px;">
+                    <h1><a href="{% url 'update_profile' %}" style="color: #488f3e;">تغییر مشخصات کاربری</a></h1>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 col-sm-9">
-                <form class="labels-uppercase" id="form-password" method="post">
-                    {% csrf_token %}
-                    {% if password_form.errors %}
-                        {% for field in password_form %}
-                            {% for error in field.errors %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-success" dir="rtl" role="alert"
+                         style="padding: 5px; text-align: center;">
+                        <p style="display: inline-block;">{{ message }}</p>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <div class="row">
+                <div class="col-md-3 col-sm-9">
+                    <form class="labels-uppercase" id="form-password" method="post">
+                        {% csrf_token %}
+                        {% if password_form.errors %}
+                            {% for field in password_form %}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-danger" dir="rtl" role="alert"
+                                         style="padding: 5px; text-align: center;">
+                                        <b style="display: inline-block;">خطا! </b>
+                                        <p style="display: inline-block;">{{ error|escape }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in password_form.non_field_errors %}
                                 <div class="alert alert-danger" dir="rtl" role="alert"
                                      style="padding: 5px; text-align: center;">
                                     <b style="display: inline-block;">خطا! </b>
                                     <p style="display: inline-block;">{{ error|escape }}</p>
                                 </div>
                             {% endfor %}
-                        {% endfor %}
-                        {% for error in password_form.non_field_errors %}
-                            <div class="alert alert-danger" dir="rtl" role="alert"
-                                 style="padding: 5px; text-align: center;">
-                                <b style="display: inline-block;">خطا! </b>
-                                <p style="display: inline-block;">{{ error|escape }}</p>
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    <h3 class="text-center">تغییر رمز عبور</h3>
-                    <div class="form-group">
-                        <label for="current-password" class="pull-right">رمز فعلی</label>
-                        <input type="password" class="form-control" id="current-password" name="old-password">
-                    </div>
-                    <div class="form-group">
-                        <label for="new-password" class="pull-right">رمز جدید</label>
-                        <input type="password" class="form-control" id="new-password" name="new-password1">
-                    </div>
-                    <div class="form-group">
-                        <label for="confirm-new-password" class="pull-right">تکرار رمز جدید</label>
-                        <input type="password" class="form-control" id="confirm-new-password" name="new-password2">
-                    </div>
-                    <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary btn-rounded btn-framed">تغییر رمز عبور</button>
-                    </div>
-                </form>
-            </div>
-            <div class="col-md-9 col-sm-9">
-                <form id="form-profile" method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {% if user_form.errors %}
-                        {% for field in user_form %}
-                            {% for error in field.errors %}
+                        {% endif %}
+                        <h3 class="text-center">تغییر رمز عبور</h3>
+                        <div class="form-group">
+                            <label for="current-password" class="pull-right">رمز فعلی</label>
+                            <input type="password" class="form-control" id="current-password" name="old-password">
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password" class="pull-right">رمز جدید</label>
+                            <input type="password" class="form-control" id="new-password" name="new-password1">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-new-password" class="pull-right">تکرار رمز جدید</label>
+                            <input type="password" class="form-control" id="confirm-new-password" name="new-password2">
+                        </div>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary btn-rounded btn-framed">تغییر رمز عبور</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-9 col-sm-9">
+                    <form id="form-profile" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {% if user_form.errors %}
+                            {% for field in user_form %}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-danger" dir="rtl" role="alert"
+                                         style="padding: 5px; text-align: center;">
+                                        <b style="display: inline-block;">خطا! </b>
+                                        <p style="display: inline-block;">{{ error|escape }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in user_form.non_field_errors %}
                                 <div class="alert alert-danger" dir="rtl" role="alert"
                                      style="padding: 5px; text-align: center;">
                                     <b style="display: inline-block;">خطا! </b>
                                     <p style="display: inline-block;">{{ error|escape }}</p>
                                 </div>
                             {% endfor %}
-                        {% endfor %}
-                        {% for error in user_form.non_field_errors %}
-                            <div class="alert alert-danger" dir="rtl" role="alert"
-                                 style="padding: 5px; text-align: center;">
-                                <b style="display: inline-block;">خطا! </b>
-                                <p style="display: inline-block;">{{ error|escape }}</p>
+                        {% endif %}
+                        <h3 dir="rtl">تغییر مشخصات</h3>
+                        <div class="row">
+                            <div class="col-md-8 col-sm-8">
+                                <div class="form-group">
+                                    <label for="email" class="pull-right">ایمیل</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                           value="{{ user_form.initial.email }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="gender" class="pull-right">جنسیت</label>
+                                    <select name="gender" id="gender" class="framed width-100" dir="rtl">
+                                        <option name="male" value="male">مرد</option>
+                                        <option name="female" value="female">زن</option>
+                                        <option name="other" value="Other">سایر</option>
+                                    </select>
+                                </div>
                             </div>
-                        {% endfor %}
-                    {% endif %}
-                    <h3 dir="rtl">تغییر مشخصات</h3>
-                    <div class="row">
-                        <div class="col-md-8 col-sm-8">
-                            <div class="form-group">
-                                <label for="email" class="pull-right">ایمیل</label>
-                                <input type="email" class="form-control" id="email" name="email"
-                                       value="{{ user_form.initial.email }}">
-                            </div>
-                            <div class="form-group">
-                                <label for="gender" class="pull-right">جنسیت</label>
-                                <select name="gender" id="gender" class="framed width-100" dir="rtl">
-                                    <option name="male" value="male">مرد</option>
-                                    <option name="female" value="female">زن</option>
-                                    <option name="other" value="Other">سایر</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-sm-4">
-                            <div id="profile-picture" class="profile-picture single-file-preview">
-                                <img src="{{ user_form.initial.image }}" alt="" class="image">
-                                <div class="input">
-                                    <input name="image" type="file">
-                                    <span>برای تغییر عکس کلیک کنید</span>
+                            <div class="col-md-4 col-sm-4">
+                                <div id="profile-picture" class="profile-picture single-file-preview">
+                                    <img src="{{ user_form.initial.image }}" alt="" class="image">
+                                    <div class="input">
+                                        <input name="image" type="file">
+                                        <span>برای تغییر عکس کلیک کنید</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group text-center">
-                        <a class="btn btn-large btn-rounded btn-danger" href="{% url 'profile' pk=user.pk %}">بازگشت</a>
-                        <button type="submit" class="btn btn-large btn-primary btn-rounded" id="submit"
-                                name="user_form">ذخیره تغییرات
-                        </button>
-                    </div>
-                </form>
+                        <div class="form-group text-center">
+                            <a class="btn btn-large btn-rounded btn-danger"
+                               href="{% url 'profile' pk=user.pk %}">بازگشت</a>
+                            <button type="submit" class="btn btn-large btn-primary btn-rounded" id="submit"
+                                    name="user_form">ذخیره تغییرات
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
     </div>
 {% endblock %}
