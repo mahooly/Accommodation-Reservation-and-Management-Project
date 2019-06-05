@@ -8,7 +8,7 @@ all_tests:
     - docker:dind
   stage: test
   script:
-   - bash ./tests.sh
+    - ./tests.sh
 build:
   image: docker:git
   services:
