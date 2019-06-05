@@ -11,7 +11,7 @@ all_tests:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
   script:
     - docker build .
-    - python ./Code/manage.py test registration
+    - python3 ./Code/manage.py test registration
 build:
   image: docker:latest
   services:
