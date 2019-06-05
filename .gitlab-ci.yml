@@ -3,6 +3,9 @@ stages:
   - build
   - push
 all_tests:
+  image: docker:git
+  services:
+    - docker:dind
   stage: test
   script:
    - bash ./tests.sh
