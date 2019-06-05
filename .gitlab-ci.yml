@@ -10,7 +10,7 @@ all_tests:
   before_script:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
   script:
-    - docker build ./Dockerfile
+    - docker build .
     - python ./Code/manage.py test registration
 build:
   image: docker:latest
