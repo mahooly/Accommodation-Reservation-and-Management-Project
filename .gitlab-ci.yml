@@ -3,17 +3,16 @@ stages:
   - build
   - push
 all_tests:
-  image: docker:git
+  image: docker:latest
   services:
     - docker:dind
   stage: test
   before_script:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
   script:
-    - chmod +x ./tests.sh
-    - ./tests.sh
+    - python ./Code/manage.py test registration
 build:
-  image: docker:git
+  image: docker:latest
   services:
     - docker:dind
   stage: build
