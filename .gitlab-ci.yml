@@ -4,8 +4,6 @@ stages:
   - push
 all_tests:
   image: docker:latest
-  services:
-    - docker:dind
   stage: test
   before_script:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
