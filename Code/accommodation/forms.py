@@ -1,11 +1,11 @@
 from django import forms
-from .models import Accommodation, Amenity, Room
+from .models import Accommodation, Amenity, Room, Image
 
 
 class AccommodationCreationForm(forms.ModelForm):
     class Meta:
         model = Accommodation
-        fields = ['accommodation_type', 'title', 'description', 'province', 'city', 'address', 'image', 'email',
+        fields = ['accommodation_type', 'title', 'description', 'province', 'city', 'address', 'email',
                   'phone']
 
 
@@ -24,5 +24,9 @@ class AmenityForm(forms.ModelForm):
 class AccommodationChangeForm(forms.ModelForm):
     class Meta:
         model = Accommodation
-        fields = ['accommodation_type', 'title', 'description', 'address', 'image', 'email',
+        fields = ['accommodation_type', 'title', 'description', 'address', 'email',
                   'phone']
+
+
+class FileFieldForm(forms.Form):
+    image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)

@@ -2,51 +2,40 @@
 
 {% block main %}
     <div class="container">
-        <div class="col-md-12 col-sm-12 pull-right" dir="rtl">
-            <div class="quick-navigation" data-fixed-after-touch="">
+        <div class="row">
+            <div class="pull-right" style="margin-right: 20px;">
+                <h1><a href="{% url 'profile' pk=customuser.pk %}"
+                       style="color: #488f3e;">{{ customuser.username }} </a> پروفایل </h1>
             </div>
-            <div class="main-content">
-                <div class="title">
-                    <div class="left">
-                        <h1>{{ customuser.username }}</h1>
-                        <span>
-                        {% if customuser.is_host %}
-                            (صاحب اقامتگاه)
-                        {% else %}
-                        {% endif %}
-                    </span>
-                    </div>
-                </div>
-                <section id="gallery">
-                    <div class="gallery-detail">
-                        <div class="one-item-carousel">
-                            {% if user.is_host %}
-                                <div class="image">
-                                    <img src="{{ user.host.passport_pic.url }}" alt="">
-                                </div>
-                            {% endif %}
-                            <div class="image">
-                                <img src="{{ user.image.url }}" alt="">
-                            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9">
+                {% block contents %}
+                {% endblock %}
+            </div>
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <div class="box filter tex">
+                        <div class="text-center">
+                            <img src="{{ customuser.image.url }}" alt="" style="height: 150px; width: 150px;"/>
                         </div>
-                    </div>
-                </section>
-                <h2>مشخصات</h2>
-                <div class="row">
-                    <div class="col-md-8 pull-right">
-                        <section id="description">
-                            <ul class="bullets">
-                                <li>&nbsp;&nbsp;نام: {{ user.first_name }}</li>
-                                <li>&nbsp;&nbsp;نام خانوادگی: {{ user.last_name }}</li>
-                                <li>&nbsp;&nbsp;تاریخ تولد: {{ user.birth_date }}</li>
-                                <li>&nbsp;&nbsp;جنسیت: {{ user.gender }}</li>
-                                {% if user.is_host %}
-                                    <li>&nbsp;&nbsp;شهر: {{ user.host.city }}</li>
-                                    <li>&nbsp;&nbsp;آدرس: {{ user.host.home_address }}</li>
-                                    <li>&nbsp;&nbsp;تلفن: {{ user.host.phone_number }}</li>
+                        <ul class="text-center" style="margin-top: 20px; list-style: none; padding-left: 0px;
+    line-height: 25px;">
+                            <li dir="rtl">{{ customuser.first_name }} {{ customuser.last_name }}</li>
+                            <li>
+                                <figure class="label label-info large">میزبان</figure>
+                            </li>
+                            <li dir="rtl">{{ customuser.age }} سال</li>
+                            {% if customuser.is_host %}
+                                <li dir="rtl"><i class="fa fa-building"
+                                                 style="padding-left: 5px"></i>{{ customuser.host.city }}</li>
+                                {% if request.user.is_authenticated and request.user.is_superuser %}
+                                    <li dir="rtl">{{ customuser.host.home_address }}</li>
+                                    <li dir="rtl">{{ customuser.host.phone_number }}</li>
+                                    <li dir="rtl"><a href="{{ customuser.host.passport_pic.url }}">شناسنامه</a></li>
                                 {% endif %}
-                            </ul>
-                        </section>
+                            {% endif %}
+                        </ul>
                     </div>
                 </div>
             </div>

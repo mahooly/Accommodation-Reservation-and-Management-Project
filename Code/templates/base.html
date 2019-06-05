@@ -11,9 +11,10 @@
     <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700,900,400italic' rel='stylesheet'
           type='text/css'>
     <link rel="stylesheet" href="{% static 'assets/bootstrap/css/bootstrap.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'assets/css/zabuto_calendar.min.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'assets/css/owl.transitions.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 
 
     <title>مکان</title>
@@ -74,6 +75,14 @@
                     <div class="right">
                         <nav id="primary-nav">
                             <ul>
+                                <li>
+                                    <a href="{% url 'search' %}" class="has-child">اقامتگاه‌ها</a>
+                                    <ul class="child-nav">
+                                        <li><a href="{% url 'search' %}?hotel=on" style="padding-left: 150px">هتل</a></li>
+                                        <li><a href="{% url 'search' %}?motel=on" style="padding-left: 140px">مهمانسرا</a></li>
+                                        <li><a href="{% url 'search' %}?house=on" style="padding-left: 102px">اقامتگاه خصوصی</a></li>
+                                    </ul>
+                                </li>
                                 <li><a href="{% url 'home' %}">خانه</a></li>
                                 {% if request.user.is_authenticated and request.user.is_host %}
                                     <li><a href="{% url 'create_accommodation' %}"><i
@@ -175,6 +184,21 @@
 <script type="text/javascript" src="{% static 'assets/js/bootstrap-datepicker.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/icheck.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/owl.carousel.js' %}"></script>
+<script>
+    $(document).ready(function () {
+
+        $("#owl-demo").owlCarousel({
+            interval: 2,
+            margin: 10,
+            nav: true,
+            dots: false,
+            lazyLoad: true,
+            singleItem: true
+
+        });
+
+    });
+</script>
 <script type="text/javascript" src="{% static 'assets/js/masonry.pkgd.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/ir-city-select.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/custom.js' %}"></script>

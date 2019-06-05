@@ -13,6 +13,12 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+    def _get_age(self):
+        today = datetime.date.today()
+        return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+
+    age = property(_get_age)
+
 
 class Host(models.Model):
     user = models.OneToOneField(CustomUser, related_name='host', on_delete=models.CASCADE)

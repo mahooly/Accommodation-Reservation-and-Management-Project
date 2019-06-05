@@ -1,6 +1,7 @@
 import django_filters
 from accommodation.models import Accommodation
 
+
 class AccommodationFilter(django_filters.FilterSet):
     title = django_filters.CharFilter(field_name='title', lookup_expr='icontains')
     accommodation_type = django_filters.CharFilter(field_name='accommodation_type', lookup_expr='iexact')

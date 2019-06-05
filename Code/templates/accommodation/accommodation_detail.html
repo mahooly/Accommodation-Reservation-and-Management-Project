@@ -13,6 +13,22 @@
                     </ul>
                 </div>
             </div>
+            {% if messages %}
+                {% for message in messages %}
+                    {% ifequal message.tags 'success' %}
+                        <div class="alert alert-success" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                    {% ifequal message.tags 'error' %}
+                        <div class="alert alert-danger" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                {% endfor %}
+            {% endif %}
             <div class="main-content">
                 <div class="title">
                     <div class="left">
@@ -25,26 +41,53 @@
                                 <a href="" data-toggle="modal" data-tab="true"
                                    data-target="#add-room-modal" class="btn btn-primary btn-rounded scroll">اضافه کردن
                                     اتاق</a>
-                                <a href="{% url 'edit_accommodation' pk=accommodation.pk %}" class="btn btn-primary btn-rounded scroll">تغییر مشخصات اقامتگاه</a>
+                                <a href="{% url 'edit_accommodation' pk=accommodation.pk %}"
+                                   class="btn btn-primary btn-rounded scroll">تغییر مشخصات اقامتگاه</a>
                             {% endifequal %}
                         {% endif %}
                     </div>
                 </div>
-                <section id="gallery">
-                    <div class="gallery-detail">
-                        <div class="one-item-carousel">
-                            <div class="image">
-                                <img src="{{ accommodation.image.url }}" alt="">
-                            </div>
-                            <div class="image">
-                                <img src="{{ accommodation.image.url }}" alt="">
-                            </div>
-                            <div class="image">
-                                <img src="{{ accommodation.image.url }}" alt="">
-                            </div>
+
+                <section>
+                    <div id="demo" class="carousel slide" data-ride="carousel">
+
+                        <ul class="carousel-indicators" style="margin-bottom: -20px">
+                            {% for image in accommodation.image_set.all %}
+                                {% ifequal forloop.counter0 0 %}
+                                    <li data-target="#demo" data-slide-to="0" class="active"
+                                        style="border-color: black"></li>
+                                {% else %}
+                                    <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}"
+                                        style="border-color: black"></li>
+                                {% endifequal %}
+                            {% endfor %}
+                        </ul>
+
+                        <div class="carousel-inner">
+                            {% for image in accommodation.image_set.all %}
+                                {% ifequal forloop.counter0 0 %}
+                                    <div class="item active image">
+                                        <img src="{{ image.image.url }}" alt="" style="width: 1100px; height: 600px">
+                                    </div>
+                                {% else %}
+                                    <div class="item image">
+                                        <img src="{{ image.image.url }}" alt="" style="width: 1100px; height: 600px;">
+                                    </div>
+                                {% endifequal %}
+
+                            {% endfor %}
                         </div>
+
+                        <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                            <span class="carousel-control-prev-icon"></span>
+                        </a>
+                        <a class="carousel-control-next" href="#demo" data-slide="next">
+                            <span class="carousel-control-next-icon"></span>
+                        </a>
                     </div>
                 </section>
+
+
                 <h2>توضیحات</h2>
                 <div class="row">
                     <div class="col-md-8 pull-right">
@@ -217,4 +260,5 @@
             </div>
         </div>
     </div>
+
 {% endblock %}

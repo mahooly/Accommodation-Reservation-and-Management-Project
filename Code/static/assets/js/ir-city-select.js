@@ -4,14 +4,19 @@ var data = {"آذربايجان شرقي":["اسكو","اهر","ایلخچی","�
 $(document).ready(function() {
 	$('.ir-province').each(loadProvinces);
 	$('.ir-province').change(loadCities);
+	$('.ir-province').after(loadCities);
 });
 
 var loadProvinces = function() {
 	var element = $(this);
-	element.empty();
-	element.append($('<option></option>').attr('value', 'empty'));
+	var value = element.val();
+	element.append($('<option></option>').attr('value', ''));
 	$.each(data, function(province, list) {
 		var option = $('<option></option>').attr('value', province).text(province);
+		if (value && value === province)
+		{
+			option.attr('selected', true);
+		}
 		element.append(option);
 	});
 };
@@ -20,11 +25,15 @@ var loadCities = function() {
 	var citySelector = $(this).closest('div.ir-select').find('.ir-city');
 	var selectedProvince = $(this).val();
 	var cityList = data[selectedProvince];
-
+	var value = citySelector.val();
 	citySelector.empty();
 
 	$.each(cityList, function(index, city) {
 		var option = $('<option></option>').attr('value', city).text(city);
+		if (value && value === city)
+		{
+			option.attr('selected', true);
+		}
 		citySelector.append(option);
 	});
 };

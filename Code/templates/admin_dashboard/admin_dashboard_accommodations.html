@@ -11,8 +11,10 @@
                                  title="{{ accommodation.description }}"><i class="fa fa-question"></i></div>
                             <a href="{% url 'accommodation_detail' pk=accommodation.pk %}" class="wrapper">
                                 <div class="profile-pic">
-                                    <img class="image" src="{{ accommodation.image.url }}" alt=""
-                                         style="height: 280px; width: 280px;">
+                                    {% with accommodation.image_set.all|first as image %}
+                                        <img class="image" src="{{ image.image.url }}" alt=""
+                                             style="height: 280px; width: 280px;">
+                                    {% endwith %}
                                 </div>
                             </a>
                             <div class="owl-navigation"></div>
@@ -38,5 +40,130 @@
                 </div>
             </div>
         {% endfor %}
+    </div>
+{% endblock %}
+{% block auth %}
+    <li style="margin-top: -15px">
+        <form method="get">
+            <input type="hidden" name="is_authenticated" value="True">
+            {% if city or province %}
+                <input type="hidden" name="province" value="{{ province }}">
+                <input type="hidden" name="city" value="{{ city }}">
+            {% endif %}
+            {% if type %}
+                <input type="hidden" name="type" value="{{ type }}">
+            {% endif %}
+            <button type="submit" class="link-button">اقامتگاه‌های تایید شده
+            </button>
+        </form>
+    </li>
+    <li>
+        <form method="get">
+            <input type="hidden" name="is_authenticated" value="False">
+            {% if city or province %}
+                <input type="hidden" name="province" value="{{ province }}">
+                <input type="hidden" name="city" value="{{ city }}">
+            {% endif %}
+            {% if type %}
+                <input type="hidden" name="type" value="{{ type }}">
+            {% endif %}
+            <button type="submit" class="link-button">اقامتگاه‌های تایید نشده
+            </button>
+        </form>
+    </li>
+{% endblock %}
+{% block sidebar %}
+    <div class="sidebar">
+        <div class="box filter">
+            <div class="text-center">
+                <h2 dir="rtl">مشاهده‌ی اقامتگاه بر اساس نوع</h2>
+            </div>
+            <ul class="links" dir="rtl">
+                <li>
+                    <form method="get">
+                        <input type="hidden" name="accommodation_type" value="">
+                        {% if city or province %}
+                            <input type="hidden" name="province" value="{{ province }}">
+                            <input type="hidden" name="city" value="{{ city }}">
+                        {% endif %}
+                        {% if is_authenticated %}
+                            <input type="hidden" name="is_authenticated" value="{{ is_authenticated }}">
+                        {% endif %}
+                        <button type="submit" class="link-button">همه
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form method="get">
+                        <input type="hidden" name="accommodation_type" value="هتل">
+                        {% if city or province %}
+                            <input type="hidden" name="province" value="{{ province }}">
+                            <input type="hidden" name="city" value="{{ city }}">
+                        {% endif %}
+                        {% if is_authenticated %}
+                            <input type="hidden" name="is_authenticated" value="{{ is_authenticated }}">
+                        {% endif %}
+                        <button type="submit" class="link-button">هتل
+                        </button>
+                    </form>
+                </li>
+                <li>
+                    <form method="get">
+                        <input type="hidden" name="accommodation_type" value="اقامتگاه">
+                        {% if city or province %}
+                            <input type="hidden" name="province" value="{{ province }}">
+                            <input type="hidden" name="city" value="{{ city }}">
+                        {% endif %}
+                        {% if is_authenticated %}
+                            <input type="hidden" name="is_authenticated" value="{{ is_authenticated }}">
+                        {% endif %}
+                        <button type="submit" class="link-button">اقامتگاه محلی (متل)</button>
+                    </form>
+                </li>
+                <li>
+                    <form method="get">
+                        <input type="hidden" name="accommodation_type" value="منزل شخصی">
+                        {% if city or province %}
+                            <input type="hidden" name="province" value="{{ province }}">
+                            <input type="hidden" name="city" value="{{ city }}">
+                        {% endif %}
+                        {% if is_authenticated %}
+                            <input type="hidden" name="is_authenticated" value="{{ is_authenticated }}">
+                        {% endif %}
+                        <button type="submit" class="link-button">منزل شخصی</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="sidebar">
+        <div class="box filter">
+            <div class="text-center">
+                <h2 dir="rtl">مشاهده‌ی اقامتگاه بر اساس محل</h2>
+            </div>
+            <ul class="links" dir="rtl">
+                <li>
+                    <form method="get">
+                        {% if type %}
+                            <input type="hidden" name="type" value="{{ type }}">
+                        {% endif %}
+                        {% if is_authenticated %}
+                            <input type="hidden" name="is_authenticated" value="{{ is_authenticated }}">
+                        {% endif %}
+                        <div class="ir-select">
+                            <label for="province">استان</label>
+                            <select class="ir-province framed width-100" id="province" name="province">
+                                <option hidden value="{{ province }}" selected>{{ province }}</option>
+                            </select>
+                            <label for="city">شهر</label>
+                            <select class="ir-city framed width-100" id="city" name="city"
+                                    onchange="this.form.submit()">
+                                <option hidden value="{{ city }}" selected>{{ city }}</option>
+                            </select>
+                        </div>
+                    </form>
+                </li>
+            </ul>
+        </div>
     </div>
 {% endblock %}
