@@ -11,8 +11,7 @@ all_tests:
   script:
     - docker build .
     - python3 ./Code/manage.py test registration
-  when: 
-    - on_success
+  when: on_success
 build:
   image: docker:latest
   services:
