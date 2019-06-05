@@ -2,7 +2,7 @@ stages:
   - test
   - build
   - push
-all_tests:
+tests:
   image: docker:latest
   services:
     - docker:dind
