@@ -12,8 +12,6 @@ build:
   script:
     - docker build -t registry.gitlab.com/armin_gm/asd_project_98_6 .
     - docker push registry.gitlab.com/armin_gm/asd_project_98_6
-  only:
-    - master
 push_to_heroku:
   image: docker:latest
   stage: push
@@ -24,7 +22,7 @@ push_to_heroku:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
     - docker pull  registry.gitlab.com/armin_gm/asd_project_98_6:latest
     # This is for heroku
-    - docker login --username=arminbehnamnia@gmail.com  --password=$(heroku auth:token) registry.heroku.com
+    - docker login --username=arminbehnamnia@gmail.com  --password=$HEROKU_AUTH_TOKEN registry.heroku.com
     - docker tag registry.gitlab.com/armin_gm/asd_project_98_6:latest registry.heroku.com/makan-system/web:latest
     - docker push registry.heroku.com/makan-system/web:latest
 
