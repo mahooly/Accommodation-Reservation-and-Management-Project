@@ -8,7 +8,6 @@ from django.views.generic import ListView
 from .forms import *
 from accommodation.models import Accommodation
 
-
 class RegistrationView(View):
     form_class = CustomUserCreationForm
     template_name = 'registration/register.html'
