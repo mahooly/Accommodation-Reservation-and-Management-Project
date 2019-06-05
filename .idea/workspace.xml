@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ff918689-1974-4a51-a11e-5db3036655f2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Code/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/registration/tests/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/registration/tests/test_forms.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Code/registration/tests/test_views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/asd_project_98_6.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/asd_project_98_6.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/Code/manage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/registration/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Code/registration/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Code/registration/views.py" afterDir="false" />
-    </list>
+    <list default="true" id="ff918689-1974-4a51-a11e-5db3036655f2" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,9 +32,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Code/search_index/__init__.py">
-          <provider selected="true" editor-type-id="text-editor" />
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Code/manage.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="15" column="16" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+              <folding>
+                <element signature="e#84#93#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -70,7 +65,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Code/registration/tests/test_views.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="442">
@@ -292,15 +287,16 @@
       <workItem from="1559568812788" duration="122000" />
       <workItem from="1559571553945" duration="18742000" />
       <workItem from="1559747930880" duration="151000" />
-      <workItem from="1559748090233" duration="4819000" />
+      <workItem from="1559748090233" duration="5428000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="24419000" />
+    <option name="totallyTimeSpent" value="25028000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="848" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="848" extended-state="7" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49930266" visible="true" weight="0.26340482" />
       <window_info id="Structure" order="1" sideWeight="0.5006974" side_tool="true" weight="0.26340482" />
@@ -386,13 +382,6 @@
     <entry file="file://$PROJECT_DIR$/Code/registration/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/Code/manage.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="18" selection-start-line="18" selection-end-line="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Code/search_index/tests.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
@@ -474,6 +463,16 @@
           <caret line="59" column="10" selection-start-line="59" selection-start-column="10" selection-end-line="59" selection-end-column="10" />
           <folding>
             <element signature="e#0#43#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Code/manage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="15" column="16" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+          <folding>
+            <element signature="e#84#93#0" expanded="true" />
           </folding>
         </state>
       </provider>
