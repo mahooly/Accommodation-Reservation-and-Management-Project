@@ -7,7 +7,10 @@ all_tests:
   services:
     - docker:dind
   stage: test
+  before_script:
+    - docker login -u armin_gm -p khalepirezan registry.gitlab.com
   script:
+    - chmod +x ./tests.sh
     - ./tests.sh
 build:
   image: docker:git
