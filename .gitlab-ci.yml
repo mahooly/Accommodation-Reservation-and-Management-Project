@@ -11,6 +11,7 @@ tests:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
   script:
     - docker build . -t test_django
+    - docker ps
     - docker exec test_django python /makanapp/Code/manage.py test registration
   when: on_success
 build:
