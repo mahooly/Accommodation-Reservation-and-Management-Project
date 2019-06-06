@@ -1,5 +1,5 @@
 # Official Python image
-FROM python:3.7
+FROM python:latest
 ENV PYTHONUNBUFFERED 1
 # create root directory for project, set the working directory and move all files
 RUN mkdir /makanapp
