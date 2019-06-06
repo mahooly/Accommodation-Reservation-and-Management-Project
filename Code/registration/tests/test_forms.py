@@ -28,7 +28,7 @@ class TestRegistrationForm(TestCase):
         }
         form = CustomUserCreationForm(data=invalid_data)
         form.is_valid()
-        self.assertFalse(form.errors)
+        self.assertTrue(form.errors)
         invalid_data = {
             "username" : "armin_gm", "password1" : "1234", "password2" : "1234", "first_name" : "armin", "last_name" : "behnamnia"
         , "email" : "arminbehnamnia@gmail.com", "gender" : "male"
