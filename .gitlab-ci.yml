@@ -5,6 +5,8 @@ stages:
 tests:
   image: docker:latest
   stage: test
+  services:
+    - docker: dind
   before_script:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
   script:
