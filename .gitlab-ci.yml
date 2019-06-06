@@ -12,7 +12,7 @@ tests:
   script:
     - docker build . -t test_django
     - docker ps
-    - docker exec test_django python /makanapp/Code/manage.py test registration
+    - docker run test_django --name=testDjango python /makanapp/Code/manage.py test registration
   when: on_success
 build:
   image: docker:latest
