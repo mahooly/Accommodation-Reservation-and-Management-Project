@@ -9,7 +9,7 @@ all_tests:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
   script:
     - docker build .
-    - docker run python ./Code/manage.py test registration
+    - python3 ./Code/manage.py test registration
   when: on_success
 build:
   image: docker:latest

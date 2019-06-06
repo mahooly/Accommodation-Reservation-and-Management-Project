@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ff918689-1974-4a51-a11e-5db3036655f2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Code/registration/tests/test_forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/Code/registration/tests/test_forms.py" afterDir="false" />
-    </list>
+    <list default="true" id="ff918689-1974-4a51-a11e-5db3036655f2" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -289,12 +287,12 @@
       <workItem from="1559568812788" duration="122000" />
       <workItem from="1559571553945" duration="18742000" />
       <workItem from="1559747930880" duration="151000" />
-      <workItem from="1559748090233" duration="6041000" />
+      <workItem from="1559748090233" duration="6640000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25641000" />
+    <option name="totallyTimeSpent" value="26240000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="848" extended-state="6" />
