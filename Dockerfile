@@ -12,4 +12,4 @@ RUN apt-get -y update
 RUN apt-get -y install python3-dev python3-setuptools
 RUN pip install -r requirements.txt
 RUN python ./Code/manage.py makemigrations
-RUN python ./Code/manage.py migrate
+RUN python ./Code/manage.py migrate --run-syncdb
