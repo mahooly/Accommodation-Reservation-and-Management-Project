@@ -1,8 +1,7 @@
 from django.test import TestCase
 from django.test import TestCase
-from registration.models import CustomUser
 import datetime
-from registration.forms import CustomUserCreationForm, CustomUserChangeForm
+from Code.accommodation.forms import CustomUserCreationForm, CustomUserChangeForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 import os
 import logging
