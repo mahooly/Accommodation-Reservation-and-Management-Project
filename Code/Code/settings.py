@@ -80,6 +80,11 @@ WSGI_APPLICATION = 'Code.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
+
+AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+    )
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -128,11 +133,11 @@ LOGOUT_REDIRECT_URL = '/'
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-# STATIC_ROOT = STATIC_DIR
+STATIC_ROOT = 'staticfiles'
 
-STATICFILES_DIRS = [
-    STATIC_DIR,
-]
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, "static"),
+)
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

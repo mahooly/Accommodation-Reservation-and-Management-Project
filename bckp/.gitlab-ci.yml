@@ -2,17 +2,14 @@ stages:
   - test
   - build
   - push
-tests:
+all_tests:
   image: docker:latest
-  services:
-    - docker:dind
   stage: test
   before_script:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
   script:
-    - docker build . -t test_django
-    - docker ps
-    - docker run --name=testDjango test_django python /makanapp/Code/manage.py test registration
+    - docker build .
+    - python3 ./Code/manage.py test registration
   when: on_success
 build:
   image: docker:latest
