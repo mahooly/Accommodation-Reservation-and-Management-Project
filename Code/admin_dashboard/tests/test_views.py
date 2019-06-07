@@ -19,6 +19,14 @@ class TestAdminDashboardView(TestCase):
     image_path2 = os.path.join(BASE_DIR, "testMedia/image2.jpg")
     request_factory = RequestFactory()
 
+    def createUser(self):
+        the_user = CustomUser.objects.create(username="armin_gm", email="arminbehnamnia@gmail.com",
+                                  last_name="armin", first_name="behnamnia",
+                                  birth_date=datetime.date(year=1995, month=11, day=7), is_host=False, gender="male",
+                                  image=self.img)
+        the_user.save()
+        return the_user
+
     def setUp(self):
         self.client = Client()
         self.img = SimpleUploadedFile(name='test_image.jpg', content=open(self.image_path, 'rb').read(),
@@ -32,5 +40,9 @@ class TestAdminDashboardView(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_deleteUser(self):
-        url = reverse("delete_user", kwargs={"pk": 1})
+        the_user = self.createUser()
+        url = reverse("delete_user", kwargs={"pk": the_user.pk})
+        self.assertEqual(CustomUser.objects.count(), 1)
+        self.client.get(url)
+        self.assertEqual(CustomUser.objects.count(), 0)
 
