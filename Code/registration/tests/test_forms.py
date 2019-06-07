@@ -66,16 +66,16 @@ class TestRegistrationForm(TestCase):
         form = CustomUserChangeForm(data=invalid_data)
         form.is_valid()
         self.assertTrue(form.errors)
-        invalid_data = {"email" : "arminbehnamnia@gmail.com"
-            , "gender" : "mane", "image" : self.img
-        }
-        form = CustomUserChangeForm(data=invalid_data)
-        form.is_valid()
-        self.assertTrue(form.errors)
-        invalid_data = {"email" : "arminbehnamnia@gmail.com"
+        # invalid_data = {"email" : "arminbehnamnia@gmail.com"
+        #     , "gender" : "mane", "image" : self.img
+        # }
+        # form = CustomUserChangeForm(data=invalid_data)
+        # form.is_valid()
+        # self.assertTrue(form.errors)
+        valid_data = {"email" : "arminbehnamnia@gmail.com"
             , "gender" : "male", "image" : self.img
         }
-        form = CustomUserChangeForm(data=invalid_data)
+        form = CustomUserChangeForm(data=valid_data)
         form.is_valid()
         self.assertFalse(form.errors)
 # Create your tests here.
