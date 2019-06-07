@@ -1,0 +1,57 @@
+{% extends 'registration/user_dashboard.html' %}
+
+{% block contents %}
+    <div class="col-md-9 col-sm-9" dir="rtl">
+        <section>
+            <div class="row">
+                <section>
+                    <div id="profile-picture" class="profile-picture single-file-preview text-center">
+                        <img src="{{ user.image.url }}" alt="" class="image" style="width: 100%">
+                        <a href="{% url 'update_profile' %}"
+                           class="btn btn-primary btn-rounded">ویرایش
+                            حساب کاربری</a>
+                    </div>
+                </section>
+                <div class="col-md-6 col-sm-6 col-md-offset-2 col-sm-offset-2 text-center"
+                     style="margin-top: 30px; margin-bottom: 30px">
+                    <table class="table no-border" style="align-self: center">
+                        <thead>
+                        <tr>
+                            <th scope="col" style="color: #488f3e;">اطلاعات کلی</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">نام کاربری:</th>
+                            <td>{{ user.username }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">تاریخ تولد:</th>
+                            <td>{{ user.birth_date }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">جنسیت:</th>
+                            <td>{{ user.gender }}</td>
+                        </tr>
+                        </tbody>
+                        <thead>
+                        <tr>
+                            <th scope="col" style="color: #488f3e;">اطلاعات تماس</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">ایمیل:</th>
+                            <td>{{ user.email }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+{% block sidebar %}
+{% endblock %}

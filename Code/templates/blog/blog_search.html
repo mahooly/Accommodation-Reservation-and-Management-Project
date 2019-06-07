@@ -11,17 +11,13 @@
 
             <hr>
 
-            <!--end container-->
         </header>
-        <!--end header-->
     </div>
-    <!--end page-header-->
 
     <div id="page-content">
         <div class="container">
             <ol class="breadcrumb">
             </ol>
-
 
             <form method="post" class="form-submit labels-uppercase MultiFile-intercepted" id="form-submit" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -36,12 +32,10 @@
                     </div>
                 </div>
             </form>
-            <!--end breadcrumb-->
             <div class="row">
                 <div class="col-md-3">
                     <div class="column">
                     <div class="sidebar center" dir="rtl">
-                        <!-- <h2>تاریخ</h2> -->
                         <ul class="links">
                             <li><a href="#">همه</a></li>
                             <li><a href="#">فروردین</a></li>
@@ -58,23 +52,25 @@
                             <li><a href="#">اسفند</a></li>
                         </ul>
                     </div>
-                    <!--end sidebar-->
                     </div>
                 </div>
-                <!---end of seasons!-->
                 <div class="col-md-9" , style="right-margin">
                     <div class="pull-right" , style="right-margin">
                         <div class="title" , dir="rtl">
-                            <h1> پست های {{user_name}} </h1>
+                            {% if is_empty %}
+                            <h1>هیچ پستی یافت نشد </h1>
+                            {% else %}
+                            <h1> پست های یافت شده </h1>
+                            {% endif %}
                         </div>
-                        <!--end title-->
                         {% for feed in page_feeds %}
                         {% with image_url=feed.image.url %}
                         <article class="blog-post" , dir="rtl">
                             <a href="blog-detail.html"><img  src="{{image_url}}"  ></a>
                             {% endwith %}
                             {% my_tostring feed.id as feed_id %}
-                            <header><a href={{"/username="|add:feed.owner.username|add:"/blog_detail/blog_id="|add:feed_id }}><h2> {{ feed.title }} </h2></a></header>
+                            {% get_username feed as username %}
+                            <header><a href="{% url 'blog_detail' username=feed.owner.username feed_id=feed_id %}"><h2> {{ feed.title }} </h2></a></header>
                             <figure class="meta">
                                 {% get_full_name feed as full_name%}
                                 <a href={{"/username="|add:feed.owner.username|add:"/blog_list/1"}} class="link icon"><i class="fa fa-user"></i>{{full_name}}</a>
@@ -87,40 +83,30 @@
                             </figure>
                             <p> {{feed.description}}
                             </p>
-                            <a href={{"/username="|add:feed.owner.username|add:"/blog_detail/blog_id="|add:feed_id }} class="btn btn-rounded btn-default btn-framed btn-small">بیشتر بخوانم</a>
+                            <a href="{% url 'blog_detail' username=feed.owner.username feed_id=feed_id %}" class="btn btn-rounded btn-default btn-framed btn-small">بیشتر بخوانم</a>
                         </article><!-- /.blog-post -->
                         {% endfor %}
 
-
-                        <!-- Pagination -->
                         <div class="center">
                             <ul class="pagination">
                                 <li class="prev">
-                                    <a href="{% url 'blog_list' username=username page_number=page_number_minos %}"><i class="arrow_left"></i></a>
+                                    <a href="{% url 'blog_search' searched_phrase=searched_phrase page_number=page_number_minos %}"><i class="arrow_left"></i></a>
                                 </li>
-                                <li {% ifequal page_number 1 %}class="active" {% endifequal %}><a href="{% url 'blog_list' username=username page_number=1 %}">1</a></li>
-                                <li {% ifequal page_number 2 %}class="active" {% endifequal %}><a href="{% url 'blog_list' username=username page_number=2 %}">2</a></li>
-                                <li {% ifequal page_number 3 %}class="active" {% endifequal %}><a href="{% url 'blog_list' username=username page_number=3 %}">3</a></li>
-                                <li {% ifequal page_number 4 %}class="active" {% endifequal %}><a href="{% url 'blog_list' username=username page_number=4 %}">4</a></li>
-                                <li {% ifequal page_number 5 %}class="active" {% endifequal %}><a href="{% url 'blog_list' username=username page_number=5 %}">5</a></li>
+                                <li {% ifequal page_number 1 %}class="active" {% endifequal %}><a href="{% url 'blog_search' searched_phrase=searched_phrase page_number=1 %}">1</a></li>
+                                <li {% ifequal page_number 2 %}class="active" {% endifequal %}><a href="{% url 'blog_search' searched_phrase=searched_phrase page_number=2 %}">2</a></li>
+                                <li {% ifequal page_number 3 %}class="active" {% endifequal %}><a href="{% url 'blog_search' searched_phrase=searched_phrase page_number=3 %}">3</a></li>
+                                <li {% ifequal page_number 4 %}class="active" {% endifequal %}><a href="{% url 'blog_search' searched_phrase=searched_phrase page_number=4 %}">4</a></li>
+                                <li {% ifequal page_number 5 %}class="active" {% endifequal %}><a href="{% url 'blog_search' searched_phrase=searched_phrase page_number=5 %}">5</a></li>
                                 <li class="next">
-                                    <a href="{% url 'blog_list' username=username page_number=page_number_plus %}"><i class="arrow_right"></i></a>
+                                    <a href="{% url 'blog_search' searched_phrase=searched_phrase page_number=page_number_plus %}"><i class="arrow_right"></i></a>
                                 </li>
                             </ul>
-                            <!-- end pagination-->
                         </div>
-                        <!-- end center-->
                     </div>
-                    <!--end main-content-->
                 </div>
-                <!--end col-md-9-->
-                <!--end col-md-3-->
             </div>
-            <!--end row-->
         </div>
-        <!--end container-->
     </div>
-    <!--end page-content-->
 
     <footer id="page-footer">
         <div class="row-one">

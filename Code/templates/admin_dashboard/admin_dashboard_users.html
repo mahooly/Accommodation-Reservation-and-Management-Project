@@ -24,7 +24,7 @@
                             </div>
                             <div class="info">
                                 <figure class="label label-info">{{ user.username }}</figure>
-                                <a href="{% url 'profile' pk=user.pk %}"><h3>{{ user.first_name }}&nbsp;{{ user.last_name }}</h3></a>
+                                <a href="{% url 'profile' user.id %}"><h3>{{ user.first_name }}&nbsp;{{ user.last_name }}</h3></a>
                                 <a href="{% url 'delete_user' pk=user.pk %}" class="btn btn-danger btn-rounded scroll">حذف کاربر</a>
                             </div>
                         </div>

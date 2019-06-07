@@ -23,22 +23,20 @@
                         </div>
                     {% endfor %}
                 {% endif %}
-                {% if amenity_form.errors %}
-                    {% for field in amenity_form %}
-                        {% for error in field.errors %}
+                {% if messages %}
+                    {% for message in messages %}
+                        {% ifequal message.tags 'success' %}
+                            <div class="alert alert-success" dir="rtl" role="alert"
+                                 style="padding: 5px; text-align: center;">
+                                <p style="display: inline-block;">{{ message }}</p>
+                            </div>
+                        {% endifequal %}
+                        {% ifequal message.tags 'error' %}
                             <div class="alert alert-danger" dir="rtl" role="alert"
                                  style="padding: 5px; text-align: center;">
-                                <b style="display: inline-block;">خطا! </b>
-                                <p style="display: inline-block;">{{ error|escape }}</p>
+                                <p style="display: inline-block;">{{ message }}</p>
                             </div>
-                        {% endfor %}
-                    {% endfor %}
-                    {% for error in amenity_form.non_field_errors %}
-                        <div class="alert alert-danger" dir="rtl" role="alert"
-                             style="padding: 5px; text-align: center;">
-                            <b style="display: inline-block;">خطا! </b>
-                            <p style="display: inline-block;">{{ error|escape }}</p>
-                        </div>
+                        {% endifequal %}
                     {% endfor %}
                 {% endif %}
                 <section id="main-information">
@@ -145,42 +143,18 @@
                         <aside class="step">4</aside>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 pull-right">
-                            <h3>تکنولوژی و چندرسانه‌ای</h3>
-                            <ul class="checkboxes inline half list-unstyled">
-                                <li><label><input type="checkbox" name="has_tv">&nbsp;تلویزیون</label></li>
-                                <li><label><input type="checkbox" name="has_wifi">&nbsp;اینترنت</label></li>
+                        <div class="col-md-12 pull-right" dir="rtl" style="margin-bottom: 30px">
+                            <ul class="checkboxes half inline list-unstyled">
+                                {% for name in form.amenity %}
+                                    <li><label> {{ name }} </label></li>
+                                {% endfor %}
                             </ul>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 pull-right">
-                            <h3>سرویس‌ها</h3>
-                            <ul class="checkboxes inline half list-unstyled">
-                                <li><label><input type="checkbox" name="has_roomservice">&nbsp;سرویس نظافت اتاق</label>
-                                </li>
-                                <li><label><input type="checkbox" name="has_laundry">&nbsp;شست و شوی لباس</label></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-4 pull-right">
-                            <h3>عمومی</h3>
-                            <ul class="checkboxes inline half list-unstyled">
-                                <li><label><input type="checkbox" name="has_parking">&nbsp;پارکینگ</label></li>
-                                <li><label><input type="checkbox" name="has_safe">&nbsp;صندوق امانات</label></li>
-                                <li><label><input type="checkbox" name="has_elevator">&nbsp;آسانسور</label></li>
-                                <li><label><input type="checkbox" name="has_warm_ac">&nbsp;تهویه‌ی هوای گرم</label></li>
-                                <li><label><input type="checkbox" name="has_cool_ac">&nbsp;تهویه‌ی هوای سرد</label></li>
-                                <li><label><input type="checkbox" name="has_iron">&nbsp;اتو</label></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-4 pull-right">
-                            <h3>پخت و پز</h3>
-                            <ul class="checkboxes inline half list-unstyled">
-                                <li><label><input type="checkbox" name="has_kitchen">&nbsp;آشپزخانه</label></li>
-                                <li><label><input type="checkbox" name="has_utensils">&nbsp;وسابل آشپزی</label></li>
-                                <li><label><input type="checkbox" name="has_fridge">&nbsp;یخچال</label></li>
-                                <li><label><input type="checkbox" name="has_oven">&nbsp;گاز</label></li>
-                            </ul>
+                        <div class="text-center">
+                            <a href="" data-toggle="modal" data-tab="true" data-target="#add-amenity-modal">امکانات مورد
+                                نظر
+                                خود
+                                را پیدا نمی‌کنید؟</a>
                         </div>
                     </div>
                 </section>
@@ -191,7 +165,67 @@
                     </div>
                 </section>
             </form>
-
+        </div>
+        <div class="modal fade" id="add-amenity-modal" role="dialog"
+             aria-labelledby="sign-in-register-modal">
+            <div class="wrapper">
+                <div class="inner">
+                    <div class="modal-dialog width-600px" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                                <ul class="nav nav-tabs ">
+                                    <li role="presentation" class="active"><a href="#tab-sign-in"
+                                                                              aria-controls="tab-sign-in" role="tab"
+                                                                              data-toggle="tab"><h1
+                                            style="margin-left: 200px">اضافه کردن امکانات</h1></a></li>
+                                </ul>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-submit labels-uppercase" id="form-submit"
+                                      enctype="multipart/form-data"
+                                      method="post" action="{% url 'create_amenity' %}">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group-inline">
+                                                <div class="form-group width-60" dir="rtl">
+                                                    <label for="name" class="pull-right">نام</label>
+                                                    <input type="text" class="form-control" id="name" name="name"
+                                                           required placeholder="نام امکانات">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 text-center">
+                                            <div class="form-group-inline">
+                                                <div class="form-group width-60">
+                                                    <label class="pull-right">نوع امکانات</label>
+                                                    <select class="framed width-100" name="label" id="room-type_1"
+                                                            dir="rtl" required>
+                                                        <option value="hotel">امکانات مربوط به هتل</option>
+                                                        <option value="room">امکانات مربوط به اتاق</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <section>
+                                        <div class="form-group center">
+                                            <button type="submit" class="btn btn-primary btn-rounded btn-large">ثبت
+                                                امکانات
+                                            </button>
+                                        </div>
+                                    </section>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

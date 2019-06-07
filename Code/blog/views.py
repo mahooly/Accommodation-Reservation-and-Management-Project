@@ -1,143 +1,81 @@
+from django.contrib import messages
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.views import View
-from .models import Feed, Comment
-from .forms import BlogCreationForm
+from django.views.generic import DetailView
+from django.views.generic import ListView
+
+from .models import Post, Comment
+from .forms import BlogCreationForm, CommentCreationForm
 from django.shortcuts import get_object_or_404, redirect
 from django.core.paginator import Paginator
 from registration.models import CustomUser
-from accommodation.models import Accommodation
-from django.template import RequestContext
-
-# Create your views here.
-
-class BlogListView(View):
-    template_name = "blog/blog_list.html"
-
-    def get(self, request, *args, **kwargs):
-        user = request.user
-        username = kwargs['username']
-        user2 = CustomUser.objects.get(username=username)
-        feed_array = Feed.objects.filter(owner__username = username)
-        page_number = kwargs['page_number']
-        paginator = Paginator(feed_array, 2)
-        if page_number == 0:
-            url = "/username="+ username +"/blog_list/1"
-            return redirect(url)
-        if page_number > paginator.num_pages:     # ran out of pages!
-            page_number -= 1
-            url = "/username=" + username + "/blog_list/"+str(page_number)
-            return redirect(url)
-        page_feeds = paginator.page(page_number).object_list
-        return render(request,self.template_name , {'username' : username , 'page_feeds' : page_feeds, 'page_number_minos':page_number-1
-                                                    , 'page_number' : page_number , 'page_number_plus':page_number+1 ,
-                                                    'user_name':user2.get_full_name(), 'is_empty':(len(page_feeds)==0)})
-            #HttpResponse("Hello World!")
-
-    def post(self, request, username, page_number):
-        searched_phrase = request.POST['searched_phrase']
-        url = "/searched_phrase="+searched_phrase+"/page_number=1"
-        return redirect(url)
 
 
-class BlogSearchView(View):
-    template_name = "blog/blog_search.html"
+class BlogListView(ListView):
+    template_name = "blog/blog-list.html"
+    model = Post
+    paginate_by = 10
+    ordering = '-date'
 
-    def get(self, request, searched_phrase, page_number):
-        keywords = searched_phrase.split()
+    def get_queryset(self):
+        if 'uid' in self.kwargs.keys():
+            user = get_object_or_404(CustomUser, id=self.kwargs['uid'])
+            return Post.objects.filter(owner=user)
+        else:
+            return Post.objects.all()
 
-        feed_array = []
-        for feed in Feed.objects.all():
-            for word in keywords:
-                print("I am in loop for feed = "+ feed.__str__() + " and word = "+word)
-                if feed.title.find(word) != -1 or feed.description.find(word) != -1:
-                    feed_array.append(feed)
-                    break
-
-
-        paginator = Paginator(feed_array, 2)
-        if page_number == 0:
-            url = "/searched_phrase=" + searched_phrase + "/page_number=1"
-            return redirect(url)
-        if page_number > paginator.num_pages:  # ran out of pages!
-            page_number -= 1
-            url = "/searched_phrase=" + searched_phrase + "/page_number=" + str(page_number)
-            return redirect(url)
-        page_feeds = paginator.page(page_number).object_list
-
-        #print("page-feeds are ",page_feeds)
-        print("len is ",len(page_feeds))
-        return render(request, self.template_name, {'page_feeds' : page_feeds, 'page_number_minos':page_number-1
-                                                    , 'page_number' : page_number , 'page_number_plus':page_number+1 ,
-                                                    'searched_phrase':searched_phrase , 'is_empty':(len(page_feeds)==0)})
-        #return HttpResponse("Hello World!")
-
-    def post(self, request, *args, **kwargs):
-        searched_phrase = request.POST['searched_phrase']
-        url = "/searched_phrase="+searched_phrase+"/page_number=1"
-        return redirect(url)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if 'uid' in self.kwargs.keys():
+            context['blog_user'] = get_object_or_404(CustomUser, id=self.kwargs['uid'])
+        return context
 
 
 class BlogCreateView(View):
     template_name = "blog/create_blog.html"
 
-    def get(self, request, username):
+    def get(self, request, *args, **kwargs):
         form = BlogCreationForm()
-        return render(request, self.template_name, {'form':form})
+        return render(request, self.template_name, {'form': form})
 
-    def post(self, request, username):
-        print("hey! I am in blog_create view")
-        form = BlogCreationForm(request.POST)
+    def post(self, request, *args, **kwargs):
+        form = BlogCreationForm(request.POST, request.FILES)
         if form.is_valid():
-            owner = request.user
-            feed = form.save(commit=False)
-            #print("the ... owner is ",owner.birth_date)
-            feed.owner = owner
-            if 'image' in request.FILES:
-                feed.image = request.FILES['image']
-            print("latitude is ",feed.latitude)
-            print("province is ",feed.province)
-            feed.save()
-            url = "/username="+str(username)+"/blog_list/1"
+            post = form.save(commit=False)
+            post.owner = request.user
+            post.save()
+            url = '/blog/post/' + str(post.id)
             return redirect(url)
         else:
-            print("the form was not valid")
-            print(form.errors)
-            return render(request, self.template_name, {'form':form})
+            return render(request, self.template_name, {'form': form})
 
 
-class BlogDetailView(View):
+class BlogDetailView(DetailView):
     template_name = "blog/blog_detail.html"
+    model = Post
 
-    def get(self, request, username, feed_id):
-        feed = Feed.objects.get(pk=feed_id)
-        user2 = CustomUser.objects.get(username=username)
-        comment = Comment(feed=feed, owner=user2, description="سلام")
-        #print("comment owner is ")
-        #print(comment.owner)
-        #print("this is", feed.comment_set)
 
-        return render(request,self.template_name , {'feed': feed , 'user_name':user2.get_full_name() , 'user2':user2,
-                                                    'comments':feed.comment_set.all(), 'request_user_id':request.user.id,
-                                                    'username':username})
-        #return HttpResponse("Hello!")
-
-    def post(self, requeset, username, feed_id):
-        description = requeset.POST['description']
-        url = "/username="+username+"/blog_detail/blog_id="+str(feed_id)
-        if description == '':
+class CreateCommentView(View):
+    def post(self, request, *args, **kwargs):
+        comment_form = CommentCreationForm(request.POST)
+        post = get_object_or_404(Post, id=kwargs['pk'])
+        if comment_form.is_valid():
+            comment = comment_form.save(commit=False)
+            comment.post = post
+            comment.user = request.user
+            comment.save()
+            url = '/post/' + str(post.id)
+            messages.success(request, 'نظر شما با موفقیت ثبت شد.')
             return redirect(url)
-        feed = Feed.objects.get(id=feed_id)
-        user = requeset.user
-        comment = Comment(description=description, feed=feed, owner=user)
-        comment.save()
-        return redirect(url)
+        else:
+            messages.error(request, 'ثبت نظر با مشکل مواجه شده است. لطفاً دوباره تلاش کنید.')
+            url = '/post/' + str(post.id)
+            return redirect(url)
+
 
 class CommentDelete(View):
-
     def get(self, request, comment_id, feed_id, username):
-        print("I am here man")
         comment = Comment.objects.get(id=comment_id)
         comment.delete()
-        url = '/username='+str(username)+'/blog_detail/blog_id='+str(feed_id)
+        url = '/username=' + str(username) + '/blog_detail/blog_id=' + str(feed_id)
         return redirect(url)

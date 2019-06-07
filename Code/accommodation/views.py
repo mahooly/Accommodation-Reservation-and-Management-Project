@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.views.generic.detail import DetailView
@@ -16,22 +15,19 @@ class CreateAccommodationView(View):
 
     def get(self, request, *args, **kwargs):
         form = AccommodationCreationForm()
-        amenity_form = AmenityForm()
         image_form = FileFieldForm()
         return render(request, self.template_name,
-                      {'form': form, 'amenity_form': amenity_form, 'image_form': image_form})
+                      {'form': form, 'image_form': image_form})
 
     def post(self, request, *args, **kwargs):
-        form = AccommodationCreationForm(request.POST, request.FILES)
-        amenity_form = AmenityForm(request.POST)
+        form = AccommodationCreationForm(request.POST)
         image_form = FileFieldForm(request.POST, request.FILES)
-        if form.is_valid() and amenity_form.is_valid() and image_form.is_valid():
+        if form.is_valid() and image_form.is_valid():
             owner = request.user.host
             house = form.save(commit=False)
             house.owner = owner
-            amenity = amenity_form.save()
-            house.amenity = amenity
             house.save()
+            form.save_m2m()
             files = request.FILES.getlist('image')
             for f in files:
                 Image.objects.create(accommodation=house, image=f)
@@ -40,30 +36,35 @@ class CreateAccommodationView(View):
             return redirect(url)
         else:
             return render(request, self.template_name,
-                          {'form': form, 'amenity_form': amenity_form, 'image_form': image_form})
+                          {'form': form, 'image_form': image_form})
 
 
 class AccommodationDetailView(DetailView):
     model = Accommodation
     template_name = 'accommodation/accommodation_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        form = RoomCreationForm()
+        context['form'] = form
+        return context
+
 
 class CreateRoomView(View):
     def post(self, request, *args, **kwargs):
-        form = RoomCreationForm(request.POST)
-        amenity_form = AmenityForm(request.POST)
+        form = RoomCreationForm(request.POST, request.FILES)
         accommodation_id = kwargs['accid']
-        if form.is_valid() and amenity_form.is_valid():
+        if form.is_valid():
             accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
             room = form.save(commit=False)
             room.accommodation = accommodation
-            amenity = amenity_form.save()
-            room.amenity = amenity
             room.save()
+            form.save_m2m()
             messages.success(request, 'اتاق با موفقیت اضافه شد.')
             url = '/accommodation/' + str(accommodation_id)
             return redirect(url)
         else:
+            print(form.errors)
             messages.error(request, 'در اضافه کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
             url = '/accommodation/' + str(accommodation_id)
             return redirect(url)
@@ -158,14 +159,6 @@ class EditAccommodation(View):
                       {'form': form, 'amenity_form': amenity_form, 'image_form': image_form})
 
 
-class AccommodationRoomsView(ListView):
-    template_name = 'accommodation/room_list.html'
-
-    def get_queryset(self):
-        acc = get_object_or_404(Accommodation, pk=self.kwargs['pk'])
-        return Room.objects.filter(accommodation=acc)
-
-
 class DeleteImage(View):
     def get(self, request, *args, **kwargs):
         img_pk = kwargs['pk']
@@ -175,3 +168,14 @@ class DeleteImage(View):
         url = '/edit_accommodation/' + str(accommodation.pk)
         messages.success(request, 'عکس با موفقیت حذف شد.')
         return redirect(url)
+
+
+class CreateAmenityView(View):
+    def post(self, request, *args, **kwargs):
+        form = AmenityForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'امکانات با موفقیت اضافه شد.')
+        else:
+            messages.error(request, 'در اضافه کردن امکانات مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
+        return redirect('/create_accommodation/')

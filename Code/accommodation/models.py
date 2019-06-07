@@ -6,26 +6,11 @@ from registration.models import Host
 
 
 class Amenity(models.Model):
-    has_wifi = models.BooleanField(default=False)
-    has_tv = models.BooleanField(default=False)
-    has_warm_ac = models.BooleanField(default=False)
-    has_cool_ac = models.BooleanField(default=False)
-    has_parking = models.BooleanField(default=False)
-    has_kitchen = models.BooleanField(default=False)
-    has_utensils = models.BooleanField(default=False)
-    has_fridge = models.BooleanField(default=False)
-    has_oven = models.BooleanField(default=False)
-    has_bedsheets = models.BooleanField(default=False)
-    has_bathroom = models.BooleanField(default=False)
-    has_shower = models.BooleanField(default=False)
-    has_tub = models.BooleanField(default=False)
-    has_toilet = models.BooleanField(default=False)
-    has_hairdryer = models.BooleanField(default=False)
-    has_roomservice = models.BooleanField(default=False)
-    has_laundry = models.BooleanField(default=False)
-    has_elevator = models.BooleanField(default=False)
-    has_safe = models.BooleanField(default=False)
-    has_iron = models.BooleanField(default=False)
+    name = models.CharField(max_length=20)
+    label = models.CharField(max_length=6)
+
+    def __str__(self):
+        return self.name
 
 
 class Accommodation(models.Model):
@@ -38,7 +23,7 @@ class Accommodation(models.Model):
     address = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
-    amenity = models.OneToOneField(Amenity, related_name='accommodation', on_delete=models.CASCADE)
+    amenity = models.ManyToManyField(Amenity)
 
     is_authenticated = models.BooleanField(default=False)
 
@@ -83,14 +68,14 @@ class Accommodation(models.Model):
 
 class Room(models.Model):
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)
-    amenity = models.OneToOneField(Amenity, related_name='room', on_delete=models.CASCADE)
-
+    amenity = models.ManyToManyField(Amenity)
+    description = models.TextField()
     bed_type = models.CharField(max_length=20, choices=BED_TYPE_CHOICES)
     number_of_guests = models.IntegerField()
-
+    image = models.ImageField(upload_to='../media/room_pics/')
     how_many = models.IntegerField(default=1)
 
 
 class Image(models.Model):
-    accommodation = models.ForeignKey(Accommodation, default=None, on_delete=models.CASCADE)
+    accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='../media/house_pics/')

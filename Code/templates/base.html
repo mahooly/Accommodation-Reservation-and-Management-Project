@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'assets/css/owl.transitions.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css">
+    {% block extra_css %}
+    {% endblock %}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 
 
@@ -44,9 +46,6 @@
                                     <div class="element">
                                         <a href="{% url 'logout' %}">خروج</a>
                                     </div>
-                                    <div class="element">
-                                        <a href="{% url 'update_profile' %}">ویرایش اطلاعات</a>
-                                    </div>
                                     {% if request.user.is_superuser %}
                                         <div class="element">
                                             <a href="{% url 'admin_dashboard' %}">داشبورد</a>
@@ -56,6 +55,9 @@
                                             <a href="{% url 'host_dashboard' %}">داشبورد</a>
                                         </div>
                                     {% else %}
+                                        <div class="element">
+                                            <a href="{% url 'user_dashboard' user.id %}">داشبورد</a>
+                                        </div>
                                     {% endif %}
                                 {% endif %}
                             </div>
@@ -75,12 +77,16 @@
                     <div class="right">
                         <nav id="primary-nav">
                             <ul>
+                                <li><a href="{% url 'blog' %}">تجربیات سفر</a></li>
                                 <li>
                                     <a href="{% url 'search' %}" class="has-child">اقامتگاه‌ها</a>
                                     <ul class="child-nav">
-                                        <li><a href="{% url 'search' %}?hotel=on" style="padding-left: 150px">هتل</a></li>
-                                        <li><a href="{% url 'search' %}?motel=on" style="padding-left: 140px">مهمانسرا</a></li>
-                                        <li><a href="{% url 'search' %}?house=on" style="padding-left: 102px">اقامتگاه خصوصی</a></li>
+                                        <li><a href="{% url 'search' %}?hotel=on" style="padding-left: 150px">هتل</a>
+                                        </li>
+                                        <li><a href="{% url 'search' %}?motel=on"
+                                               style="padding-left: 140px">مهمانسرا</a></li>
+                                        <li><a href="{% url 'search' %}?house=on" style="padding-left: 102px">اقامتگاه
+                                            خصوصی</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="{% url 'home' %}">خانه</a></li>
@@ -175,6 +181,18 @@
 
 <script type="text/javascript" src="{% static 'assets/js/jquery-2.2.1.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/jquery-migrate-1.2.1.min.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.2/marked.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function ($) {
+        $(".content-markdown").each(function () {
+            var content = $(this).text();
+            console.log(content);
+            var markedContent = marked(content);
+            console.log(markedContent);
+            $(this).html(markedContent);
+        })
+    })
+</script>
 <script type="text/javascript" src="{% static 'assets/js/infobox.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/markerclusterer_packed.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/richmarker-compiled.js' %}"></script>
@@ -184,21 +202,8 @@
 <script type="text/javascript" src="{% static 'assets/js/bootstrap-datepicker.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/icheck.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/owl.carousel.js' %}"></script>
-<script>
-    $(document).ready(function () {
-
-        $("#owl-demo").owlCarousel({
-            interval: 2,
-            margin: 10,
-            nav: true,
-            dots: false,
-            lazyLoad: true,
-            singleItem: true
-
-        });
-
-    });
-</script>
+<script type="text/javascript" src="{% static 'assets/js/summernote.js' %}"></script>
+<script type="text/javascript" src="{% static 'assets/js/summernote-ext-rtl.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/masonry.pkgd.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/ir-city-select.js' %}"></script>
 <script type="text/javascript" src="{% static 'assets/js/custom.js' %}"></script>

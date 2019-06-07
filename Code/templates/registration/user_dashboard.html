@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <div class="container">
+        <div class="row">
+            <div class="pull-right" style="margin-right: 20px;">
+                <h1></h1>
+            </div>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-warning" dir="rtl" role="alert"
+                     style="padding: 5px; text-align: center;">
+                    <p style="display: inline-block;">{{ message }}</p>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row">
+            {% block contents %}
+                <div class="col-md-9">
+                    <div class="main-content">
+                        {% for post in object_list %}
+                            <article class="blog-post">
+                                <a href="{% url 'blog_detail' post.id %}"><img src="{{ post.image.url }}"
+                                                                               style="width: 100%"></a>
+                                <header dir="rtl"><a href="{% url 'blog_detail' post.id %}"><h2>{{ post.title }}</h2>
+                                </a>
+                                </header>
+                                <figure class="meta">
+                                    <a href="#" class="link icon" dir="rtl"><i
+                                            class="fa fa-calendar"></i>{{ post.date }}
+                                    </a>
+                                    <a href="{% url 'profile' post.owner.id %}"
+                                       class="link icon"><i class="fa fa-user"></i>{{ post.owner.username }}</a>
+                                </figure>
+                                {% if post.description|wordcount < 200 %}
+                                    <div class="content-markdown">{{ post.description }}</div>
+                                {% else %}
+                                    <div class="content-markdown"
+                                         style="height: 150px; overflow: hidden; margin-bottom: 20px">{{ post.description }}</div>
+                                {% endif %}
+                                <a href="{% url 'blog_detail' post.id %}"
+                                   class="btn btn-rounded btn-default btn-framed btn-small">ادامه
+                                    مطلب</a>
+                            </article>
+                        {% endfor %}
+                        <div class="center">
+                            {% if object_list %}
+                                <ul class="pagination">
+                                    {% if page_obj.has_previous %}
+                                        <li class="prev">
+                                            <a href="?page={{ page_obj.previous_page_number }}"><i
+                                                    class="arrow_left"></i></a>
+                                        </li>
+                                        <li>
+                                            <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+                                        </li>
+                                    {% endif %}
+                                    <li class="active">
+                                        <a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+
+                                    </li>
+
+                                    {% if page_obj.has_next %}
+                                        <li>
+                                            <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                                        </li>
+                                        <li class="next">
+                                            <a href="{{ page_url }}?page={{ page_obj.next_page_number }}"><i
+                                                    class="arrow_right"></i></a>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            {% else %}
+                                <h4 dir="rtl" style="margin-top: 100px">کاربر هنوز تجربه‌ای به اشتراک نگذاشته است.</h4>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <div class="box filter">
+                        <ul class="links" dir="rtl">
+                            <li><a href="{% url 'user_dashboard' user.id %}">تجربیات سفر</a></li>
+                            <li><a href="{% url 'user_profile' %}">حساب کاربری</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {% block sidebar %}
+                    <div class="sidebar">
+                    <div class="box filter">
+                        <ul class="links" dir="rtl">
+                            <li><a href="{% url 'blog_create' user.id %}">اضافه کردن تجربه‌ی سفر</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

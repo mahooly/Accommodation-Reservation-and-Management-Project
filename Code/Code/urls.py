@@ -21,9 +21,11 @@ from Code import settings
 from accommodation import views as accommodation_views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('registration.urls')),
-    path('', include('accommodation.urls')),
-    path('', include('admin_dashboard.urls')),
-    path('', include('search_index.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+                  path('admin/', admin.site.urls),
+                  path('', include('registration.urls')),
+                  path('', include('accommodation.urls')),
+                  path('', include('admin_dashboard.urls')),
+                  path('', include('search_index.urls')),
+                  path('', include('blog.urls')),
+                  path('summernote/', include('django_summernote.urls')),
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

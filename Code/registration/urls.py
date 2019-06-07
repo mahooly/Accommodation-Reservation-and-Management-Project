@@ -1,6 +1,8 @@
 from django.conf.urls import url
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.views.generic import TemplateView
+
 from registration import views
 
 urlpatterns = [
@@ -16,4 +18,8 @@ urlpatterns = [
     path('become_host/', views.HostRegistration.as_view(), name='become_host'),
     path('host_dashboard/', views.HostDashboard.as_view(), name='host_dashboard'),
     path('user/<int:pk>/', views.ProfileView.as_view(), name='profile'),
+    path('host_dashboard/profile/', TemplateView.as_view(template_name='registration/host_profile.html'),
+         name='host_profile'),
+    path('user_dashboard/profile/', TemplateView.as_view(template_name='registration/user_profile.html'),
+         name='user_profile'),
 ]

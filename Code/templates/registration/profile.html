@@ -4,16 +4,45 @@
     <div class="container">
         <div class="row">
             <div class="pull-right" style="margin-right: 20px;">
-                <h1><a href="{% url 'profile' pk=customuser.pk %}"
-                       style="color: #488f3e;">{{ customuser.username }} </a> پروفایل </h1>
+                <h1></h1>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-9">
-                {% block contents %}
-                {% endblock %}
+            <div class="col-md-8">
+                {% for post in customuser.post_set.all %}
+                    <article class="blog-post">
+                        <a href="{% url 'blog_detail' post.id %}"><img src="{{ post.image.url }}"
+                                                                       style="height: 400px; width: 750px"></a>
+                        <header dir="rtl"><a href="{% url 'blog_detail' post.id %}"><h2>{{ post.title }}</h2></a>
+                        </header>
+                        <figure class="meta">
+                            <a href="#" class="link icon" dir="rtl"><i class="fa fa-calendar"></i>{{ post.date }}</a>
+                            <a href="{% url 'profile' customuser.id %}" class="link icon"><i
+                                    class="fa fa-user"></i>{{ customuser.username }}</a>
+                        </figure>
+                        {% if post.description|wordcount < 200 %}
+                            <div class="content-markdown">{{ post.description }}</div>
+                        {% else %}
+                            <div class="content-markdown"
+                                 style="height: 150px; overflow: hidden; margin-bottom: 20px">{{ post.description }}</div>
+                        {% endif %}
+                        <a href="{% url 'blog_detail' post.id %}"
+                           class="btn btn-rounded btn-default btn-framed btn-small">ادامه
+                            مطلب</a>
+                    </article>
+                {% endfor %}
+                {% if  customuser.post_set.all %}
+                    <div class="text-center" style="margin-bottom: 50px">
+                        <a href="{% url 'blog_list' customuser.id %}" class="icon scroll">مشاهده‌ی همه‌ی پست‌ها</a>
+                    </div>
+                {% else %}
+                    <div class="text-center" style="margin-top: 100px">
+                        <h4 dir="rtl">کاربر هنوز تجربه‌ای به اشتراک نگذاشته است.</h4>
+                    </div>
+                {% endif %}
+
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3  col-md-offset-1">
                 <div class="sidebar">
                     <div class="box filter tex">
                         <div class="text-center">
@@ -29,11 +58,20 @@
                             {% if customuser.is_host %}
                                 <li dir="rtl"><i class="fa fa-building"
                                                  style="padding-left: 5px"></i>{{ customuser.host.city }}</li>
-                                {% if request.user.is_authenticated and request.user.is_superuser %}
+                                {% if user.is_authenticated and user.is_superuser %}
                                     <li dir="rtl">{{ customuser.host.home_address }}</li>
                                     <li dir="rtl">{{ customuser.host.phone_number }}</li>
                                     <li dir="rtl"><a href="{{ customuser.host.passport_pic.url }}">شناسنامه</a></li>
                                 {% endif %}
+                                {% ifequal user.id customuser.id %}
+                                    <li dir="rtl">{{ customuser.host.home_address }}</li>
+                                    <li dir="rtl">{{ customuser.host.phone_number }}</li>
+                                    <li dir="rtl"><a href="{{ customuser.host.passport_pic.url }}">شناسنامه</a></li>
+                                    <li dir="rtl"></li>
+                                    <li dir="rtl"><a href="{% url 'blog_create' user.id %}"
+                                                     class="btn btn-primary btn-rounded scroll">اضافه کردن تجربه‌ی
+                                        سفر</a></li>
+                                {% endifequal %}
                             {% endif %}
                         </ul>
                     </div>

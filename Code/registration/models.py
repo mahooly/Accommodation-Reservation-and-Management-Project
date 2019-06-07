@@ -5,7 +5,7 @@ import datetime
 
 
 class CustomUser(AbstractUser):
-    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, default='Male')
+    gender = models.CharField(max_length=10, default='مرد')
     birth_date = models.DateField()
     image = models.ImageField(upload_to='../media/profile_pics/', default='../media/profile_pics/no-picture.png')
     is_host = models.BooleanField(default=False)
@@ -18,6 +18,10 @@ class CustomUser(AbstractUser):
         return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
 
     age = property(_get_age)
+
+    def _get_full_name(self):
+        return self.first_name + ' ' + self.last_name
+    full_name = property(_get_full_name)
 
 
 class Host(models.Model):
