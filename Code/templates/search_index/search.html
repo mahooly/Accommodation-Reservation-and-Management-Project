@@ -135,40 +135,44 @@
                         </div>
                     {% endfor %}
                     <div class="center">
-                        <ul class="pagination">
-                            {% if content.has_previous %}
-                                <li class="prev">
-                                    {% if page_url %}
-                                        <a href="{{ page_url }}&page={{ content.previous_page_number }}"><i
-                                                class="arrow_left"></i></a>
-                                    {% else %}
-                                        <a href="?page={{ content.previous_page_number }}"><i
-                                                class="arrow_left"></i></a>
-                                    {% endif %}
+                        {% if content %}
+                            <ul class="pagination">
+                                {% if content.has_previous %}
+                                    <li class="prev">
+                                        {% if page_url %}
+                                            <a href="{{ page_url }}&page={{ content.previous_page_number }}"><i
+                                                    class="arrow_left"></i></a>
+                                        {% else %}
+                                            <a href="?page={{ content.previous_page_number }}"><i
+                                                    class="arrow_left"></i></a>
+                                        {% endif %}
 
-                                </li>
-                            {% endif %}
-                            <li class="active">
-                                {% if page_url %}
-                                    <a href="{{ page_url }}&page={{ content.number }}">{{ content.number }}</a>
-                                {% else %}
-                                    <a href="?page={{ content.number }}">{{ content.number }}</a>
+                                    </li>
                                 {% endif %}
-
-                            </li>
-
-                            {% if content.has_next %}
-                                <li class="next">
+                                <li class="active">
                                     {% if page_url %}
-                                        <a href="{{ page_url }}&page={{ content.next_page_number.next_page_number }}"><i
-                                                class="arrow_right"></i></a>
+                                        <a href="{{ page_url }}&page={{ content.number }}">{{ content.number }}</a>
                                     {% else %}
-                                        <a href="?page={{ content.next_page_number.next_page_number }}"><i
-                                                class="arrow_right"></i></a>
+                                        <a href="?page={{ content.number }}">{{ content.number }}</a>
                                     {% endif %}
+
                                 </li>
-                            {% endif %}
-                        </ul>
+
+                                {% if content.has_next %}
+                                    <li class="next">
+                                        {% if page_url %}
+                                            <a href="{{ page_url }}&page={{ content.next_page_number.next_page_number }}"><i
+                                                    class="arrow_right"></i></a>
+                                        {% else %}
+                                            <a href="?page={{ content.next_page_number.next_page_number }}"><i
+                                                    class="arrow_right"></i></a>
+                                        {% endif %}
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        {% else %}
+                            <h4 dir="rtl" style="margin-top: 100px">موردی یافت نشد.</h4>
+                        {% endif %}
                     </div>
                 </div>
             </div>

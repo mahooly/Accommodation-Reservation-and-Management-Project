@@ -23,24 +23,6 @@
                         </div>
                     {% endfor %}
                 {% endif %}
-                {% if amenity_form.errors %}
-                    {% for field in amenity_form %}
-                        {% for error in field.errors %}
-                            <div class="alert alert-danger" dir="rtl" role="alert"
-                                 style="padding: 5px; text-align: center;">
-                                <b style="display: inline-block;">خطا! </b>
-                                <p style="display: inline-block;">{{ error|escape }}</p>
-                            </div>
-                        {% endfor %}
-                    {% endfor %}
-                    {% for error in amenity_form.non_field_errors %}
-                        <div class="alert alert-danger" dir="rtl" role="alert"
-                             style="padding: 5px; text-align: center;">
-                            <b style="display: inline-block;">خطا! </b>
-                            <p style="display: inline-block;">{{ error|escape }}</p>
-                        </div>
-                    {% endfor %}
-                {% endif %}
                 {% if image_form.errors %}
                     {% for field in form %}
                         {% for error in field.errors %}
@@ -191,64 +173,17 @@
                         <aside class="step">4</aside>
                     </div>
                     <div class="row">
-                        <div class="col-md-4 pull-right">
-                            <h3>تکنولوژی و چندرسانه‌ای</h3>
+                        <div class="col-md-12 pull-right">
                             <ul class="checkboxes inline half list-unstyled">
-                                <li><label><input type="checkbox" name="has_tv"
-                                                  value="{{ amenity_form.initial.has_tv }}">&nbsp;تلویزیون</label></li>
-                                <li><label><input type="checkbox" name="has_wifi"
-                                                  value="{{ amenity_form.initial.has_wifi }}">&nbsp;اینترنت</label></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 pull-right">
-                            <h3>سرویس‌ها</h3>
-                            <ul class="checkboxes inline half list-unstyled">
-                                <li><label><input type="checkbox" name="has_roomservice"
-                                                  value="{{ amenity_form.initial.has_roomservice }}">&nbsp;سرویس نظافت
-                                    اتاق</label>
-                                </li>
-                                <li><label><input type="checkbox" name="has_laundry"
-                                                  value="{{ amenity_form.initial.has_laundry }}">&nbsp;شست و شوی
-                                    لباس</label></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-4 pull-right">
-                            <h3>عمومی</h3>
-                            <ul class="checkboxes inline half list-unstyled">
-                                <li><label><input type="checkbox" name="has_parking"
-                                                  value="{{ amenity_form.initial.has_parking }}">&nbsp;پارکینگ</label>
-                                </li>
-                                <li><label><input type="checkbox" name="has_safe"
-                                                  value="{{ amenity_form.initial.has_safe }}">&nbsp;صندوق امانات</label>
-                                </li>
-                                <li><label><input type="checkbox" name="has_elevator"
-                                                  value="{{ amenity_form.initial.has_elevator }}">&nbsp;آسانسور</label>
-                                </li>
-                                <li><label><input type="checkbox" name="has_warm_ac"
-                                                  value="{{ amenity_form.initial.has_warm_ac }}">&nbsp;تهویه‌ی هوای گرم</label>
-                                </li>
-                                <li><label><input type="checkbox" name="has_cool_ac"
-                                                  value="{{ amenity_form.initial.has_cool_ac }}">&nbsp;تهویه‌ی هوای سرد</label>
-                                </li>
-                                <li><label><input type="checkbox" name="has_iron"
-                                                  value="{{ amenity_form.initial.has_iron }}">&nbsp;اتو</label></li>
-                            </ul>
-                        </div>
-                        <div class="col-md-4 pull-right">
-                            <h3>پخت و پز</h3>
-                            <ul class="checkboxes inline half list-unstyled">
-                                <li><label><input type="checkbox" name="has_kitchen"
-                                                  value="{{ amenity_form.initial.has_kitchen }}">&nbsp;آشپزخانه</label>
-                                </li>
-                                <li><label><input type="checkbox" name="has_utensils"
-                                                  value="{{ amenity_form.initial.has_utensils }}">&nbsp;وسابل
-                                    آشپزی</label></li>
-                                <li><label><input type="checkbox" name="has_fridge"
-                                                  value="{{ amenity_form.initial.has_fridge }}">&nbsp;یخچال</label></li>
-                                <li><label><input type="checkbox" name="has_oven"
-                                                  value="{{ amenity_form.initial.has_oven }}">&nbsp;گاز</label></li>
+                                {% for amenity in amenities %}
+                                    {% if amenity.pk in form.initial.amenity %}
+                                        <li><label><input type="checkbox" name="amenity" value="{{ amenity.pk }}"
+                                                          checked> {{ amenity.name }} </label></li>
+                                    {% else %}
+                                        <li><label><input type="checkbox" name="amenity"
+                                                          value="{{ amenity.pk }}"> {{ amenity.name }} </label></li>
+                                    {% endif %}
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>

@@ -1,15 +1,19 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic.detail import DetailView
 
 from Code.settings import DEFAULT_FROM_EMAIL
 from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm, FileFieldForm
-from .models import Accommodation, Room, Amenity, Image
-from django.views.generic import ListView
+from .models import Accommodation, Amenity, Image
+from registration.decorators import user_is_host
+from .decorators import user_same_as_accommodation_user, user_host_or_superuser, user_same_as_image_user
 
 
+@method_decorator([login_required, user_is_host], name='dispatch')
 class CreateAccommodationView(View):
     template_name = 'accommodation/create_accommodation.html'
 
@@ -50,6 +54,7 @@ class AccommodationDetailView(DetailView):
         return context
 
 
+@method_decorator([login_required, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class CreateRoomView(View):
     def post(self, request, *args, **kwargs):
         form = RoomCreationForm(request.POST, request.FILES)
@@ -70,6 +75,7 @@ class CreateRoomView(View):
             return redirect(url)
 
 
+@method_decorator([login_required, user_host_or_superuser], name='dispatch')
 class DeleteAccommodation(View):
     def get(self, request, *args, **kwargs):
         acc_pk = kwargs['pk']
@@ -89,6 +95,7 @@ class DeleteAccommodation(View):
             return redirect('/admin_dashboard/accommodations')
 
 
+@method_decorator([login_required, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class EditAccommodation(View):
     template_name = 'accommodation/edit_accommodation.html'
 
@@ -96,7 +103,8 @@ class EditAccommodation(View):
         accommodation_id = kwargs['pk']
         images = Image.objects.filter(accommodation_id=accommodation_id)
         accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
-        amenity = accommodation.amenity
+        amenity = [obj.pk for obj in accommodation.amenity.all()]
+        amenities = Amenity.objects.all()
         form = AccommodationChangeForm(instance=accommodation,
                                        initial={'title': accommodation.title,
                                                 'accommodation_type': accommodation.accommodation_type,
@@ -105,36 +113,26 @@ class EditAccommodation(View):
                                                 'phone': accommodation.phone,
                                                 'city': accommodation.city,
                                                 'province': accommodation.province,
-                                                'images': images})
-        amenity_form = AmenityForm(instance=amenity,
-                                   initial={'has_tv': amenity.has_tv, 'has_wifi': amenity.has_wifi,
-                                            'has_warm_ac': amenity.has_warm_ac,
-                                            'has_cool_ac': amenity.has_cool_ac, 'has_elevator': amenity.has_elevator,
-                                            'has_parking': amenity.has_parking, 'has_kitchen': amenity.has_kitchen,
-                                            'has_utensils': amenity.has_utensils, 'has_oven': amenity.has_oven,
-                                            'has_fridge': amenity.has_fridge,
-                                            'has_roomservice': amenity.has_roomservice,
-                                            'has_safe': amenity.has_safe, 'has_iron': amenity.has_iron
-                                            })
+                                                'images': images,
+                                                'amenity': amenity})
         image_form = FileFieldForm()
         return render(request, self.template_name,
-                      {'form': form, 'amenity_form': amenity_form, 'image_form': image_form})
+                      {'form': form, 'image_form': image_form, 'amenities': amenities})
 
     def post(self, request, *args, **kwargs):
         accommodation_id = kwargs['pk']
         accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
-        amenity = accommodation.amenity
         images = Image.objects.filter(accommodation_id=accommodation_id)
         form = AccommodationChangeForm(request.POST, request.FILES, instance=accommodation)
-        amenity_form = AmenityForm(request.POST, instance=amenity)
         image_form = FileFieldForm(request.POST, request.FILES)
-        if form.is_valid() and amenity_form.is_valid() and image_form.is_valid():
+        if form.is_valid() and image_form.is_valid():
             form.save()
-            amenity_form.save()
             messages.success(request, 'اطلاعات شما با موفقیت ثبت شد.')
             files = request.FILES.getlist('image')
             for f in files:
                 Image.objects.create(accommodation=accommodation, image=f)
+        amenity = [obj.pk for obj in accommodation.amenity.all()]
+        amenities = Amenity.objects.all()
         form = AccommodationChangeForm(instance=accommodation,
                                        initial={'title': accommodation.title,
                                                 'accommodation_type': accommodation.accommodation_type,
@@ -143,22 +141,14 @@ class EditAccommodation(View):
                                                 'phone': accommodation.phone,
                                                 'city': accommodation.city,
                                                 'province': accommodation.province,
-                                                'images': images})
-        amenity_form = AmenityForm(instance=amenity,
-                                   initial={'has_tv': amenity.has_tv, 'has_wifi': amenity.has_wifi,
-                                            'has_warm_ac': amenity.has_warm_ac,
-                                            'has_cool_ac': amenity.has_cool_ac, 'has_elevator': amenity.has_elevator,
-                                            'has_parking': amenity.has_parking, 'has_kitchen': amenity.has_kitchen,
-                                            'has_utensils': amenity.has_utensils, 'has_oven': amenity.has_oven,
-                                            'has_fridge': amenity.has_fridge,
-                                            'has_roomservice': amenity.has_roomservice,
-                                            'has_safe': amenity.has_safe, 'has_iron': amenity.has_iron
-                                            })
+                                                'images': images,
+                                                'amenity': amenity})
         image_form = FileFieldForm()
         return render(request, self.template_name,
-                      {'form': form, 'amenity_form': amenity_form, 'image_form': image_form})
+                      {'form': form, 'image_form': image_form, 'amenities': amenities})
 
 
+@method_decorator([login_required, user_is_host, user_same_as_image_user], name='dispatch')
 class DeleteImage(View):
     def get(self, request, *args, **kwargs):
         img_pk = kwargs['pk']
@@ -170,6 +160,7 @@ class DeleteImage(View):
         return redirect(url)
 
 
+@method_decorator([login_required, user_is_host], name='dispatch')
 class CreateAmenityView(View):
     def post(self, request, *args, **kwargs):
         form = AmenityForm(request.POST)

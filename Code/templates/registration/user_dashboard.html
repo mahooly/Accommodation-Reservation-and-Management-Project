@@ -21,8 +21,10 @@
                     <div class="main-content">
                         {% for post in object_list %}
                             <article class="blog-post">
-                                <a href="{% url 'blog_detail' post.id %}"><img src="{{ post.image.url }}"
-                                                                               style="width: 100%"></a>
+                                {% if post.image %}
+                                    <a href="{% url 'blog_detail' post.id %}"><img src="{{ post.image.url }}"
+                                                                                   style="width: 100%"></a>
+                                {% endif %}
                                 <header dir="rtl"><a href="{% url 'blog_detail' post.id %}"><h2>{{ post.title }}</h2>
                                 </a>
                                 </header>
@@ -84,17 +86,20 @@
                         <ul class="links" dir="rtl">
                             <li><a href="{% url 'user_dashboard' user.id %}">تجربیات سفر</a></li>
                             <li><a href="{% url 'user_profile' %}">حساب کاربری</a></li>
+                            {% if user.is_host %}
+                                <li><a href="{% url 'host_dashboard' %}">اقامتگاه‌ها</a></li>
+                            {% endif %}
                         </ul>
                     </div>
                 </div>
                 {% block sidebar %}
                     <div class="sidebar">
-                    <div class="box filter">
-                        <ul class="links" dir="rtl">
-                            <li><a href="{% url 'blog_create' user.id %}">اضافه کردن تجربه‌ی سفر</a></li>
-                        </ul>
+                        <div class="box filter">
+                            <ul class="links" dir="rtl">
+                                <li><a href="{% url 'blog_create' user.id %}">اضافه کردن تجربه‌ی سفر</a></li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
                 {% endblock %}
             </div>
         </div>

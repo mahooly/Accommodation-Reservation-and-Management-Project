@@ -11,7 +11,9 @@
                         <li><a href="#description" class="scroll">توضیحات</a></li>
                         <li><a href="#map" class="scroll">نقشه</a></li>
                         <li><a href="#facilities" class="scroll">امکانات</a></li>
-                        <li><a href="#rooms" class="scroll">اتاق‌ها</a></li>
+                        {% if accommodation.room_set.all %}
+                            <li><a href="#rooms" class="scroll">اتاق‌ها</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -137,39 +139,41 @@
                         </div>
                     </div>
                 </div>
-                <section id="rooms">
-                    <h2>اتاق‌ها</h2>
-                    <div class="form-reservations">
-                        <div class="table-responsive">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th style="text-align: start">نوع اتاق</th>
-                                    <th style="text-align: center">تعداد مهمان</th>
-                                    <th style="text-align: center">تعداد اتاق</th>
-                                </tr>
-                                </thead>
-                            </table>
+                {% if accommodation.room_set.all %}
+                    <section id="rooms">
+                        <h2>اتاق‌ها</h2>
+                        <div class="form-reservations">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th style="text-align: start">نوع اتاق</th>
+                                        <th style="text-align: center">تعداد مهمان</th>
+                                        <th style="text-align: center">تعداد اتاق</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            {% for room in accommodation.room_set.all %}
+                                <table class="table">
+                                    <tbody>
+                                    <tr class="room">
+                                        <td class="room-type" style="text-align: start">
+                                            <a href="" data-toggle="modal" data-tab="true"
+                                               data-target="#room-{{ room.id }}">
+                                                <h3>{% get_room_type room.bed_type %}</h3></a>
+                                            <p>{{ room.description }}</p>
+                                        </td>
+                                        <td class="persons" style="text-align: center">{{ room.number_of_guests }}<i
+                                                class="fa fa-user"></i></td>
+                                        <td class="persons" style="text-align: center">{{ room.how_many }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            {% endfor %}
                         </div>
-                        {% for room in accommodation.room_set.all %}
-                            <table class="table">
-                                <tbody>
-                                <tr class="room">
-                                    <td class="room-type" style="text-align: start">
-                                        <a href="" data-toggle="modal" data-tab="true"
-                                           data-target="#room-{{ room.id }}">
-                                            <h3>{% get_room_type room.bed_type %}</h3></a>
-                                        <p>{{ room.description }}</p>
-                                    </td>
-                                    <td class="persons" style="text-align: center">{{ room.number_of_guests }}<i
-                                            class="fa fa-user"></i></td>
-                                    <td class="persons" style="text-align: center">{{ room.how_many }}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        {% endfor %}
-                    </div>
-                </section>
+                    </section>
+                {% endif %}
             </div>
         </div>
         <div class="modal fade" id="add-room-modal" role="dialog"

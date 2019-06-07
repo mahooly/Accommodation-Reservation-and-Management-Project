@@ -46,6 +46,20 @@
                             <th scope="row">ایمیل:</th>
                             <td>{{ user.email }}</td>
                         </tr>
+                        {% if user.is_host %}
+                            <tr>
+                                <th scope="row">آدرس:</th>
+                                <td>{{ user.host.city }}، {{ user.host.home_address }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">تلفن:</th>
+                                <td>{{ user.host.phone_number }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"><a
+                                        href="{{ user.host.passport_pic }}">شناسنامه</a></td>
+                            </tr>
+                        {% endif %}
                         </tbody>
                     </table>
                 </div>
