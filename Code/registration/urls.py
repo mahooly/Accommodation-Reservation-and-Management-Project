@@ -16,10 +16,8 @@ urlpatterns = [
     path('login/', auth_views.LoginView.as_view(), name='login'),
     path('change_profile/', views.EditProfile.as_view(), name='update_profile'),
     path('become_host/', views.HostRegistration.as_view(), name='become_host'),
-    path('host_dashboard/', views.HostDashboard.as_view(), name='host_dashboard'),
+    path('user_dashboard/accommodations/', views.HostDashboard.as_view(), name='host_dashboard'),
     path('user/<int:pk>/', views.ProfileView.as_view(), name='profile'),
-    path('host_dashboard/profile/', TemplateView.as_view(template_name='registration/host_profile.html'),
-         name='host_profile'),
     path('user_dashboard/profile/', TemplateView.as_view(template_name='registration/user_profile.html'),
          name='user_profile'),
 ]

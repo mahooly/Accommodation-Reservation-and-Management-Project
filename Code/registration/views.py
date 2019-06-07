@@ -1,13 +1,16 @@
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import DetailView
 from django.views.generic import ListView
 from .forms import *
 from accommodation.models import Accommodation
+from .decorators import user_is_host
 
 
 class RegistrationView(View):
@@ -31,6 +34,7 @@ class RegistrationView(View):
         return render(request, self.template_name, {'form': form})
 
 
+@method_decorator(login_required, name='dispatch')
 class HostRegistration(View):
     form_class = HostForm
     template_name = 'registration/host.html'
@@ -53,6 +57,7 @@ class HostRegistration(View):
         return render(request, self.template_name, {'form': form})
 
 
+@method_decorator(login_required, name='dispatch')
 class EditProfile(View):
     template_name = 'registration/changeinfo.html'
 
@@ -84,6 +89,7 @@ class EditProfile(View):
         return render(request, self.template_name, {'user_form': user_form, 'password_form': password_form})
 
 
+@method_decorator([login_required, user_is_host], name='dispatch')
 class HostDashboard(ListView):
     template_name = 'registration/host_dashboard.html'
 

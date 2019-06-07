@@ -82,8 +82,8 @@ WSGI_APPLICATION = 'Code.wsgi.application'
 
 
 AUTHENTICATION_BACKENDS = (
-        'django.contrib.auth.backends.ModelBackend',
-    )
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 DATABASES = {
     'default': {
@@ -127,6 +127,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 AUTH_USER_MODEL = 'registration.CustomUser'
+LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
@@ -148,7 +149,6 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'Makan Team <noreply@makan.com>'
 
 SUMMERNOTE_CONFIG = {
-
     'width': '100%',
     'height': '600',
     'direction': 'rtl',

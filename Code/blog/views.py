@@ -1,14 +1,15 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import DetailView
 from django.views.generic import ListView
-
 from .models import Post, Comment
 from .forms import BlogCreationForm, CommentCreationForm
 from django.shortcuts import get_object_or_404, redirect
-from django.core.paginator import Paginator
 from registration.models import CustomUser
+from .decorators import user_same_as_comment_user_or_admin, user_same_as_dashboard_user
 
 
 class BlogListView(ListView):
@@ -31,6 +32,7 @@ class BlogListView(ListView):
         return context
 
 
+@method_decorator([login_required, user_same_as_dashboard_user], name='dispatch')
 class BlogCreateView(View):
     template_name = "blog/create_blog.html"
 
@@ -47,6 +49,7 @@ class BlogCreateView(View):
             url = '/blog/post/' + str(post.id)
             return redirect(url)
         else:
+            print(form.errors)
             return render(request, self.template_name, {'form': form})
 
 
@@ -55,6 +58,7 @@ class BlogDetailView(DetailView):
     model = Post
 
 
+@method_decorator(login_required, name='dispatch')
 class CreateCommentView(View):
     def post(self, request, *args, **kwargs):
         comment_form = CommentCreationForm(request.POST)
@@ -64,18 +68,22 @@ class CreateCommentView(View):
             comment.post = post
             comment.user = request.user
             comment.save()
-            url = '/post/' + str(post.id)
+            url = '/blog/post/' + str(post.id)
             messages.success(request, 'نظر شما با موفقیت ثبت شد.')
             return redirect(url)
         else:
             messages.error(request, 'ثبت نظر با مشکل مواجه شده است. لطفاً دوباره تلاش کنید.')
-            url = '/post/' + str(post.id)
+            url = '/blog/post/' + str(post.id)
             return redirect(url)
 
 
+@method_decorator([login_required, user_same_as_comment_user_or_admin], name='dispatch')
 class CommentDelete(View):
-    def get(self, request, comment_id, feed_id, username):
+    def get(self, request, *args, **kwargs):
+        comment_id = kwargs['id']
         comment = Comment.objects.get(id=comment_id)
+        post = comment.post
         comment.delete()
-        url = '/username=' + str(username) + '/blog_detail/blog_id=' + str(feed_id)
+        messages.warning(request, 'نظر حذف شد.')
+        url = '/blog/post/' + str(post.id)
         return redirect(url)

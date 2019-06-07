@@ -4,24 +4,34 @@
     <div class="container">
         <div class="row">
             <div class="col-md-10 col-md-offset-1">
-                {% if messages %}
-                    {% for message in messages %}
-                        {% ifequal message.tags 'success' %}
-                            <div class="alert alert-success" dir="rtl" role="alert"
-                                 style="padding: 5px; text-align: center;">
-                                <p style="display: inline-block;">{{ message }}</p>
-                            </div>
-                        {% endifequal %}
-                        {% ifequal message.tags 'error' %}
-                            <div class="alert alert-danger" dir="rtl" role="alert"
-                                 style="padding: 5px; text-align: center;">
-                                <p style="display: inline-block;">{{ message }}</p>
-                            </div>
-                        {% endifequal %}
-                    {% endfor %}
-                {% endif %}
-                <div class="main-content">
+                <div class="main-content" style="margin-top: 70px">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% ifequal message.tags 'success' %}
+                                <div class="alert alert-success" dir="rtl" role="alert"
+                                     style="padding: 5px; text-align: center;">
+                                    <p style="display: inline-block;">{{ message }}</p>
+                                </div>
+                            {% endifequal %}
+                            {% ifequal message.tags 'error' %}
+                                <div class="alert alert-danger" dir="rtl" role="alert"
+                                     style="padding: 5px; text-align: center;">
+                                    <p style="display: inline-block;">{{ message }}</p>
+                                </div>
+                            {% endifequal %}
+                            {% ifequal message.tags 'warning' %}
+                                <div class="alert alert-warning" dir="rtl" role="alert"
+                                     style="padding: 5px; text-align: center;">
+                                    <p style="display: inline-block;">{{ message }}</p>
+                                </div>
+                            {% endifequal %}
+                        {% endfor %}
+                    {% endif %}
                     <article class="blog-post">
+                        {% if post.image %}
+                            <a href="{% url 'blog_detail' post.id %}"><img src="{{ post.image.url }}"
+                                                                           style="width: 100%"></a>
+                        {% endif %}
                         <header dir="rtl"><a href="{% url 'blog_detail' post.id %}"><h2>{{ post.title }}</h2></a>
                         </header>
                         <figure class="meta">
@@ -39,6 +49,22 @@
                                 {% for comment in post.comment_set.all %}
                                     <li class="comment">
                                         <div class="comment-wrapper">
+                                            {% if user.is_authenticated and user.is_superuser %}
+                                                <a href="{% url 'comment_delete' comment.id %}"
+                                                   style="color: black; position: absolute; margin-right: 790px; margin-top: 10px"><i
+                                                        class="fa fa-close"></i></a>
+                                            {% else %}
+                                                {% ifequal comment.user user %}
+                                                    <a href="{% url 'comment_delete' comment.id %}"
+                                                       style="color: black; position: absolute; margin-right: 790px; margin-top: 10px"><i
+                                                            class="fa fa-close"></i></a>
+                                                {% endifequal %}
+                                                {% ifequal post.user user %}
+                                                    <a href="{% url 'comment_delete' comment.id %}"
+                                                       style="color: black; position: absolute; margin-right: 790px; margin-top: 10px"><i
+                                                            class="fa fa-close"></i></a>
+                                                {% endifequal %}
+                                            {% endif %}
                                             <div class="name"><a
                                                     href="{% url 'profile' comment.user.id %}">{{ comment.user.full_name }}</a>
                                             </div>
@@ -48,7 +74,7 @@
                                         </div>
                                         <figure>
                                             <div class="image">
-                                                <img alt="" src="{{ comment.user.image }}">
+                                                <img alt="" src="{{ comment.user.image.url }}">
                                             </div>
                                         </figure>
                                         <hr>

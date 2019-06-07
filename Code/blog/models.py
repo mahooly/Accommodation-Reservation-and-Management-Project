@@ -7,7 +7,7 @@ class Post(models.Model):
     title = models.CharField(max_length=20)
     description = models.TextField()
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to="../media/blog_pics/", default="../media/blog_pics/no-picture.png")
+    image = models.ImageField(upload_to="../media/blog_pics/", null=True, blank=True)
     province = models.CharField(max_length=40)
     city = models.CharField(max_length=40)
     date = models.DateField(auto_now=True)

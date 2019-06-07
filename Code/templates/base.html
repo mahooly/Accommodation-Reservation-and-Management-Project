@@ -50,10 +50,6 @@
                                         <div class="element">
                                             <a href="{% url 'admin_dashboard' %}">داشبورد</a>
                                         </div>
-                                    {% elif request.user.is_host %}
-                                        <div class="element">
-                                            <a href="{% url 'host_dashboard' %}">داشبورد</a>
-                                        </div>
                                     {% else %}
                                         <div class="element">
                                             <a href="{% url 'user_dashboard' user.id %}">داشبورد</a>

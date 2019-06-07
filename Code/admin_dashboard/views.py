@@ -1,6 +1,8 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.shortcuts import render, get_object_or_404, redirect
+from django.utils.decorators import method_decorator
 from django.views.generic import ListView
 
 from registration.models import CustomUser
@@ -8,13 +10,18 @@ from accommodation.models import Accommodation
 from django.views import View
 from Code.settings import DEFAULT_FROM_EMAIL
 from search_index.filters import AccommodationFilter
+from .decorators import user_is_superuser
+
+decorators = [login_required, user_is_superuser]
 
 
+@method_decorator(decorators, name='dispatch')
 class AdminUserDashboard(ListView):
     template_name = 'admin_dashboard/admin_dashboard_users.html'
     model = CustomUser
 
 
+@method_decorator(decorators, name='dispatch')
 class AdminAccommodationDashboard(ListView):
     template_name = 'admin_dashboard/admin_dashboard_accommodations.html'
     model = Accommodation
@@ -39,6 +46,7 @@ class AdminAccommodationDashboard(ListView):
         return context
 
 
+@method_decorator(decorators, name='dispatch')
 class DeleteUser(View):
     def get(self, request, *args, **kwargs):
         user_pk = kwargs['pk']
@@ -55,6 +63,7 @@ class DeleteUser(View):
         return redirect('/admin_dashboard/users')
 
 
+@method_decorator(decorators, name='dispatch')
 class AuthenticateAccommodation(View):
     def get(self, request, *args, **kwargs):
         acc_pk = kwargs['pk']

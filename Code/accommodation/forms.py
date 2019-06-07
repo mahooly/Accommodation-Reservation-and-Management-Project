@@ -4,7 +4,6 @@ from .models import Accommodation, Amenity, Room, Image
 
 
 class AccommodationCreationForm(forms.ModelForm):
-
     class Meta:
         model = Accommodation
         fields = ['accommodation_type', 'title', 'description', 'province', 'city', 'address', 'email',
@@ -37,11 +36,13 @@ class AccommodationChangeForm(forms.ModelForm):
     class Meta:
         model = Accommodation
         fields = ['accommodation_type', 'title', 'description', 'address', 'email',
-                  'phone']
+                  'phone', 'amenity']
+
+    def __init__(self, *args, **kwargs):
+        super(AccommodationChangeForm, self).__init__(*args, **kwargs)
+        self.fields["amenity"].widget = forms.widgets.CheckboxSelectMultiple()
+        self.fields["amenity"].queryset = Amenity.objects.all()
 
 
 class FileFieldForm(forms.Form):
     image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
-
-
-
