@@ -7,9 +7,9 @@ class LocationSearchForm(forms.Form):
 
 class FilterForm(forms.Form):
     province = forms.CharField(max_length=40, required=False)
-    hotel = forms.BooleanField()
-    motel = forms.BooleanField()
-    house = forms.BooleanField()
+    hotel = forms.BooleanField(required=False)
+    motel = forms.BooleanField(required=False)
+    house = forms.BooleanField(required=False)
     city = forms.CharField(max_length=40, required=False)
     
 

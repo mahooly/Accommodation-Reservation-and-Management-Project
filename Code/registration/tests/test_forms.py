@@ -78,4 +78,3 @@ class TestRegistrationForm(TestCase):
         form = CustomUserChangeForm(data=valid_data)
         form.is_valid()
         self.assertFalse(form.errors)
-# Create your tests here.
