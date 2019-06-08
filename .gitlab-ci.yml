@@ -36,7 +36,7 @@ push_to_heroku:
     - docker build . -t push_to_django
     - docker ps
     # This is for heroku
-    - docker login --username=arminbehnamnia@gmail.com  --password=a9c4912e-dc55-49f5-834b-282243349fba registry.heroku.com
+    - docker login --username=arminbehnamnia@gmail.com  --password=9e21ab09-d8fe-4549-a6ee-1fc751623668 registry.heroku.com
     - docker tag push_to_django:latest registry.heroku.com/makan-system/web:latest
     - docker push registry.heroku.com/makan-system/web:latest
 
