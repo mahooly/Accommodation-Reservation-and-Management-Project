@@ -1,18 +1,12 @@
 from registration.models import CustomUser, Host
 from django.contrib.messages.storage.fallback import FallbackStorage
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.http import HttpRequest
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from registration.views import EditProfile, HostRegistration
 from django.core.files.uploadedfile import SimpleUploadedFile
 import os
 import datetime
-import filecmp
-import Code.settings as settings
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.sessions.middleware import SessionMiddleware
-from django.contrib.messages.middleware import MessageMiddleware
+
 
 class TestUserRegistrationView(TestCase):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -23,15 +17,16 @@ class TestUserRegistrationView(TestCase):
     def setUp(self):
         self.client = Client()
         self.img = SimpleUploadedFile(name='test_image.jpg', content=open(self.image_path, 'rb').read(),
-                                  content_type='image/jpeg')
+                                      content_type='image/jpeg')
         self.img2 = SimpleUploadedFile(name='test_image2.jpg', content=open(self.image_path2, 'rb').read(),
-                                  content_type='image/jpeg')
+                                       content_type='image/jpeg')
 
     def createUser(self):
         the_user = CustomUser.objects.create(username="armin_gm", email="arminbehnamnia@gmail.com",
-                                  last_name="armin", first_name="behnamnia",
-                                  birth_date=datetime.date(year=1995, month=11, day=7), is_host=False, gender="male",
-                                  image=self.img)
+                                             last_name="armin", first_name="behnamnia",
+                                             birth_date=datetime.date(year=1995, month=11, day=7), is_host=False,
+                                             gender="male",
+                                             image=self.img)
         the_user.save()
         return the_user
 
@@ -49,9 +44,9 @@ class TestUserRegistrationView(TestCase):
 
         # test req method POST with valid data
         req_data = {
-            "username" : "armin_gm", "password1" : "armin123456", "password2" : "armin123456", "first_name" : "armin"
-            , "last_name" : "behnamnia", "email" : "arminbehnamnia@gmail.com", "gender" : "male"
-            , "birth_date" : datetime.date(year=1995, month=11, day=7), "image" : self.img
+            "username": "armin_gm", "password1": "armin123456", "password2": "armin123456", "first_name": "armin"
+            , "last_name": "behnamnia", "email": "arminbehnamnia@gmail.com", "gender": "male"
+            , "birth_date": datetime.date(year=1995, month=11, day=7), "image": self.img
         }
         response = self.client.post(url, req_data)
         self.assertEqual(response.status_code, 302)
@@ -62,17 +57,13 @@ class TestUserRegistrationView(TestCase):
         self.assertEqual(customUser.email, req_data["email"])
         self.assertEqual(customUser.birth_date, req_data["birth_date"])
         self.assertEqual(customUser.gender, req_data["gender"])
-        #self.assertEqual(customUser.image.url, "d")
-        #self.assertEqual(os.path.join(settings.BASE_DIR, customUser.image.path), self.image_path)
-        #self.assertEqual(customUser.image.name, "fff")
-        #self.assertTrue(filecmp.cmp(os.path.join(settings.BASE_DIR, customUser.image.path), self.image_path))
 
         # test req method POST with invalid data
         # testing if existing username is accepted
         req_data = {
-            "username" : "armin_gm", "password1" : "ain123456", "password2" : "ain123456", "first_name" : "rmin"
-            , "last_name" : "behnamni", "email" : "inbehnamnia@gmail.com", "gender" : "female"
-            , "birth_date" : datetime.date(year=1995, month=11, day=7), "is_host" : True, "image" : self.img
+            "username": "armin_gm", "password1": "ain123456", "password2": "ain123456", "first_name": "rmin"
+            , "last_name": "behnamni", "email": "inbehnamnia@gmail.com", "gender": "female"
+            , "birth_date": datetime.date(year=1995, month=11, day=7), "is_host": True, "image": self.img
         }
         response = self.client.post(url, req_data)
         self.assertEqual(response.status_code, 200)
@@ -80,9 +71,9 @@ class TestUserRegistrationView(TestCase):
 
         # test req method POST with invalid data
         req_data = {
-            "username" : "armin_gm", "password1" : "armin123456", "password2" : "armin123457", "first_name" : "armin"
-            , "last_name" : "behnamnia", "email" : "arminbehnamnia@gmail.com", "gender" : "male"
-            , "birth_date" : datetime.date(year=1995, month=11, day=7), "image" : self.img
+            "username": "armin_gm", "password1": "armin123456", "password2": "armin123457", "first_name": "armin"
+            , "last_name": "behnamnia", "email": "arminbehnamnia@gmail.com", "gender": "male"
+            , "birth_date": datetime.date(year=1995, month=11, day=7), "image": self.img
         }
         response = self.client.post(url, req_data)
         self.assertEqual(response.status_code, 200)
@@ -125,19 +116,6 @@ class TestUserRegistrationView(TestCase):
         self.assertEqual(host.city, req_data["city"])
         self.assertTrue(host.user.is_host)
 
-    # def setup_request(self, request):
-    #     request.user = self.u2
-    #
-    #     """Annotate a request object with a session"""
-    #     middleware = SessionMiddleware()
-    #     middleware.process_request(request)
-    #     request.session.save()
-    #
-    #     """Annotate a request object with a messages"""
-    #     middleware = MessageMiddleware()
-    #     middleware.process_request(request)
-    #     request.session.save()
-
     def test_editProfile(self):
         url = reverse("update_profile")
         the_user = self.createUser()
@@ -160,8 +138,8 @@ class TestUserRegistrationView(TestCase):
         response = view(req)
         self.assertEqual(response.status_code, 200)
 
-    #   # test req method POST with valid data, changing user_form
-        req_data = {"email": "gamemaking.ar@gmail.com", "gender":"female", "image":self.img2, "user_form":True}
+        #   # test req method POST with valid data, changing user_form
+        req_data = {"email": "gamemaking.ar@gmail.com", "gender": "female", "image": self.img2, "user_form": True}
         req = self.request_factory.post(url, data=req_data)
         req.user = the_user
         setattr(req, 'session', 'session')
@@ -175,7 +153,7 @@ class TestUserRegistrationView(TestCase):
         self.assertEqual(stored_user.email, req_data["email"])
 
         # test req method POST with valid data, changing password_form
-        req_data = {"old_password": "armin1234", "new_password1":"xyzt4321tres", "new_password2":"xyzt4321tres"}
+        req_data = {"old_password": "armin1234", "new_password1": "xyzt4321tres", "new_password2": "xyzt4321tres"}
         req = self.request_factory.post(url, data=req_data)
         req.user = the_user
         setattr(req, 'session', the_session)
@@ -190,7 +168,8 @@ class TestUserRegistrationView(TestCase):
         the_user.save()
 
         # test req method POST with invalid data, changing password_form, wrong old_password
-        req_data_invalid = {"old_password": "armin4321", "new_password1":"xyzt4321tres", "new_password2":"xyzt4321tres"}
+        req_data_invalid = {"old_password": "armin4321", "new_password1": "xyzt4321tres",
+                            "new_password2": "xyzt4321tres"}
         req = self.request_factory.post(url, data=req_data_invalid)
         req.user = the_user
         setattr(req, 'session', the_session)
@@ -205,7 +184,7 @@ class TestUserRegistrationView(TestCase):
         the_user.save()
 
         # test req method POST with invalid data, changing password_form, new passwords mismatch
-        req_data_invalid = {"old_password": "armin1234", "new_password1":"xyzt4321tres", "new_password2":"xyzt41tres"}
+        req_data_invalid = {"old_password": "armin1234", "new_password1": "xyzt4321tres", "new_password2": "xyzt41tres"}
         req = self.request_factory.post(url, data=req_data_invalid)
         req.user = the_user
         setattr(req, 'session', the_session)

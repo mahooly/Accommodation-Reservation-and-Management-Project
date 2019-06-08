@@ -1,11 +1,9 @@
 from django.test import TestCase
 from registration.models import CustomUser, Host
 import datetime
-from registration.forms import CustomUserCreationForm, CustomUserChangeForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 import os
 from Code.settings import BASE_DIR
-import logging
 import filecmp
 
 
@@ -15,13 +13,13 @@ class TestRegistrationModels(TestCase):
 
     def setUp(self):
         self.img = SimpleUploadedFile(name='test_image.jpg', content=open(self.image_path, 'rb').read(),
-                                            content_type='image/jpeg')
+                                      content_type='image/jpeg')
 
     def testCustomUser(self):
-        exp_data = {"username":"armin_gm", "password":"armin1234", "email":"arminbehnamnia@gmail.com",
-                                  "last_name":"armin", "first_name":"behnamnia",
-                                  "birth_date":datetime.date(year=1995, month=11, day=7), "is_host":True, "gender":"female",
-                                  "image":self.img}
+        exp_data = {"username": "armin_gm", "password": "armin1234", "email": "arminbehnamnia@gmail.com",
+                    "last_name": "armin", "first_name": "behnamnia",
+                    "birth_date": datetime.date(year=1995, month=11, day=7), "is_host": True, "gender": "female",
+                    "image": self.img}
         CustomUser.objects.create(username="armin_gm", password="armin1234", email="arminbehnamnia@gmail.com",
                                   last_name="armin", first_name="behnamnia",
                                   birth_date=datetime.date(year=1995, month=11, day=7), is_host=True, gender="female",
@@ -44,8 +42,9 @@ class TestRegistrationModels(TestCase):
                                   image=self.img)
         customUser = CustomUser.objects.get(username="armin_gm")
 
-        exp_data = {"user":customUser, "passport_pic":self.img, "home_address":"Azadi St., Sharif University of Tech",
-                    "phone_number":"02144445555", "city":"Tehran"}
+        exp_data = {"user": customUser, "passport_pic": self.img,
+                    "home_address": "Azadi St., Sharif University of Tech",
+                    "phone_number": "02144445555", "city": "Tehran"}
         Host.objects.create(user=customUser, passport_pic=self.img, home_address="Azadi St., Sharif University of Tech",
                             phone_number="02144445555", city="Tehran")
         self.assertEqual(Host.objects.count(), 1)
@@ -54,6 +53,3 @@ class TestRegistrationModels(TestCase):
         self.assertEqual(host.home_address, exp_data["home_address"])
         self.assertEqual(host.phone_number, exp_data["phone_number"])
         self.assertEqual(host.city, exp_data["city"])
-
-
-

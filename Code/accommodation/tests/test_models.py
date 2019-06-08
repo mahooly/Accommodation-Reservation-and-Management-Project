@@ -1,13 +1,10 @@
 from django.test import TestCase
 from ..models import Amenity, Accommodation, Room, Image
-from ..choices import ACCOMMODATION_TYPE_CHOICES
 import datetime
 from django.core.files.uploadedfile import SimpleUploadedFile
 import os
-from Code.settings import BASE_DIR
-import logging
-import filecmp
 from registration.models import Host, CustomUser
+
 
 class TestAccommodationModels(TestCase):
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -15,17 +12,17 @@ class TestAccommodationModels(TestCase):
 
     def setUp(self):
         self.img = SimpleUploadedFile(name='test_image.jpg', content=open(self.image_path, 'rb').read(),
-                                            content_type='image/jpeg')
+                                      content_type='image/jpeg')
 
     def createAmenity(self):
-        exp_data = {"name":"Couch", "label":"Red"}
+        exp_data = {"name": "Couch", "label": "Red"}
         amenity = Amenity.objects.create(name="Couch", label="Red")
         amenity.save()
         return amenity
 
     def testAmenity(self):
         am_count = Amenity.objects.count()
-        exp_data = {"name":"Couch", "label":"Red"}
+        exp_data = {"name": "Couch", "label": "Red"}
         amenity = Amenity.objects.create(name="Couch", label="Red")
         amenity.save()
         self.assertEqual(Amenity.objects.count(), am_count + 1)
@@ -34,25 +31,28 @@ class TestAccommodationModels(TestCase):
 
     def createHost(self):
         the_user = CustomUser.objects.create(username="armin_gm", email="arminbehnamnia@gmail.com",
-                                  last_name="armin", first_name="behnamnia",
-                                  birth_date=datetime.date(year=1995, month=11, day=7), is_host=False, gender="male",
-                                  image=self.img)
+                                             last_name="armin", first_name="behnamnia",
+                                             birth_date=datetime.date(year=1995, month=11, day=7), is_host=False,
+                                             gender="male",
+                                             image=self.img)
         the_user.save()
         the_host = Host.objects.create(user=the_user, passport_pic=self.img,
-                    home_address="Azadi St., Sharif University of Tech", phone_number="02144445555",
-                    city="Tehran")
+                                       home_address="Azadi St., Sharif University of Tech", phone_number="02144445555",
+                                       city="Tehran")
         the_host.save()
         return the_host
 
     def createAccommodation(self):
         the_host = self.createHost()
         the_amenity = self.createAmenity()
-        exp_data = {"owner":the_host, "title":"Model_Ghoo", "description":"A decent luxury hotel.",
-                    "accommodation_type": "هتل", "province":"Tehran", "city":"Tehran", "address": "1234",
+        exp_data = {"owner": the_host, "title": "Model_Ghoo", "description": "A decent luxury hotel.",
+                    "accommodation_type": "هتل", "province": "Tehran", "city": "Tehran", "address": "1234",
                     "phone": "02144239859", "email": "armin@gmail.com", "amenity": the_amenity}
-        the_accommodation = Accommodation.objects.create(owner=the_host, title="Model_Ghoo", description="A decent luxury hotel.",
-                    accommodation_type="هتل", province="Tehran", city="Tehran", address= "1234",
-                    phone="02144239859", email= "armin@gmail.com")
+        the_accommodation = Accommodation.objects.create(owner=the_host, title="Model_Ghoo",
+                                                         description="A decent luxury hotel.",
+                                                         accommodation_type="هتل", province="Tehran", city="Tehran",
+                                                         address="1234",
+                                                         phone="02144239859", email="armin@gmail.com")
         the_accommodation.amenity.add(the_amenity)
         the_accommodation.save()
         return the_accommodation
@@ -61,12 +61,14 @@ class TestAccommodationModels(TestCase):
         acc_count = Accommodation.objects.count()
         the_host = self.createHost()
         the_amenity = self.createAmenity()
-        exp_data = {"owner":the_host, "title":"Model_Ghoo", "description":"A decent luxury hotel.",
-                    "accommodation_type": "هتل", "province":"Tehran", "city":"Tehran", "address": "1234",
+        exp_data = {"owner": the_host, "title": "Model_Ghoo", "description": "A decent luxury hotel.",
+                    "accommodation_type": "هتل", "province": "Tehran", "city": "Tehran", "address": "1234",
                     "phone": "02144239859", "email": "armin@gmail.com", "amenity": the_amenity}
-        the_accommodation = Accommodation.objects.create(owner=the_host, title="Model_Ghoo", description="A decent luxury hotel.",
-                    accommodation_type="هتل", province="Tehran", city="Tehran", address= "1234",
-                    phone= "02144239859", email= "armin@gmail.com")
+        the_accommodation = Accommodation.objects.create(owner=the_host, title="Model_Ghoo",
+                                                         description="A decent luxury hotel.",
+                                                         accommodation_type="هتل", province="Tehran", city="Tehran",
+                                                         address="1234",
+                                                         phone="02144239859", email="armin@gmail.com")
         the_accommodation.amenity.add(the_amenity)
         the_accommodation.save()
         self.assertEqual(Accommodation.objects.count(), acc_count + 1)
@@ -81,8 +83,8 @@ class TestAccommodationModels(TestCase):
         self.assertEqual(the_accommodation.amenity.all()[0], exp_data["amenity"])
 
         # testing accommodation model methods
-        data_1 = {"description":"a convenient room.",
-                    "bed_type":"Single", "number_of_guests":4, "image":self.img, "how_many":1}
+        data_1 = {"description": "a convenient room.",
+                  "bed_type": "Single", "number_of_guests": 4, "image": self.img, "how_many": 1}
         data_2 = {"description": "a double convenient room.",
                   "bed_type": "Double", "number_of_guests": 6, "image": self.img, "how_many": 1}
         data_3 = {"description": "a twin convenient room.",
@@ -105,11 +107,10 @@ class TestAccommodationModels(TestCase):
         self.assertEqual(the_accommodation.guests, the_room_1.number_of_guests + the_room_2.number_of_guests +
                          the_room_3.number_of_guests)
 
-    # doesn't fill amenity
     def createRoomFromAccomodation(self, accommodation, data):
         the_room = Room.objects.create(accommodation=accommodation, description=data["description"],
                                        bed_type=data["bed_type"], number_of_guests=data["number_of_guests"],
-                                       image=data["image"],how_many=data["how_many"])
+                                       image=data["image"], how_many=data["how_many"])
         the_room.save()
         return the_room
 
@@ -118,9 +119,9 @@ class TestAccommodationModels(TestCase):
         the_accommodation = self.createAccommodation()
         the_amenity = the_accommodation.amenity.all()[0]
         exp_data = {"accommodation": the_accommodation, "amenity": the_amenity, "description": "a convenient room.",
-                    "bed_type":"Single", "number_of_guests":4, "image": self.img, "how_many": 2}
+                    "bed_type": "Single", "number_of_guests": 4, "image": self.img, "how_many": 2}
         the_room = Room.objects.create(accommodation=the_accommodation, description="a convenient room.",
-                    bed_type="Single", number_of_guests=4, image=self.img, how_many=2)
+                                       bed_type="Single", number_of_guests=4, image=self.img, how_many=2)
         the_room.amenity.add(the_amenity)
         the_room.save()
         self.assertEqual(Room.objects.count(), r_count + 1)
@@ -132,12 +133,6 @@ class TestAccommodationModels(TestCase):
         self.assertEqual(the_room.number_of_guests, exp_data["number_of_guests"])
         self.assertEqual(the_room.how_many, exp_data["how_many"])
 
-        #test if it is checked that room amenities belongs to its accommodation
-        # the_amenity2 = Amenity.objects.create(name="Table", label="Wooden")
-        # the_amenity2.save()
-        # the_room.amenity.all().delete()
-        # the_room.amenity.add(the_amenity2)
-
     def testImage(self):
         the_accommodation = self.createAccommodation()
         exp_data = {"accommodation": the_accommodation, "image": self.img}
@@ -145,5 +140,3 @@ class TestAccommodationModels(TestCase):
         the_image.save()
         self.assertEqual(Image.objects.count(), 1)
         self.assertEqual(the_image.accommodation, exp_data["accommodation"])
-        #self.assertEqual(the_image.image, exp_data["image"])
-

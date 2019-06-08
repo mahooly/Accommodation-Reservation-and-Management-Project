@@ -1,5 +1,3 @@
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.http import HttpRequest
 from django.test import TestCase, Client, RequestFactory
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.urls import reverse
@@ -10,11 +8,6 @@ from ..models import Amenity, Accommodation
 from ..forms import AccommodationCreationForm, FileFieldForm
 import os
 import datetime
-import filecmp
-import Code.settings as settings
-from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.sessions.middleware import SessionMiddleware
-from django.contrib.messages.middleware import MessageMiddleware
 
 
 class TestAccommocationView(TestCase):
@@ -33,19 +26,20 @@ class TestAccommocationView(TestCase):
 
     def createHost(self):
         the_user = CustomUser.objects.create(username="armin_gm", email="arminbehnamnia@gmail.com",
-                                  last_name="armin", first_name="behnamnia",
-                                  birth_date=datetime.date(year=1995, month=11, day=7), is_host=False, gender="male",
-                                  image=self.img)
+                                             last_name="armin", first_name="behnamnia",
+                                             birth_date=datetime.date(year=1995, month=11, day=7), is_host=False,
+                                             gender="male",
+                                             image=self.img)
         the_user.is_host = True
         the_user.save()
         the_host = Host.objects.create(user=the_user, passport_pic=self.img,
-                    home_address="Azadi St., Sharif University of Tech", phone_number="02144445555",
-                    city="Tehran")
+                                       home_address="Azadi St., Sharif University of Tech", phone_number="02144445555",
+                                       city="Tehran")
         the_host.save()
         return the_host
 
     def createAmenity(self, index):
-        amenity = Amenity.objects.create(name="Couch"+str(index), label="Red")
+        amenity = Amenity.objects.create(name="Couch" + str(index), label="Red")
         amenity.save()
         return amenity
 
@@ -99,6 +93,33 @@ class TestAccommocationView(TestCase):
         #
         # self.assertEqual(response.status_code, 302)
         # self.assertEqual(Accommodation.objects.count(), 1)
+        # test req mothod POST with valid data
+        the_amenity1 = self.createAmenity(1)
+        the_amenity2 = self.createAmenity(2)
+        the_amenity1.save()
+        the_amenity2.save()
+
+        req_data = {'accommodation_type': "هتل", 'title': "Model_Ghoo", 'description': "A decent luxury hotel.",
+                    'province': "Tehran", 'city': "Tehran", 'address': "1234", 'email': "armin@gmail.com",
+                    'phone': "02144239859", 'amenity': [the_amenity1, the_amenity2], 'image': self.img}
+        content_type = "multipart/form-data; boundary=------------------------1493314174182091246926147632"
+        req = self.request_factory.post(url, data=req_data, content_type=content_type)
+        # req.FILES['image'] = [self.img_content]
+        req.user = the_user
+        setattr(req, 'session', the_session)
+        messages = FallbackStorage(req)
+        setattr(req, '_messages', messages)
+        view = CreateAccommodationView.as_view()
+        response = view(req)
+        form = AccommodationCreationForm(data=req_data)
+        form.is_valid()
+        self.assertFalse(form.errors)
+        image_form = FileFieldForm(files={'image': self.img_content})
+        image_form.is_valid()
+        self.assertFalse(image_form.errors)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Accommodation.objects.count(), 1)
 
         def tearDown(self) -> None:
             self.img_content.close()
