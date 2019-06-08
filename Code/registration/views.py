@@ -22,7 +22,7 @@ class RegistrationView(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
+        form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
@@ -85,6 +85,11 @@ class EditProfile(View):
                 user = password_form.save()
                 update_session_auth_hash(request, user)
                 messages.success(request, 'اطلاعات شما با موفقیت ثبت شد.')
+
+        password_form = PasswordChangeForm(request.user)
+        user_form = CustomUserChangeForm(instance=request.user,
+                                         initial={'email': request.user.email, 'gender': request.user.gender,
+                                                  'image': request.user.image})
 
         return render(request, self.template_name, {'user_form': user_form, 'password_form': password_form})
 
