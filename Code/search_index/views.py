@@ -38,7 +38,7 @@ class SearchView(View):
                     accommodation_type__iexact=is_house))
         q = AccommodationFilter(request.GET, queryset=q).qs
 
-        paginator = Paginator(q, 10)
+        paginator = Paginator(q, 5)
         page = request.GET.get('page')
         content = paginator.get_page(page)
 

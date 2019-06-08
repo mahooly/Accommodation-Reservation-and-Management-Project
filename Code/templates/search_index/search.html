@@ -161,10 +161,10 @@
                                 {% if content.has_next %}
                                     <li class="next">
                                         {% if page_url %}
-                                            <a href="{{ page_url }}&page={{ content.next_page_number.next_page_number }}"><i
+                                            <a href="{{ page_url }}&page={{ content.next_page_number}}"><i
                                                     class="arrow_right"></i></a>
                                         {% else %}
-                                            <a href="?page={{ content.next_page_number.next_page_number }}"><i
+                                            <a href="?page={{ content.next_page_number }}"><i
                                                     class="arrow_right"></i></a>
                                         {% endif %}
                                     </li>
