@@ -50,19 +50,20 @@ class TestAdminDashboardView(TestCase):
         self.img2 = SimpleUploadedFile(name='test_image2.jpg', content=open(self.image_path2, 'rb').read(),
                                   content_type='image/jpeg')
 
-    def test_adminAccommodationDashboard(self):
-        the_host = self.createHost()
-        the_amenity = self.createAmenity()
-        the_host.user.is_superuser = True
-        the_user = the_host.user
-        url = reverse('admin_dashboard_accommodations')
-        self.client.force_login(the_user)
-        aa_dashboard = AdminAccommodationDashboard.as_view()
-        req_data = {"owner":the_host, "title":"Model_Ghoo", "description":"A decent luxury hotel.",
-                    "accommodation_type": "هتل", "province":"Tehran", "city":"Tehran", "address": "1234",
-                    "phone": "02144239859", "email": "armin@gmail.com", "amenity": the_amenity}
-        req = self.request_factory.get(url, req_data)
-        aa_dashboard(req)
+    # def test_adminAccommodationDashboard(self):
+    #     pass
+        # the_host = self.createHost()
+        # the_amenity = self.createAmenity()
+        # the_host.user.is_superuser = True
+        # the_user = the_host.user
+        # url = reverse('admin_dashboard_accommodations')
+        # self.client.force_login(the_user)
+        # aa_dashboard = AdminAccommodationDashboard.as_view()
+        # req_data = {"owner":the_host, "title":"Model_Ghoo", "description":"A decent luxury hotel.",
+        #             "accommodation_type": "هتل", "province":"Tehran", "city":"Tehran", "address": "1234",
+        #             "phone": "02144239859", "email": "armin@gmail.com", "amenity": the_amenity}
+        # req = self.request_factory.get(url, req_data)
+        # aa_dashboard(req)
         # aa_dashboard.get_queryset()
         # aa_dashboard.get_context_data()
 #        response = self.client.get(url)
