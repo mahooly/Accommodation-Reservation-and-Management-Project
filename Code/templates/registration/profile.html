@@ -52,7 +52,13 @@
     line-height: 25px;">
                             <li dir="rtl">{{ customuser.first_name }} {{ customuser.last_name }}</li>
                             <li>
-                                <figure class="label label-info large">میزبان</figure>
+                                {% if customuser.is_host %}
+                                    <figure class="label label-info large">میزبان</figure>
+                                {% elif customuser.is_superuser %}
+                                    <figure class="label label-info large">مدیر</figure>
+                                {% else %}
+                                    <figure class="label label-info large">کاربر</figure>
+                                {% endif %}
                             </li>
                             <li dir="rtl">{{ customuser.age }} سال</li>
                             {% if customuser.is_host %}
