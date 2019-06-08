@@ -15,7 +15,7 @@ from .decorators import user_same_as_comment_user_or_admin, user_same_as_dashboa
 class BlogListView(ListView):
     template_name = "blog/blog-list.html"
     model = Post
-    paginate_by = 10
+    paginate_by = 3
     ordering = '-date'
 
     def get_queryset(self):
