@@ -12,7 +12,7 @@ tests:
   script:
     - docker build . -t test_django
     - docker ps
-    - docker run --name=testDjango test_django python /makanapp/Code/manage.py test registration
+    - docker run --name=testDjango test_django python /makanapp/Code/manage.py test registration blog accommodation admin_dashboard search_index
   when: on_success
 build:
   image: docker:latest
@@ -29,10 +29,13 @@ push_to_heroku:
   stage: push
   services:
   - docker:dind
-  script:
-    # This is for gitlab
+  before_script:
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
-    - docker pull  registry.gitlab.com/armin_gm/asd_project_98_6:latest
+  script:
+    - docker build . -t test_django
+    - docker ps
+    - docker run --name=testDjango test_django python /makanapp/Code/manage.py test registration blog accommodation admin_dashboard search_index
+    - docker pull registry.gitlab.com/armin_gm/asd_project_98_6:latest
     # This is for heroku
     - docker login --username=arminbehnamnia@gmail.com  --password=a9c4912e-dc55-49f5-834b-282243349fba registry.heroku.com
     - docker tag registry.gitlab.com/armin_gm/asd_project_98_6:latest registry.heroku.com/makan-system/web:latest
