@@ -32,7 +32,7 @@ push_to_heroku:
   script:
     # This is for gitlab
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
-#   - docker pull  registry.gitlab.com/armin_gm/asd_project_98_6:latest
+    - docker pull  registry.gitlab.com/armin_gm/asd_project_98_6:latest
 #    - docker build . -t push_to_django
 #    - docker ps
 #    # This is for heroku
