@@ -1,8 +1,13 @@
+
 {% extends 'base.html' %}
 {% load accommodation_extras %}
 
 
+
 {% block main %}
+
+
+
     <div class="container">
         <div class="col-md-12 col-sm-12 pull-right" dir="rtl">
             <div class="quick-navigation" data-fixed-after-touch="">
@@ -150,6 +155,7 @@
                                         <th style="text-align: start">نوع اتاق</th>
                                         <th style="text-align: center">تعداد مهمان</th>
                                         <th style="text-align: center">تعداد اتاق</th>
+                                        <th style="text-align: center"></th>
                                     </tr>
                                     </thead>
                                 </table>
@@ -167,6 +173,73 @@
                                         <td class="persons" style="text-align: center">{{ room.number_of_guests }}<i
                                                 class="fa fa-user"></i></td>
                                         <td class="persons" style="text-align: center">{{ room.how_many }}</td>
+                                        <td class="persons" style="text-align: center">
+                                            <div class="center"><a data-toggle="modal" data-tab="true" data-target="#reserve-modal" class="btn btn-framed btn-default btn-rounded">رزرو</a></div>
+
+                                            <div class="modal fade" id="reserve-modal" role="dialog"
+                                                 aria-labelledby="sign-in-register-modal">
+                                                <div class="wrapper">
+                                                    <div class="inner">
+                                                        <div class="modal-dialog width-400px" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                                                            aria-hidden="true">&times;</span></button>
+                                                                    <ul class="nav nav-tabs " >
+                                                                        <li role="presentation" class="active" dir="rtl" style="text-align:right"><a href="#tab-sign-in"
+                                                                                                                  aria-controls="tab-sign-in" role="tab"
+                                                                                                                  data-toggle="tab"><h1
+                                                                                style="margin-left: 150px" dir="rtl" >رزرو اتاق</h1></a></li>
+                                                                    </ul>
+                                                                </div>
+                                                                <div class="modal-body" dir="rtl" style="text-align:right">
+                                                                    <form method="post" id="form-sign" action="{% url 'login' %}">
+                                                                        {% csrf_token %}
+                                                                        <div class="form-group" dir="rtl" style="text-align:right">
+                                                                            <label class="pull-right">قیمت بعد از تخفیف</label>
+                                                                            <figure class="label label-info">Salam</figure>
+                                                                        </div>
+                                                                        <div class="form-group">
+                                                                            <div class="form-group">
+                                                                                <label for="number-of-rooms_1">تعداد اتاق</label>
+                                                                                <input type="number" class="form-control" id="number-of-rooms" name="room_number_1" placeholder="1"
+                                                                                onkeyup = "calculate_price()">
+                                                                            </div>
+                                                                        </div>
+                                                                        <div>
+                                                                            <span id = "total-price">
+                                                                                0
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="clearfix action">
+                                                                            <div class="form-group center">
+                                                                                <button type="submit" class="btn btn-primary btn-rounded">رزرو
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                        <script type="application/javascript">
+                                                                            function calculate_price() {
+                                                                                number = document.getElementById("number-of-rooms").value
+
+                                                                                document.getElementById("total-price").innerText = number * 1000
+
+                                                                            }
+                                                                        </script>
+                                                                    </form>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <div class="center">
+                                                                        <div><a href="{% url 'password_reset' %}">رمز خود را فراموش کرده‌اید؟</a></div>
+                                                                        <div><a href="{% url 'register' %}">ثبت نام</a></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -450,5 +523,12 @@
                 </div>
             </div>
         {% endfor %}
+
+
+
+
+
+
+
     </div>
 {% endblock %}
