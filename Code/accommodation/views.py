@@ -8,7 +8,7 @@ from django.views.generic.detail import DetailView
 
 from Code.settings import DEFAULT_FROM_EMAIL
 from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm, FileFieldForm
-from .models import Accommodation, Amenity, Image
+from .models import Accommodation, Amenity, Image, RoomInfo
 from registration.decorators import user_is_host
 from .decorators import user_same_as_accommodation_user, user_host_or_superuser, user_same_as_image_user
 
@@ -65,11 +65,13 @@ class CreateRoomView(View):
             room.accommodation = accommodation
             room.save()
             form.save_m2m()
+            how_many = form.cleaned_data.get('how_many')
+            for i in range(how_many):
+                RoomInfo.objects.create(room=room)
             messages.success(request, 'اتاق با موفقیت اضافه شد.')
             url = '/accommodation/' + str(accommodation_id)
             return redirect(url)
         else:
-            print(form.errors)
             messages.error(request, 'در اضافه کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
             url = '/accommodation/' + str(accommodation_id)
             return redirect(url)
@@ -170,3 +172,4 @@ class CreateAmenityView(View):
         else:
             messages.error(request, 'در اضافه کردن امکانات مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
         return redirect('/create_accommodation/')
+

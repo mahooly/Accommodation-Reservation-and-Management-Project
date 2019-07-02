@@ -1,8 +1,7 @@
 from django.db import models
-from django.db.models import Sum
 
 from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES
-from registration.models import Host
+from registration.models import Host, CustomUser
 
 
 class Amenity(models.Model):
@@ -73,9 +72,22 @@ class Room(models.Model):
     bed_type = models.CharField(max_length=20, choices=BED_TYPE_CHOICES)
     number_of_guests = models.IntegerField()
     image = models.ImageField(upload_to='../media/room_pics/')
-    how_many = models.IntegerField(default=1)
+
+    @property
+    def how_many(self):
+        return RoomInfo.objects.filter(room=self).count()
+
+    @property
+    def reservable_count(self):
+        return RoomInfo.objects.filter(room=self, is_reserved=False).count()
 
 
 class Image(models.Model):
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='../media/house_pics/')
+
+
+class RoomInfo(models.Model):
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    is_reserved = models.BooleanField(default=False)
+    out_of_service = models.BooleanField(default=False)

@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Accommodation, Amenity, Room, Image
+from .models import Accommodation, Amenity, Room, Comment
 
 
 class AccommodationCreationForm(forms.ModelForm):
@@ -16,9 +16,11 @@ class AccommodationCreationForm(forms.ModelForm):
 
 
 class RoomCreationForm(forms.ModelForm):
+    how_many = forms.IntegerField()
+
     class Meta:
         model = Room
-        fields = ['how_many', 'bed_type', 'number_of_guests', 'amenity', 'description', 'image']
+        fields = ['bed_type', 'number_of_guests', 'amenity', 'description', 'image']
 
     def __init__(self, *args, **kwargs):
         super(RoomCreationForm, self).__init__(*args, **kwargs)

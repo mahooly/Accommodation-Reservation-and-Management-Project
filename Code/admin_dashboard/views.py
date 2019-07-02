@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from django.db.models import Count
+from django.db.models.functions import TruncMonth
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
@@ -13,6 +15,23 @@ from search_index.filters import AccommodationFilter
 from .decorators import user_is_superuser
 
 decorators = [login_required, user_is_superuser]
+
+
+@method_decorator(decorators, name='dispatch')
+class AdminDashboard(View):
+    template_name = 'admin_dashboard/admin_dashboard.html'
+
+    def get(self, request, *args, **kwargs):
+        hotels = Accommodation.objects.filter(accommodation_type='هتل').count()
+        motels = Accommodation.objects.filter(accommodation_type='اقامتگاه').count()
+        houses = Accommodation.objects.filter(accommodation_type='منزل شخصی').count()
+        users = CustomUser.objects.all().annotate(month=TruncMonth('date_joined')).values('month').annotate(
+            count=Count('id'))
+        date_joined = list(set([x.strftime('%B') for x in list(users.values_list('date_joined', flat=True))]))
+        user_count = list(users.values_list('count', flat=True))
+        return render(request, self.template_name,
+                      {'hotels': hotels, 'motels': motels, 'houses': houses, 'date_joined': date_joined,
+                       'user_count': user_count})
 
 
 @method_decorator(decorators, name='dispatch')
