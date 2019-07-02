@@ -1,12 +1,12 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 import datetime
-
+from datetime import datetime
 
 class CustomUser(AbstractUser):
     gender = models.CharField(max_length=10, default='مرد')
-    birth_date = models.DateField()
-    image = models.ImageField(upload_to='../media/profile_pics/', default='../media/profile_pics/no-picture.png')
+    birth_date = models.DateField(default=datetime.now())
+    image = models.ImageField(upload_to='../media/profile_pics/', default='../media/profile_pics/no-picture.png', blank=False)
     is_host = models.BooleanField(default=False)
 
     def __str__(self):
