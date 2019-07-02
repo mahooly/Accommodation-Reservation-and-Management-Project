@@ -33,8 +33,8 @@ push_to_heroku:
     # This is for gitlab
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
     - docker pull registry.gitlab.com/armin_gm/asd_project_98_6:latest
-    - docker images
     - docker run  --name django-latest registry.gitlab.com/armin_gm/asd_project_98_6:latest
+    - docker images
 #    - docker build . -t push_to_django
 #    - docker ps
 #    # This is for heroku
