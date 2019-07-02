@@ -32,12 +32,18 @@ push_to_heroku:
   script:
     # This is for gitlab
     - docker login -u armin_gm -p khalepirezan registry.gitlab.com
-    - docker pull  registry.gitlab.com/armin_gm/asd_project_98_6:latest
+    - docker pull registry.gitlab.com/armin_gm/asd_project_98_6:latest -t django-latest
+    - docker images
+    - docker run django-latest
 #    - docker build . -t push_to_django
 #    - docker ps
 #    # This is for heroku
-    - docker login --username=arminbehnamnia@gmail.com  --password=9e21ab09-d8fe-4549-a6ee-1fc751623668 registry.heroku.com
+     #- docker login --username=arminbehnamnia@gmail.com  --password=9e21ab09-d8fe-4549-a6ee-1fc751623668 registry.heroku.com
+    - docker exec django-latest apt-get update -qy
+    - docker exec django-latest apt-get install -y ruby
+    - docker exec django-latest gem install dpl
+    - docker exec django-latest dpl --provider=heroku --app=makan-system --api-key=609ef84d-6b7b-49b6-8c3a-b0e88da9b4a9
     #- docker tag push_to_django:latest registry.heroku.com/makan-system/web:latest
-    - docker tag registry.gitlab.com/armin_gm/asd_project_98_6:latest registry.heroku.com/makan-system/web:latest
-    - docker push registry.heroku.com/makan-system/web:latest
-    - docker run --rm -e HEROKU_API_KEY=9e21ab09-d8fe-4549-a6ee-1fc751623668 wingrunr21/alpine-heroku-cli container:release web --app makan-system
+#    - docker tag registry.gitlab.com/armin_gm/asd_project_98_6:latest registry.heroku.com/makan-system/web:latest
+#    - docker push registry.heroku.com/makan-system/web:latest
+#    - docker run --rm -e HEROKU_API_KEY=9e21ab09-d8fe-4549-a6ee-1fc751623668 wingrunr21/alpine-heroku-cli container:release web --app makan-system
