@@ -2,6 +2,7 @@ stages:
   - test
   - build
   - push
+  - deploy
 tests:
   image: docker:latest
   services:
@@ -28,15 +29,32 @@ push_to_heroku:
   image: docker:latest
   stage: push
   services:
+    - docker:dind
+  before_script:
+    - docker login -u armin_gm -p khalepirezan registry.gitlab.com
+    - docker login --username=arminbehnamnia@gmail.com  --password=609ef84d-6b7b-49b6-8c3a-b0e88da9b4a9 registry.heroku.com
+  script:
+    - docker pull registry.gitlab.com/armin_gm/asd_project_98_6:latest
+    - docker tag registry.gitlab.com/armin_gm/asd_project_98_6:latest registry.heroku.com/makan-system/web:latest
+    - docker push registry.heroku.com/makan-system/web:latest
+
+deploy:
+  image: docker:latest
+  stage: deploy
+  services:
   - docker:dind
+  before_script:
+    - docker login -u armin_gm -p khalepirezan registry.gitlab.com
   script:
     # This is for gitlab
-    - docker login -u armin_gm -p khalepirezan registry.gitlab.com
-    #- docker pull  registry.gitlab.com/armin_gm/asd_project_98_6:latest
-    - docker build . -t push_to_django
-    - docker ps
-    # This is for heroku
-    - docker login --username=arminbehnamnia@gmail.com  --password=9e21ab09-d8fe-4549-a6ee-1fc751623668 registry.heroku.com
-    - docker tag push_to_django:latest registry.heroku.com/makan-system/web:latest
-    - docker push registry.heroku.com/makan-system/web:latest
-    - docker run --rm -e HEROKU_API_KEY=9e21ab09-d8fe-4549-a6ee-1fc751623668 wingrunr21/alpine-heroku-cli container:release web --app makan-system
+    - docker pull registry.gitlab.com/armin_gm/asd_project_98_6:latest
+    - docker images
+    - docker run --name django-latest -dit registry.gitlab.com/armin_gm/asd_project_98_6:latest
+    - docker ps -a
+#    - docker build . -t push_to_django
+#    - docker ps
+#    # This is for heroku
+    - docker exec django-latest apt-get update -qy
+    - docker exec django-latest apt-get install -y ruby
+    - docker exec django-latest gem install dpl
+    - docker exec django-latest dpl --provider=heroku --app=makan-system --api-key=609ef84d-6b7b-49b6-8c3a-b0e88da9b4a9
