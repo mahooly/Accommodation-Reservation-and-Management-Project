@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Accommodation, Amenity, Room, Comment
+from .models import Accommodation, Amenity, Room
 
 
 class AccommodationCreationForm(forms.ModelForm):
