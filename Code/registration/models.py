@@ -3,10 +3,11 @@ from django.db import models
 import datetime
 from datetime import datetime
 
+
 class CustomUser(AbstractUser):
     gender = models.CharField(max_length=10, default='مرد')
-    birth_date = models.DateField(default=datetime.now())
-    image = models.ImageField(upload_to='../media/profile_pics/', default='../media/profile_pics/no-picture.png', blank=False)
+    birth_date = models.DateField(null=True)
+    image = models.ImageField(upload_to='../media/profile_pics/', default='../media/profile_pics/no-picture.png')
     is_host = models.BooleanField(default=False)
 
     def __str__(self):
@@ -14,12 +15,14 @@ class CustomUser(AbstractUser):
 
     def _get_age(self):
         today = datetime.date.today()
-        return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+        return today.year - self.birth_date.year - (
+                    (today.month, today.day) < (self.birth_date.month, self.birth_date.day))
 
     age = property(_get_age)
 
     def _get_full_name(self):
         return self.first_name + ' ' + self.last_name
+
     full_name = property(_get_full_name)
 
 

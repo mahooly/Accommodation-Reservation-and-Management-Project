@@ -69,8 +69,7 @@ $(document).ready(function ($) {
         var _this = $(this);
         if (_this.attr("data-tab")) {
             var tab = _this.attr("href");
-        }
-        else {
+        } else {
             tab = false;
         }
         var target = _this.attr("data-target");
@@ -133,8 +132,7 @@ $(document).ready(function ($) {
             setTimeout(function () {
                 if (_this.attr("data-toggle") == "popover") {
                     _this.popover("show");
-                }
-                else {
+                } else {
                     for (var i = 0; i < messagesArray.length; i++) {
                         $(messagesArray[i]).css("bottom", parseInt($(messagesArray[i]).css("bottom")) + _this.context.clientHeight + 10);
                     }
@@ -150,6 +148,7 @@ $(document).ready(function ($) {
             $(this).find(".close").on("click", function () {
                 closeThis();
             });
+
             function closeThis() {
                 _this.removeClass("show");
                 setTimeout(function () {
@@ -170,8 +169,7 @@ $(document).ready(function ($) {
             var currentScroll = $(window).scrollTop();
             if (currentScroll >= scroll) {
                 _this.addClass("show");
-            }
-            else {
+            } else {
                 _this.removeClass("show");
             }
         });
@@ -188,8 +186,7 @@ $(document).ready(function ($) {
             var currentScroll = $(window).scrollTop();
             if (currentScroll >= offsetTop) {
                 wrapper.addClass("position-fixed");
-            }
-            else {
+            } else {
                 wrapper.removeClass("position-fixed");
             }
         });
@@ -240,8 +237,7 @@ $(document).ready(function ($) {
                     navText: []
                 });
                 $(this).addClass("show-nav");
-            }
-            else {
+            } else {
                 $(this).addClass("show-nav");
             }
         })
@@ -352,8 +348,7 @@ $(document).ready(function ($) {
             i = input.val();
             if (input.val() == undefined || input.val() == "") {
                 input.val(i + 1);
-            }
-            else {
+            } else {
                 i++;
                 input.val(i);
             }
@@ -426,8 +421,7 @@ function responsiveNavigation() {
     if (viewport.is('xs')) {
         $secondaryNav.addClass("collapse");
         $("#primary-nav").addClass("collapse");
-    }
-    else {
+    } else {
         $secondaryNav.removeClass("collapse");
         $secondaryNav.removeAttr("style");
         $primaryNav.removeClass("collapse");
@@ -501,19 +495,19 @@ var viewport = (function () {
 
 function rating(element) {
     var ratingElement =
-            '<span class="stars">' +
-            '<i class="fa fa-star s1" data-score="1"></i>' +
-            '<i class="fa fa-star s2" data-score="2"></i>' +
-            '<i class="fa fa-star s3" data-score="3"></i>' +
-            '<i class="fa fa-star s4" data-score="4"></i>' +
-            '<i class="fa fa-star s5" data-score="5"></i>' +
-            '<i class="fa fa-star s6" data-score="6"></i>' +
-            '<i class="fa fa-star s7" data-score="7"></i>' +
-            '<i class="fa fa-star s8" data-score="8"></i>' +
-            '<i class="fa fa-star s9" data-score="9"></i>' +
-            '<i class="fa fa-star s10" data-score="10"></i>' +
-            '</span>'
-        ;
+        '<span class="stars">' +
+        '<i class="fa fa-star s1" data-score="1"></i>' +
+        '<i class="fa fa-star s2" data-score="2"></i>' +
+        '<i class="fa fa-star s3" data-score="3"></i>' +
+        '<i class="fa fa-star s4" data-score="4"></i>' +
+        '<i class="fa fa-star s5" data-score="5"></i>' +
+        '<i class="fa fa-star s6" data-score="6"></i>' +
+        '<i class="fa fa-star s7" data-score="7"></i>' +
+        '<i class="fa fa-star s8" data-score="8"></i>' +
+        '<i class="fa fa-star s9" data-score="9"></i>' +
+        '<i class="fa fa-star s10" data-score="10"></i>' +
+        '</span>'
+    ;
     if (!element) {
         element = '';
     }
@@ -624,8 +618,7 @@ function previewImage(input) {
     var ext = $(input).val().split('.').pop().toLowerCase();
     if ($.inArray(ext, ['gif', 'png', 'jpg', 'jpeg']) == -1) {
         alert('invalid extension!');
-    }
-    else {
+    } else {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function (e) {
