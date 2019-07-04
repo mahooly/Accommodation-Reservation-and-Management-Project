@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block main %}
+    <div class="container">
+        <div class="main-content float-right" dir="rtl">
+            {% if messages %}
+                {% for message in messages %}
+                    {% ifequal message.tags 'success' %}
+                        <div class="alert alert-success" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                    {% ifequal message.tags 'error' %}
+                        <div class="alert alert-danger" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                {% endfor %}
+            {% endif %}
+            <div class="title">
+                <h1 class="inactive"><a href="{% url 'edit_accommodation' accommodation.pk %}">تغییر مشخصات اقامتگاه</a>
+                </h1>
+                <h1 class="inactive"><a href="reservations.html">اطلاعات رزرو</a></h1>
+                <h1><a href="{% url 'accommodation_review' accommodation.pk %}">نظرات</a></h1>
+            </div>
+            <div class="info">
+                <strong style="display: inline-block">اقامتگاه:</strong>
+                <h2 class="no-margin" style="display: inline-block"><a
+                        href="{% url 'accommodation_detail' pk=accommodation.pk %}">&nbsp;{{ accommodation.title }}&nbsp;</a>
+                </h2>
+                <hr>
+            </div>
+            <div class="reviews">
+                {% for review in object_list %}
+                    {% if review.reply %}
+                        <div class="review muted">
+                            <div class="ribbon left new white" style="background-color: #fff; color: black">
+                                <figure><i class="fa fa-check pull-left" style="color: #488f3e;"></i>پاسخ داده شده
+                                </figure>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-2 pull-right">
+                                    <aside class="name">{{ review.user.full_name }}</aside>
+                                    <aside class="date">{{ review.creation_date }}</aside>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="comment">
+                                        <div class="row">
+                                            <div class="col-md-8 pull-right">
+                                                <div class="comment-title">
+                                                    {% if review.rating %}
+                                                        <figure class="rating">{{ review.rating.overall }}</figure>
+                                                    {% endif %}
+                                                    <h4>{{ review.title }}</h4>
+                                                </div>
+                                                <p>{{ review.text|linebreaks }}</p>
+                                                <div class="options">
+                                                    <a href="#reply_{{ review.id }}" data-toggle="collapse"
+                                                       aria-expanded="false"
+                                                       aria-controls="reply_{{ review.id }}"
+                                                       class="btn btn-framed btn-default btn-rounded btn-small icon">مشاهده‌ی
+                                                        پاسخ<i
+                                                                class="fa fa-reply font-color-default pull-right"></i></a>
+                                                </div>
+                                                <div class="collapse" id="reply_{{ review.id }}">
+                                                    <div class="answer">
+                                                        <h4>{{ review.reply.name_position }}</h4>
+                                                        <p>{{ review.reply.text }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {% if review.rating %}
+                                                    <div class="comment-title">
+                                                        <h4>امتیاز</h4>
+                                                    </div>
+                                                    <dl class="visitor-rating">
+                                                        <dt>نظافت</dt>
+                                                        <dd>{{ review.rating.score_cleanliness }}</dd>
+                                                        <dt>راحتی</dt>
+                                                        <dd>{{ review.rating.score_comfort }}</dd>
+                                                        <dt>موقعیت</dt>
+                                                        <dd>{{ review.rating.score_location }}</dd>
+                                                        <dt>امکانات</dt>
+                                                        <dd>{{ review.rating.score_facilities }}</dd>
+                                                        <dt>پرسنل</dt>
+                                                        <dd>{{ review.rating.score_staff }}</dd>
+                                                        <dt>ارزش نسبت به قیمت</dt>
+                                                        <dd>{{ review.rating.score_value }}</dd>
+                                                    </dl>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="review">
+                            {% if review.is_new %}
+                                <div class="ribbon left new" style="background-color: #488f3e;">
+                                    <figure>جدید</figure>
+                                </div>
+                            {% endif %}
+                            <div class="row">
+                                <div class="col-md-2 pull-right">
+                                    <aside class="name">{{ review.user.full_name }}</aside>
+                                    <aside class="date">{{ review.creation_date }}</aside>
+                                </div>
+                                <div class="col-md-10">
+                                    <div class="comment">
+                                        <div class="row">
+                                            <div class="col-md-8 pull-right">
+                                                <div class="comment-title">
+                                                    {% if review.rating %}
+                                                        <figure class="rating">{{ review.rating.overall }}</figure>
+                                                    {% endif %}
+                                                    <h4>{{ review.title }}</h4>
+                                                </div>
+                                                <p>{{ review.text|linebreaks }}</p>
+                                                <div class="options">
+                                                    <a href="#reply_{{ review.id }}" data-toggle="collapse"
+                                                       aria-expanded="false"
+                                                       aria-controls="reply_{{ review.id }}"
+                                                       class="btn btn-framed btn-default btn-rounded btn-small icon">ارسال
+                                                        پاسخ<i
+                                                                class="fa fa-reply font-color-default pull-right"></i></a>
+                                                </div>
+                                                <div class="collapse" id="reply_{{ review.id }}">
+                                                    <div class="answer">
+                                                        <form class="labels-uppercase clearfix"
+                                                              id="form_reply_{{ review.id }}" method="post"
+                                                              action="{% url 'create_reply' review.id %}">
+                                                            {% csrf_token %}
+                                                            <div class="row">
+                                                                <div class="col-md-6 pull-right">
+                                                                    <div class="form-group">
+                                                                        <label for="form_reply_1-name">نام و نام
+                                                                            خانوادگی</label>
+                                                                        <input type="text" class="form-control"
+                                                                               id="form_reply_1-name" name="name"
+                                                                               placeholder="نام" required="">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="form_reply_1-email">سمت
+                                                                            (اختیاری)</label>
+                                                                        <input type="text" class="form-control"
+                                                                               id="form_reply_1-email" name="position"
+                                                                               placeholder="مثلا: مالک">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="form_reply_1-message">پاسخ
+                                                                    شما</label>
+                                                                <textarea class="form-control" id="form_reply_1-message"
+                                                                          rows="8" name="text" required=""
+                                                                          placeholder="پیام"></textarea>
+                                                            </div>
+                                                            <div class="form-group pull-right">
+                                                                <button type="submit"
+                                                                        class="btn btn-primary btn-rounded">
+                                                                    ارسال
+                                                                    پاسخ
+                                                                </button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                {% if review.rating %}
+                                                    <div class="comment-title">
+                                                        <h4>امتیاز</h4>
+                                                    </div>
+                                                    <dl class="visitor-rating">
+                                                        <dt>نظافت</dt>
+                                                        <dd>{{ review.rating.score_cleanliness }}</dd>
+                                                        <dt>راحتی</dt>
+                                                        <dd>{{ review.rating.score_comfort }}</dd>
+                                                        <dt>موقعیت</dt>
+                                                        <dd>{{ review.rating.score_location }}</dd>
+                                                        <dt>امکانات</dt>
+                                                        <dd>{{ review.rating.score_facilities }}</dd>
+                                                        <dt>پرسنل</dt>
+                                                        <dd>{{ review.rating.score_staff }}</dd>
+                                                        <dt>ارزش نسبت به قیمت</dt>
+                                                        <dd>{{ review.rating.score_value }}</dd>
+                                                    </dl>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

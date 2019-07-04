@@ -401,10 +401,6 @@ a.link.icon i {
     top: 1px;
 }
 
-a.icon i {
-    margin: 0 5px;
-}
-
 body {
     background-color: #f6f6f4;
     color: #1f1f1f;
@@ -2789,7 +2785,7 @@ ul.half li {
 }
 
 .main-content .title {
-    margin-top: 0;
+    margin-top: 20px;
     position: relative;
     z-index: 3;
 }
@@ -2799,7 +2795,7 @@ ul.half li {
     margin-top: 0;
     margin-bottom: 0;
     display: inline-block;
-    margin-right: 15px;
+    margin-left: 15px;
 }
 
 .main-content .title h2 {
@@ -3745,9 +3741,6 @@ ul.half li {
     margin-top: 30px;
 }
 
-.review .comment .options a {
-    margin-right: 10px;
-}
 
 .review .comment .comment-title {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
@@ -3797,7 +3790,7 @@ ul.half li {
     border-width: 0 5px 6px 5px;
     border-color: transparent transparent rgba(0, 0, 0, 0.05) transparent;
     position: absolute;
-    left: 20px;
+    right: 20px;
     top: -6px;
 }
 
@@ -3805,10 +3798,6 @@ ul.half li {
     font-size: 12px;
     font-weight: bold;
     margin-top: 0;
-}
-
-.review .visitor-rating {
-    margin-right: 60px;
 }
 
 .review .visitor-rating dt {

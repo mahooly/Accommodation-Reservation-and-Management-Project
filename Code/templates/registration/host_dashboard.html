@@ -34,6 +34,8 @@
                                             style="margin-bottom: 10px">{{ accommodation.city }}</figure>
                                     <a href="{% url 'delete_accommodation' pk=accommodation.pk %}"
                                        class="btn btn-danger btn-rounded btn-sm scroll">حذف محل اقامت</a>
+                                    <a href="{% url 'edit_accommodation' pk=accommodation.pk %}"
+                                       class="btn btn-primary btn-rounded btn-sm scroll">مشاهده و تغییر اطلاعات</a>
                                 </div>
                             </div>
                         </div>

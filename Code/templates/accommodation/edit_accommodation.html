@@ -3,6 +3,27 @@
 {% block main %}
     <div class="container">
         <div class="main-content float-right" dir="rtl">
+            <div class="title">
+                <h1><a href="{% url 'edit_accommodation' form.instance.pk %}">تغییر مشخصات اقامتگاه</a></h1>
+                <h1 class="inactive"><a href="reservations.html">اطلاعات رزرو</a></h1>
+                <h1 class="inactive"><a href="{% url 'accommodation_review' form.instance.pk %}">نظرات</a></h1>
+            </div>
+            <div class="info">
+                <strong style="display: inline-block">اقامتگاه:</strong>
+                <h2 class="no-margin" style="display: inline-block"><a href="{% url 'accommodation_detail' pk=form.instance.pk %}">&nbsp;{{ form.instance.title }}&nbsp;</a></h2>
+                <hr>
+            </div>
+            <div class="quick-navigation" data-fixed-after-touch="">
+                <div class="wrapper">
+                    <ul>
+                        <li><a href="#main-information" class="scroll">اطلاعات اصلی</a></li>
+                        <li><a href="#location" class="scroll">موقعیت</a></li>
+                        <li><a href="#gallery" class="scroll">گالری</a></li>
+                        <li><a href="#facilities" class="scroll">امکانات</a></li>
+                    </ul>
+                </div>
+            </div>
+
             <form class="form-submit labels-uppercase" id="form-submit" enctype="multipart/form-data" method="post">
                 {% csrf_token %}
                 {% if form.errors %}

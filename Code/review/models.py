@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.db.models import deletion
 
@@ -9,6 +11,10 @@ class Reply(models.Model):
     name = models.CharField(max_length=50)
     position = models.CharField(max_length=100, blank=True, null=True)
     text = models.TextField()
+
+    @property
+    def name_position(self):
+        return '{}، {}'.format(self.name, self.position)
 
 
 class Rating(models.Model):
@@ -22,7 +28,7 @@ class Rating(models.Model):
     @property
     def overall(self):
         score_sum = self.score_cleanliness + self.score_comfort + self.score_facilities + self.score_location + \
-              self.score_staff + self.score_value
+                    self.score_staff + self.score_value
         return round(score_sum / 6, 1)
 
 
@@ -34,3 +40,8 @@ class Review(models.Model):
     title = models.CharField(max_length=50)
     text = models.TextField()
     creation_date = models.DateField(auto_now_add=True)
+
+    @property
+    def is_new(self):
+        dt = datetime.date.today() - datetime.timedelta(7)
+        return self.creation_date >= dt

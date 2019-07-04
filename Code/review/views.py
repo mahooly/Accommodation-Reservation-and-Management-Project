@@ -1,13 +1,13 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.generic import ListView
 
 from accommodation.models import Accommodation
-from review.forms import ReviewForm, RatingForm
+from review.forms import ReviewForm, RatingForm, ReplyForm
 from review.models import Review
 
 
@@ -32,3 +32,37 @@ class CreateReview(View):
             messages.error(request, 'در ثبت نظر شما مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
 
         return redirect(reverse('accommodation_detail', kwargs={'pk': accommodation_id}))
+
+
+class AccommodationReviews(ListView):
+    template_name = 'review/accommodation_reviews.html'
+
+    def get_queryset(self):
+        acc = self.get_accommodation()
+        return Review.objects.filter(accommodation=acc)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        acc = self.get_accommodation()
+        context['accommodation'] = acc
+        return context
+
+    def get_accommodation(self):
+        pk = self.kwargs.get('pk')
+        return Accommodation.objects.get(pk=pk)
+
+
+class CreateReply(View):
+    def post(self, request, *args, **kwargs):
+        form = ReplyForm(request.POST)
+        review_id = kwargs['pk']
+        review = get_object_or_404(Review, pk=review_id)
+        if form.is_valid():
+            reply = form.save()
+            review.reply = reply
+            review.save()
+            messages.success(request, 'پاسخ شما با موفقیت ارسال شد!')
+        else:
+            messages.error(request, 'در ارسال پاسخ شما مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
+
+        return redirect(reverse('accommodation_review', kwargs={'pk': review.accommodation.id}))
