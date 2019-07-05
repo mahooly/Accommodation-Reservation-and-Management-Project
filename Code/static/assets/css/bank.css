@@ -1,0 +1,322 @@
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.page-header {
+    height: 5px;
+    background-color: #312783;
+    margin: 0;
+}
+
+.support {
+    width: 117px;
+    height: 29px;
+    border-radius: 0 0 3px 3px;
+    background-color: #312783;
+    margin-left: 177px;
+}
+
+.header-area {
+    width: 100%;
+    height: 30px;
+    background-color: #f3f3f3;
+    z-index: -1;
+    position: absolute;
+}
+
+.support-phone {
+    width: 63px;
+    height: 16px;
+    color: #ffffff;
+    font-family: Arial;
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 27px;
+    padding-top: 7px;
+}
+
+.shaparak-logo {
+    width: 111px;
+    height: 70px;
+    margin-left: 1179px;
+    margin-top: 36px;
+    display: inline;
+}
+
+.title {
+    color: #312783;
+    font-family: Tahoma;
+    font-size: 15px;
+    font-weight: 700;
+    margin-left: 553px;
+    margin-top: -45px;
+}
+
+.saman-logo {
+    width: 120px;
+    height: 68px;
+    margin-left: 150px;
+    margin-top: -180px;
+}
+
+.card-info {
+    width: 750px;
+    height: 448px;
+    border-radius: 3px;
+    background-color: #f3f3f3;
+    margin-left: 540px;
+    margin-top: 3px;
+}
+
+.card-info .card {
+    margin-top: 16px;
+    margin-left: 721px;
+}
+
+.card-info .info {
+    width: 79px;
+    height: 18px;
+    color: #312783;
+    font-family: Tahoma;
+    font-size: 14px;
+    margin-left: 631px;
+    margin-top: -20px;
+}
+
+.card-info .time {
+    width: 92px;
+    height: 18px;
+    color: #312783;
+    font-family: Tahoma;
+    font-size: 14px;
+    margin-left: 71px;
+    margin-top: -33px;
+}
+
+.card-info .remaining-time {
+    width: 46px;
+    height: 17px;
+    color: #008002;
+    font-family: Tahoma;
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 20px;
+    margin-top: -30px;
+}
+
+.merchant-info {
+    width: 364px;
+    height: 448px;
+    border-radius: 3px;
+    background-color: #f3f3f3;
+    margin-left: 150px;
+    margin-top: -448px;
+}
+
+.input-label {
+    width: 76px;
+    height: 17px;
+    color: #000000;
+    font-family: Tahoma;
+    font-size: 13px;
+    margin-left: 651px;
+    margin-top: 20px;
+}
+
+.card-number {
+    width: 46px;
+    height: 30px;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    display: inline;
+    text-align: center;
+}
+
+.card-number-disabled {
+    width: 46px;
+    height: 30px;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    border: 1px solid #cccccc;
+    background-color: #cccccc;
+}
+
+.card-password {
+    width: 292px;
+    height: 30px;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    margin-left: 284px;
+    text-align: center;
+}
+
+.month-label {
+    width: 17px;
+    height: 17px;
+    color: #000000;
+    font-family: Tahoma;
+    font-size: 13px;
+    margin-left: 557px;
+    display: inline;
+}
+
+.month-input {
+    width: 70px;
+    height: 30px;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    display: inline;
+    margin-left: 482px;
+    text-align: center;
+}
+
+.year-input {
+    width: 70px;
+    height: 30px;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    display: inline;
+    margin-left: 355px;
+    text-align: center;
+}
+
+.year-label {
+    width: 25px;
+    height: 17px;
+    color: #000000;
+    font-family: Tahoma;
+    font-size: 13px;
+    display: inline;
+    margin-left: 431px;
+}
+
+.captcha {
+    width: 135px;
+    height: 50px;
+    margin-left: 440px;
+    display: inline;
+}
+
+.captcha-input {
+    width: 95px;
+    height: 30px;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+    border: 1px solid #cccccc;
+    background-color: #ffffff;
+    display: inline;
+    margin-left: 307px;
+    text-align: center;
+}
+
+.pay-button {
+    width: 68px;
+    height: 34px;
+    border-radius: 4px;
+    border: 1px solid #2f6da4;
+    background-color: #337ab7;
+    margin-left: 509px;
+    cursor: pointer;
+    display: inline;
+}
+
+.pay-text {
+    width: 42px;
+    height: 15px;
+    color: #ffffff;
+    font-family: Tahoma;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.back-button {
+    width: 68px;
+    height: 34px;
+    border-radius: 4px;
+    border: 1px solid #da524f;
+    background-color: #d2504e;
+    display: inline;
+    cursor: pointer;
+    margin-left: 438px;
+}
+
+.back-text {
+    width: 42px;
+    height: 15px;
+    color: #ffffff;
+    font-family: Tahoma;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.info-image {
+    margin-left: 338px;
+    margin-top: 17px;
+}
+
+.info-text {
+    width: 91px;
+    height: 18px;
+    color: #312783;
+    font-family: Tahoma;
+    font-size: 14px;
+    margin-left: 237px;
+    margin-top: -20px;
+}
+
+.white-background {
+    width: 343px;
+    height: 28px;
+    border-radius: 2px;
+    background-color: #ffffff;
+    margin-left: 10px;
+}
+
+.merchant-text-name {
+    width:  120px;
+    height: 15px;
+    color: #000000;
+    font-family: Tahoma;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 249px;
+    margin-top: -17px;
+}
+
+.merchant-text-info {
+    width: 82px;
+    height: 15px;
+    color: #8b0100;
+    font-family: Tahoma;
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 150px;
+    margin-top: -30px;
+}
+
+.footer {
+    width: 100%;
+    height: 33px;
+    background-color: #312783;
+    margin-top: 234px;
+}
+
+.rights {
+    width: 428px;
+    height: 17px;
+    color: #ffffff;
+    font-family: Tahoma;
+    font-size: 13px;
+    margin-left: 1060px;
+    padding-top: 7px;
+}

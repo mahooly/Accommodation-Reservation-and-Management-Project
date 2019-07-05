@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+    <meta charset="UTF-8">
+    <title>درگاه پرداخت اینترنتی پرداخت الکترونیکی سامان</title>
+    <link rel="stylesheet" href="{% static 'assets/css/bank.css' %}" type="text/css"/>
+</head>
+<body>
+<div class="page-header" style="margin-top: 0">
+    <div class="support"><p class="support-phone">021-84080</p></div>
+</div>
+<div class="header-area"></div>
+<div>
+    <img src="{% static 'assets/img/shaparak-logo.png' %}" class="shaparak-logo">
+    <p class="title">درگاه پرداخت اینترنتی پرداخت الکترونیکی سامان</p>
+    <img src="{% static 'assets/img/saman-logo.png' %}" class="saman-logo">
+</div>
+<div class="card-info">
+    <div class="card-header">
+        <img src="{% static 'assets/img/Bitmap.png' %}" class="card">
+        <p class="info">اطلاعات کارت</p>
+        <p class="time">زمان باقی‌ مانده</p>
+        <p class="remaining-time">9:39</p>
+    </div>
+    <hr style="margin-left: 20px; border-width: 2px; margin-right: 20px; opacity: 0.4">
+    <form>
+        <div>
+            <div id="card-form">
+                <label class="input-label"><em style="color: #ff0002;">*</em>شماره کارت</label>
+                <div style="margin-top: -20px; margin-left: 283px">
+                    <input type="number" class="card-number" maxlength="4"> - <input type="text" class="card-number"
+                                                                                     maxlength="4"> - <input type="text"
+                                                                                                             class="card-number"
+                                                                                                             maxlength="4">
+                    -
+                    <input type="text" class="card-number" maxlength="4"> - <input type="text"
+                                                                                   class="card-number-disabled"
+                                                                                   disabled>
+                </div>
+            </div>
+            <div id="other-form">
+                <div style="margin-top: 10px">
+                    <label class="input-label"><em style="color: #ff0002;">*</em>رمز
+                        اینترنتی</label>
+                    <div style="margin-top: -20px">
+                        <input type="number" class="card-password" maxlength="5">
+                    </div>
+                </div>
+                <div style="margin-top: 10px">
+                    <label class="input-label" style="margin-left: 688px"><em style="color: #ff0002;">*</em>cvv2</label>
+                    <div style="margin-top: -20px">
+                        <input type="number" class="card-password" maxlength="3">
+                    </div>
+                </div>
+                <div style="margin-top: 10px">
+                    <label class="input-label" style="margin-left: 659px"><em style="color: #ff0002;">*</em>تاریخ
+                        انقضا</label>
+                    <div style="margin-top: -20px">
+                        <label class="month-label">ماه</label>
+                        <div style="margin-top: -20px">
+                            <input type="number" class="month-input" maxlength="2">
+                        </div>
+                    </div>
+                    <div style="margin-top: -33px">
+                        <label class="year-label">سال</label>
+                        <div style="margin-top: -20px">
+                            <input type="number" class="year-input" maxlength="2">
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top: 10px">
+                    <label class="input-label" style="margin-left: 660px"><em style="color: #ff0002;">*</em>کد
+                        امنیتی</label>
+                    <div style="margin-top: -20px">
+                        <img src="{% static 'assets/img/CaptchaImage.png' %}" class="captcha">
+                    </div>
+                    <div style="margin-top: -47px">
+                        <input type="number" class="captcha-input" maxlength="5">
+                        <img src="{% static 'assets/img/refresh.png' %}" style="margin-left: -120px">
+                    </div>
+                </div>
+                <div style="margin-top: 20px">
+                    <label class="input-label" style="margin-left: 645px" dir="rtl">ایمیل(اختیاری)</label>
+                    <div style="margin-top: -20px">
+                        <input type="number" class="card-password" maxlength="3">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 10px">
+            <button class="pay-button"><span class="pay-text">پرداخت</span></button>
+        </div>
+        <div style="margin-top: -33px">
+            <button class="back-button"><span class="back-text">انصراف</span></button>
+        </div>
+    </form>
+</div>
+<div class="merchant-info">
+    <div class="merchant-header">
+        <img src="{% static 'assets/img/Bitmap (5).png' %}" class="info-image">
+        <p class="info-text">اطلاعات پذیرنده</p>
+    </div>
+    <hr style="margin-left: 20px; border-width: 2px; margin-right: 20px; opacity: 0.4">
+    <div class="white-background" style="margin-top: 180px">
+        <img src="{% static 'assets/img/Bitmap (1).png' %}" style="margin-left: 311px; margin-top: 7px">
+        <p class="merchant-text-name">نام پذیرنده</p>
+        <p class="merchant-text-info">مکان</p>
+    </div>
+    <div class="white-background" style="margin-top: 6px">
+        <img src="{% static 'assets/img/Bitmap (2).png' %}" style="margin-left: 313px; margin-top: 7px">
+        <p class="merchant-text-name" style="margin-left: 194px">آدرس سایت پذیرنده</p>
+        <p class="merchant-text-info" style="margin-left: 123px">makan.ir</p>
+    </div>
+    <div class="white-background" style="margin-top: 6px">
+        <img src="{% static 'assets/img/Bitmap (3).png' %}" style="margin-left: 313px; margin-top: 7px">
+        <p class="merchant-text-name" style="margin-left: 250px;">کد پذیرنده</p>
+        <p class="merchant-text-info" style="margin-left: 115px;">70709303</p>
+    </div>
+    <div class="white-background" style="margin-top: 6px">
+        <img src="{% static 'assets/img/Bitmap (4).png' %}" style="margin-left: 313px; margin-top: 7px">
+        <p class="merchant-text-name" style="margin-left: 210px;">مبلغ قابل پرداخت</p>
+        <p class="merchant-text-info" style="margin-left: 95px;" dir="rtl">2400000 ریال</p>
+    </div>
+</div>
+<footer class="footer">
+    <p class="rights" dir="rtl">تمامی حقوق این نرم افزار متعلق به شرکت پرداخت الکترونیک سامان می‌باشد.</p>
+</footer>
+</body>
+
+<script>
+    var container = document.getElementById("card-form");
+    var other = document.getElementById("other-form");
+    container.onkeyup = function (e) {
+        var target = e.srcElement || e.target;
+        var maxLength = parseInt(target.attributes["maxlength"].value, 10);
+        var myLength = target.value.length;
+        if (myLength >= maxLength) {
+            var next = target;
+            while (next = next.nextElementSibling) {
+                if (next == null)
+                    break;
+                if (next.tagName.toLowerCase() === "input") {
+                    next.focus();
+                    break;
+                }
+            }
+        } else if (myLength === 0) {
+            var previous = target;
+            while (previous = previous.previousElementSibling) {
+                if (previous == null)
+                    break;
+                if (previous.tagName.toLowerCase() === "input") {
+                    previous.focus();
+                    break;
+                }
+            }
+        }
+    }
+    other.onkeyup = function (e) {
+        var target = e.srcElement || e.target;
+        var maxLength = parseInt(target.attributes["maxlength"].value, 10);
+        var myLength = target.value.length;
+        if (myLength >= maxLength) {
+            var next = target;
+            while (next = next.nextElementSibling) {
+                if (next == null)
+                    break;
+                if (next.tagName.toLowerCase() === "input") {
+                    next.focus();
+                    break;
+                }
+            }
+        } else if (myLength === 0) {
+            var previous = target;
+            while (previous = previous.previousElementSibling) {
+                if (previous == null)
+                    break;
+                if (previous.tagName.toLowerCase() === "input") {
+                    previous.focus();
+                    break;
+                }
+            }
+        }
+    }
+</script>
+</html>
