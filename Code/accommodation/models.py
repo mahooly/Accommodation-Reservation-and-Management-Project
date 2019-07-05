@@ -2,6 +2,7 @@ from django.db import models
 
 from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES
 from registration.models import Host, CustomUser
+from django.db.models import Q
 
 
 class Amenity(models.Model):
@@ -72,6 +73,12 @@ class Room(models.Model):
     bed_type = models.CharField(max_length=20, choices=BED_TYPE_CHOICES)
     number_of_guests = models.IntegerField()
     image = models.ImageField(upload_to='../media/room_pics/')
+    price = models.IntegerField(default=0)
+
+    #def is_available(self, check_in, check_out):
+        #badReservations = Reservation.filter(Q(check_in__range(check_in, check_out)) | Q(check_in__range(check_in, check_out)))
+        #roomInfos = RoomInfo.exclude(room=self)
+        #for roomInf
 
     @property
     def how_many(self):

@@ -48,3 +48,14 @@ class AccommodationChangeForm(forms.ModelForm):
 
 class FileFieldForm(forms.Form):
     image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
+
+class RoomSearchForm(forms.Form):
+    check_in = forms.DateField(required=False)
+    check_out = forms.IntegerField(required=False)
+    money_first = forms.BooleanField(required=False)
+    money_second = forms.BooleanField(required=False)
+    money_third = forms.BooleanField(required=False)
+    money_forth = forms.BooleanField(required=False)
+    is_hotel = forms.BooleanField(required=False)
+    is_motel = forms.BooleanField(required=False)
+    is_house = forms.BooleanField(required=False)

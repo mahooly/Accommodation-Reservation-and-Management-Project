@@ -13,6 +13,7 @@ class MainPageView(ListView):
     template_name = 'index.html'
 
     def get_queryset(self):
+
         return Accommodation.objects.filter(is_authenticated=True)
 
 
