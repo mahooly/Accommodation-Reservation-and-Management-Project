@@ -27,6 +27,7 @@ urlpatterns = [
                   path('', include('admin_dashboard.urls')),
                   path('', include('search_index.urls')),
                   path('', include('blog.urls')),
+                  path('', include('reservation.urls')),
                   path('', include('review.urls')),
                   path('summernote/', include('django_summernote.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

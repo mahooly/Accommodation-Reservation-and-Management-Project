@@ -140,128 +140,217 @@
                     </div>
                 </div>
                 {% if accommodation.room_set.all %}
-                    <section id="rooms">
-                        <h2>اتاق‌ها</h2>
-                        <div class="form-reservations">
-                            <div class="table-responsive">
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th style="text-align: start">نوع اتاق</th>
-                                        <th style="text-align: center">تعداد مهمان</th>
-                                        <th style="text-align: center">تعداد اتاق</th>
-                                        <th style="text-align: center"></th>
-                                    </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                            {% for room in accommodation.room_set.all %}
-                                <table class="table">
-                                    <tbody>
-                                    <tr class="room">
-                                        <td class="room-type" style="text-align: start">
-                                            <a href="" data-toggle="modal" data-tab="true"
-                                               data-target="#room-{{ room.id }}">
-                                                <h3>{% get_room_type room.bed_type %}</h3></a>
-                                            <p>{{ room.description }}</p>
-                                        </td>
-                                        <td class="persons" style="text-align: center">{{ room.number_of_guests }}<i
-                                                class="fa fa-user"></i></td>
-                                        <td class="persons" style="text-align: center">{{ room.how_many }}</td>
-                                        <td class="persons" style="text-align: center">
-                                            <div class="center"><a data-toggle="modal" data-tab="true"
-                                                                   data-target="#reserve-modal"
-                                                                   class="btn btn-framed btn-default btn-rounded">رزرو</a>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="sidebar">
+                                <div class="box filter">
+                                    <h2>جست و جو</h2>
+                                    <form id="form-filter" class="labels-uppercase">
+                                        <!--end form-group-->
+                                        <div class="form-group-inline">
+                                            <div class="form-group">
+                                                <label for="form-filter-check-in">ورود</label>
+                                                <input type="text" class="form-control date" id="form-filter-check-in" name="check_in" placeholder="ورود">
                                             </div>
+                                            <!--end form-group-->
+                                            <div class="form-group">
+                                                <label for="form-filter-check-out">تعداد شب اقامت</label>
+                                                <input type="number" class="form-control" id="form-filter-check-out" name="check_out" placeholder="2">
+                                            </div>
+                                            <!--end form-group-->
+                                        </div>
+                                        <!--end form-group-inline-->
+                                        <div class="center">
+                                            <!-- <a href="#filter-advanced-search" class="link icon" data-toggle="collapse" aria-expanded="false" aria-controls="filter-advanced-search">Advanced Search<i class="fa fa-plus"></i></a> -->
+                                        </div>
+                                        <div class="collapse in" id="filter-advanced-search">
+                                            <div class="wrapper">
+                                                <h2>سایر فیلتر ها<span data-show-after-time="1000" data-container="body" data-toggle="popover" data-placement="right" title="هر جور که دوست داری اتاقتو گلچین کن!" data-content="می تونی بر حسب زمان ورود و خروج، هزینه یا امکانات اتاق هارو گلچین کنی"></span></h2>
+                                                <section>
+                                                    <h3>نرخ هر شب اقامت</h3>
+                                                    <ul class="checkboxes list-unstyled">
+                                                        <li><label><input type="checkbox" name="money_first">  0 - 100  هزار تومان<span></span></label></li>
+                                                        <li><label><input type="checkbox" name="money_second">100 - 200  هزار تومان<span></span></label></li>
+                                                        <li><label><input type="checkbox" name="money_third">300 - 200 هزار تومان<span></span></label></li>
+                                                        <li><label><input type="checkbox" name="money_forth">300+  هزار تومان<span></span></label></li>
+                                                    </ul>
+                                                    <!--end checkboxes-->
+                                                </section>
+                                                <!--end section-->
+                                                <!--end section-->
+                                                <section>
+                                                    <h3>امکانات</h3>
+                                                    <ul class="checkboxes no-bottom-margin">
+                                                        {% for amenity in room_amenities %}
+                                                        <li><label><input type="checkbox" name="{{amenity.name}}">{{amenity.name}}<span></span></label></li>
+                                                        {% endfor %}
+                                                    </ul>
+                                                    <!--end checkboxes-->
+                                                </section>
+                                                <!--end section-->
+                                            </div>
+                                            <!--end filter-advanced-search-->
+                                        </div>
+                                        <!--end collapse-->
+                                        <div class="form-group center">
+                                            <button type="submit" class="btn btn-primary btn-rounded form-control">جست و جو</button>
+                                        </div>
+                                    </form>
+                                    <!--end form-filter-->
+                                </div>
+                                <!--end filter-->
+                                <a href="#" class="advertising-banner">
+                                    <span class="banner-badge">Advertising</span>
+                                    <img src="assets/img/ad-banner-02.jpg" alt="">
+                                </a>
+                            </div>
 
-                                            <div class="modal fade" id="reserve-modal" role="dialog"
-                                                 aria-labelledby="sign-in-register-modal">
-                                                <div class="wrapper">
-                                                    <div class="inner">
-                                                        <div class="modal-dialog width-400px" role="document">
-                                                            <div class="modal-content">
-                                                                <div class="modal-header">
-                                                                    <button type="button" class="close"
-                                                                            data-dismiss="modal"
-                                                                            aria-label="Close"><span
-                                                                            aria-hidden="true">&times;</span></button>
-                                                                    <ul class="nav nav-tabs ">
-                                                                        <li role="presentation" class="active" dir="rtl"
-                                                                            style="text-align:right"><a
-                                                                                href="#tab-sign-in"
-                                                                                aria-controls="tab-sign-in" role="tab"
-                                                                                data-toggle="tab"><h1
-                                                                                style="margin-left: 150px" dir="rtl">
-                                                                            رزرو اتاق</h1></a></li>
-                                                                    </ul>
-                                                                </div>
-                                                                <div class="modal-body" dir="rtl"
-                                                                     style="text-align:right">
-                                                                    <form method="post" id="form-sign"
-                                                                          action="{% url 'login' %}">
-                                                                        {% csrf_token %}
-                                                                        <div class="form-group" dir="rtl"
-                                                                             style="text-align:right">
-                                                                            <label class="pull-right">قیمت بعد از
-                                                                                تخفیف</label>
-                                                                            <figure class="label label-info">Salam
-                                                                            </figure>
-                                                                        </div>
-                                                                        <div class="form-group">
+                    <!--end sidebar-->
+                        </div>
+                        <div class="col-md-8">
+                        <div id="rooms">
+                            <h2>اتاق‌ها</h2>
+                            <div class="form-reservations">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th style="text-align: start">نوع اتاق</th>
+                                            <th style="text-align: center">تعداد مهمان</th>
+                                            <th style="text-align: center">تعداد اتاق باقیمانده</th>
+                                            <th style="text-align: center">قیمت</th>
+                                            <th style="text-align: center"></th>
+                                        </tr>
+                                        </thead>
+                                    </table>
+                                </div>
+                                {% for room in rooms %}
+                                    <table class="table">
+                                        <tbody>
+                                        <tr class="room">
+                                            <td class="room-type" style="text-align: start">
+                                                <a href="" data-toggle="modal" data-tab="true"
+                                                   data-target="#room-{{ room.id }}">
+                                                    <h3>{% get_room_type room.bed_type %}</h3></a>
+                                                <p>{{ room.description }}</p>
+                                            </td>
+                                            <td class="persons" style="text-align: center">{{ room.number_of_guests }}<i
+                                                    class="fa fa-user"></i></td>
+                                            <td class="persons" style="text-align: center">{{ room.reservable_count }}</td>
+                                            <td> {{room.price}} </td>
+                                            <td class="persons" style="text-align: center">
+                                                <div class="center"><a  onclick="setModal({% get_room_price_from_id room.pk %} , {% get_room_price_from_id_2 room.pk %});" data-toggle="modal" data-tab="true" data-target="#reserve-modal" class="btn btn-framed btn-default btn-rounded">رزرو</a></div></td>
+                                                <script type="text/javascript">
+                                                </script>
+
+
+                                                <div class="modal fade" id="reserve-modal" role="dialog"
+                                                     aria-labelledby="sign-in-register-modal">
+                                                    <div class="wrapper">
+                                                        <div class="inner">
+                                                            <div class="modal-dialog width-400px" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                                                                aria-hidden="true">&times;</span></button>
+                                                                        <ul class="nav nav-tabs " >
+                                                                            <li role="presentation" class="active" dir="rtl" style="text-align:right"><a href="#tab-sign-in"
+                                                                                                                      aria-controls="tab-sign-in" role="tab"
+                                                                                                                      data-toggle="tab"><h1
+                                                                                    style="margin-left: 150px" dir="rtl" >رزرو اتاق</h1></a></li>
+                                                                        </ul>
+                                                                    </div>
+                                                                     <div class="ribbon"><div id="discounted-price2" class="offer-number">20%</div><figure>هزار تومان</figure></div>
+                                                                    <div class="modal-body" dir="rtl" style="text-align:right">
+                                                                        <form method="post" id="form-sign" action="{{request.get_full_path}}">
+                                                                            {% csrf_token %}
+                                                                            <div class="row">
+                                                                            <div class="form-group"  style="text-align:right">
+                                                                                <label class="pull-right">قیمت بعد از تخفیف</label>
+                                                                                <!-- <div class="col-md-9"><h4 id="discounted-price2">  100   </h4></div>> -->
+                                                                                <figure  id="discounted-price" class="label label-info">{{room.price}}</figure>
+                                                                            </div>
+                                                                            </div>
+                                                                            <div class="form-group-inline" dir="rtl">
+                                                                                <div class="form-group" dir="rtl">
+                                                                                    <label for="form-filter-check-in">ورود</label>
+                                                                                    <input type="text" class="form-control date" id="form-filter-check-in" name="check_in" value="{{check_in}}" placeholder="ورود">
+                                                                                </div>
+                                                                                <!--end form-group-->
+                                                                                <div class="form-group">
+                                                                                    <label for="number-of-days">تعداد شب اقامت</label>
+                                                                                    <!-- <input type="number" class="form-control" id="form-filter-check-out" name="check_out" value="{{check_out}}" placeholder="{{check_out}}"> -->
+                                                                                    <input type="text" class="form-control" id="number-of-days" name="check_out" value="{{check_out}}"
+                                                                                           placeholder="{{check_out}}" onkeyup = "calculate_price()">
+                                                                                </div>
+                                                                                <!--end form-group-->
+                                                                            </div>
                                                                             <div class="form-group">
-                                                                                <label for="number-of-rooms_1">تعداد
-                                                                                    اتاق</label>
-                                                                                <input type="number"
-                                                                                       class="form-control"
-                                                                                       id="number-of-rooms"
-                                                                                       name="room_number_1"
-                                                                                       placeholder="1"
-                                                                                       onkeyup="calculate_price()">
+                                                                                <div class="form-group">
+                                                                                    <label for="number-of-rooms">تعداد اتاق</label>
+                                                                                    <input type="text" class="form-control" id="number-of-rooms" name="room_number_1" placeholder="1"
+                                                                                    onkeyup = "calculate_price()">
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                        <div>
-                                                                            <span id="total-price">
-                                                                                0
-                                                                            </span>
-                                                                        </div>
-                                                                        <div class="clearfix action">
-                                                                            <div class="form-group center">
-                                                                                <button type="submit"
-                                                                                        class="btn btn-primary btn-rounded">
-                                                                                    رزرو
-                                                                                </button>
+                                                                            <div>
+                                                                                <label for="total-price">قابل پرداخت</label>
+                                                                                <span id = "total-price">
+                                                                                    0
+                                                                                </span>
                                                                             </div>
-                                                                        </div>
-                                                                        <script type="application/javascript">
-                                                                            function calculate_price() {
-                                                                                number = document.getElementById("number-of-rooms").value
+                                                                            <h5>رزرو امکانات</h5>
+                                                                                <ul class="checkboxes list-unstyled">
+                                                                                    {% for amenity in hotel_amenities %}
+                                                                                    <li><label><input type="checkbox" name="1">{{amenity.name}}</label></li>
+                                                                                    {% endfor %}
+                                                                                </ul>
+                                                                            <div class="clearfix action">
+                                                                                <div class="form-group center">
+                                                                                    <button type="submit" class="btn btn-primary btn-rounded">پرداخت و رزرو
+                                                                                    </button>
+                                                                                </div>
 
-                                                                                document.getElementById("total-price").innerText = number * 1000
+                                                                            </div>
+                                                                            <script type="application/javascript">
+                                                                                global_price = 0
+                                                                                function calculate_price() {
 
-                                                                            }
-                                                                        </script>
-                                                                    </form>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <div class="center">
-                                                                        <div><a href="{% url 'password_reset' %}">رمز
-                                                                            خود را فراموش کرده‌اید؟</a></div>
-                                                                        <div><a href="{% url 'register' %}">ثبت نام</a>
-                                                                        </div>
+                                                                                    number_of_rooms = document.getElementById("number-of-rooms").value
+                                                                                    number_of_days = document.getElementById("number-of-days").value
+
+
+                                                                                    document.getElementById("total-price").innerText = number_of_rooms * number_of_days * global_price
+
+                                                                                }
+
+                                                                                function setModal(price, price2){
+                                                                                    global_price = price
+                                                                                    document.getElementById("discounted-price").innerText = price
+                                                                                    document.getElementById("discounted-price2").innerText = price2
+                                                                                }
+                                                                            </script>
+                                                                        </form>
+                                                                    </div>
+                                                                    <div class="modal-footer">
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            {% endfor %}
+
+
+
+
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                {% endfor %}
+                            </div>
+                        </section>
+
                         </div>
-                    </section>
+                    </div>
                 {% endif %}
                 <section id="reviews">
                     <div>

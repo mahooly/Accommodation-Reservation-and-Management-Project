@@ -1,10 +1,234 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'base.html' %}
+{% block main %}
+
+    <div id="page-content">
+        <div class="container">
+            <ol class="breadcrumb">
+
+            </ol>
+            <!--end breadcrumb-->
+            <div class="main-content" rtl="right">
+                <div class="title">
+                    <h1><a href="my-accommodations.html">My Accommodations</a></h1>
+                    <h1 class="inactive"><a href="profile.html">Profile</a></h1>
+                </div>
+                <div class="my-items table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Accommodation</th>
+                            <th>Featured</th>
+                            <th>Views</th>
+                            <th>Reviews</th>
+                            <th>Rating</th>
+                            <th>Last Reservation</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="my-item">
+                            <td>
+                                <div class="image-wrapper">
+                                    <div class="mark-circle top" data-toggle="tooltip" data-placement="right" title="Top accommodation"><i class="fa fa-thumbs-up"></i></div>
+                                    <a href="edit.html" class="image">
+                                        <div class="bg-transfer">
+                                            <img src="assets/img/items/01.jpg">
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="info">
+                                    <a href="detail.html"><h2>Spring Hotel</h2></a>
+                                    <figure class="location">Montenegro</figure>
+                                    <figure class="label label-info">Hotel</figure>
+                                    <div class="meta">
+                                        <span><i class="fa fa-bed"></i>365</span>
+                                        <span class="price-info">From<span class="price">$32</span><span class="appendix">/night</span></span>
+                                    </div>
+                                    <!--end meta-->
+                                </div>
+                                <!--end info-->
+                            </td>
+                            <td><div class="featured yes"><i class="fa fa-check"></i><aside></aside></div></td>
+                            <td class="views">426</td>
+                            <td class="reviews">45</td>
+                            <td class="rating">9.3</td>
+                            <td class="last-reservation">Today 15:32
+                                <span class="last-edit">Last edited: Today 12:35</span>
+                                <div class="edit-options">
+                                    <a href="edit.html" class="link icon"><i class="fa fa-edit"></i>Edit</a>
+                                    <a href="reservations.html" class="link icon"><i class="fa fa-check-square-o"></i>Reservations</a>
+                                    <a href="reviews.html" class="link icon"><i class="fa fa-comment"></i>Reviews</a>
+                                    <a href="#" class="link icon delete"><i class="fa fa-trash"></i>Delete</a>
+                                </div>
+                                <!--end edit-options-->
+                            </td>
+                        </tr>
+                        <!--end my-item-->
+                        <tr class="my-item">
+                            <td>
+                                <div class="image-wrapper">
+                                    <a href="edit.html" class="image">
+                                        <div class="bg-transfer">
+                                            <img src="assets/img/items/02.jpg">
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="info">
+                                    <a href="detail.html"><h2>Mountain Paradise</h2></a>
+                                    <figure class="location">Montenegro</figure>
+                                    <figure class="label label-info">Hotel</figure>
+                                    <div class="meta">
+                                        <span><i class="fa fa-bed"></i>365</span>
+                                        <span class="price-info">From<span class="price">$32</span><span class="appendix">/night</span></span>
+                                    </div>
+                                    <!--end meta-->
+                                </div>
+                                <!--end info-->
+                            </td>
+                            <td class="featured"><i class="fa fa-times"></i></td>
+                            <td class="views">230</td>
+                            <td class="reviews">28</td>
+                            <td class="rating">9.9</td>
+                            <td class="last-reservation">Yesterday 10:45
+                                <span class="last-edit">Last edited: Today 12:35</span>
+                                <div class="edit-options">
+                                    <a href="edit.html" class="link icon"><i class="fa fa-edit"></i>Edit</a>
+                                    <a href="reservations.html" class="link icon"><i class="fa fa-check-square-o"></i>Reservations</a>
+                                    <a href="reviews.html" class="link icon"><i class="fa fa-comment"></i>Reviews</a>
+                                    <a href="#" class="link icon delete"><i class="fa fa-trash"></i>Delete</a>
+                                </div>
+                                <!--end edit-options-->
+                            </td>
+                        </tr>
+                        <!--end my-item-->
+                        <tr class="my-item">
+                            <td>
+                                <div class="image-wrapper">
+                                    <div class="ribbon"><div class="offer-number">20%</div><figure>Off Today!</figure></div>
+                                    <a href="edit.html" class="image">
+                                        <div class="bg-transfer">
+                                            <img src="assets/img/items/03.jpg">
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="info">
+                                    <a href="detail.html"><h2>Twin Oaks Resort</h2></a>
+                                    <figure class="location">Montenegro</figure>
+                                    <figure class="label label-info">Hotel</figure>
+                                    <div class="meta">
+                                        <span><i class="fa fa-bed"></i>365</span>
+                                        <span class="price-info">From<span class="price">$32</span><span class="appendix">/night</span></span>
+                                    </div>
+                                    <!--end meta-->
+                                </div>
+                                <!--end info-->
+                            </td>
+                            <td class="featured"><i class="fa fa-times"></i></td>
+                            <td class="views">230</td>
+                            <td class="reviews">28</td>
+                            <td class="rating">9.9</td>
+                            <td class="last-reservation">12.05.2016 11:05
+                                <span class="last-edit">Last edited: Today 12:35</span>
+                                <div class="edit-options">
+                                    <a href="edit.html" class="link icon"><i class="fa fa-edit"></i>Edit</a>
+                                    <a href="reservations.html" class="link icon"><i class="fa fa-check-square-o"></i>Reservations</a>
+                                    <a href="reviews.html" class="link icon"><i class="fa fa-comment"></i>Reviews</a>
+                                    <a href="#" class="link icon delete"><i class="fa fa-trash"></i>Delete</a>
+                                </div>
+                                <!--end edit-options-->
+                            </td>
+                        </tr>
+                        <!--end my-item-->
+                        <tr class="my-item">
+                            <td>
+                                <div class="image-wrapper">
+                                    <a href="edit.html" class="image">
+                                        <div class="bg-transfer">
+                                            <img src="assets/img/items/04.jpg">
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="info">
+                                    <a href="detail.html"><h2>Twin Oaks Resort</h2></a>
+                                    <figure class="location">Montenegro</figure>
+                                    <figure class="label label-info">Hotel</figure>
+                                    <div class="meta">
+                                        <span><i class="fa fa-bed"></i>365</span>
+                                        <span class="price-info">From<span class="price">$32</span><span class="appendix">/night</span></span>
+                                    </div>
+                                    <!--end meta-->
+                                </div>
+                                <!--end info-->
+                            </td>
+                            <td class="featured"><i class="fa fa-times"></i></td>
+                            <td class="views">230</td>
+                            <td class="reviews">28</td>
+                            <td class="rating">9.9</td>
+                            <td class="last-reservation">12.02.2016 08:50
+                                <span class="last-edit">Last edited: Today 12:35</span>
+                                <div class="edit-options">
+                                    <a href="edit.html" class="link icon"><i class="fa fa-edit"></i>Edit</a>
+                                    <a href="reservations.html" class="link icon"><i class="fa fa-check-square-o"></i>Reservations</a>
+                                    <a href="reviews.html" class="link icon"><i class="fa fa-comment"></i>Reviews</a>
+                                    <a href="#" class="link icon delete"><i class="fa fa-trash"></i>Delete</a>
+                                </div>
+                                <!--end edit-options-->
+                            </td>
+                        </tr>
+                        <!--end my-item-->
+                        </tbody>
+                    </table>
+                </div>
+                <!--end my-items-->
+            </div>
+            <!--end main-content-->
+        </div>
+        <!--end container-->
+    </div>
+    <!--end page-content-->
+
+    <footer id="page-footer">
+        <div class="row-one">
+            <div class="container">
+                <div class="logos">
+                    <div class="logo">
+                        <a href="#"><img src="assets/img/logo-1.png" alt=""></a>
+                    </div>
+                    <!--/ .logo-->
+                    <div class="logo">
+                        <a href="#"><img src="assets/img/logo-2.png" alt=""></a>
+                    </div>
+                    <!--/ .logo-->
+                    <div class="logo">
+                        <a href="#"><img src="assets/img/logo-3.png" alt=""></a>
+                    </div>
+                    <!--/ .logo-->
+                    <div class="logo">
+                        <a href="#"><img src="assets/img/logo-4.png" alt=""></a>
+                    </div>
+                    <!--/ .logo-->
+                    <div class="logo">
+                        <a href="#"><img src="assets/img/logo-5.png" alt=""></a>
+                    </div>
+                    <!--/ .logo-->
+                </div>
+                <!--/ .logos-->
+            </div>
+        </div>
+        <!--end row-one-->
+        <div class="row-two clearfix">
+            <div class="container">
+                <div class="copyright pull-left">(C) 2016 Your Company, All Rights Reserved</div>
+                <div class="footer-nav pull-right">
+                    <a href="index.html">Home</a>
+                    <a href="about-us.html">About Us</a>
+                    <a href="listing.html">Listing</a>
+                    <a href="contact-us.html">Contact Us</a>
+                </div>
+            </div>
+            <div class="bg-transfer"><img src="assets/img/footer-bg.jpg" alt=""></div>
+        </div>
+        <!--end row-two-->
+    </footer>
+    <!--end page-footer-->
+</div>
+{% endblock %}
