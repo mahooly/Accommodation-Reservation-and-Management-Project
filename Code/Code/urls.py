@@ -18,7 +18,6 @@ from django.urls import include
 from django.urls import path
 from django.conf.urls.static import static
 from Code import settings
-from accommodation import views as accommodation_views
 
 urlpatterns = [
                   path('admin/', admin.site.urls),

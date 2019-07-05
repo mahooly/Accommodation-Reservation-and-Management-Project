@@ -7,17 +7,15 @@ from django.views import View
 from django.views.generic.detail import DetailView
 
 from Code.settings import DEFAULT_FROM_EMAIL
-from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm, FileFieldForm, RoomSearchForm
+from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm, FileFieldForm, \
+    RoomSearchForm
 from .models import Accommodation, Amenity, Image, RoomInfo, Room
 from registration.decorators import user_is_host
 from .decorators import user_same_as_accommodation_user, user_host_or_superuser, user_same_as_image_user
 from datetime import timedelta
-import time
-from reservation.models import Reservation
-from registration.models import CustomUser
 from django.db.models import Q
 import datetime
-import math
+
 
 @method_decorator([login_required, user_is_host], name='dispatch')
 class CreateAccommodationView(View):
@@ -49,125 +47,47 @@ class CreateAccommodationView(View):
                           {'form': form, 'image_form': image_form})
 
 
-class AccommodationDetailView(View):
-    #model = Accommodation
+class AccommodationDetailView(DetailView):
+    model = Accommodation
     format = '%m/%d/%Y'
     template_name = 'accommodation/accommodation_detail.html'
 
-
-    def get(self, request, pk):
-        accommodation = get_object_or_404(Accommodation, pk=pk)
-        rooms = Room.objects.filter(accommodation__id__exact=pk)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         form = RoomCreationForm()
-        print("rooms shit is ", rooms)
-        print("full path is ", request.get_full_path)
-        context = {'accommodation': accommodation, 'form': form, 'room_amenities':Amenity.objects.filter(label='room'), 'rooms':rooms,
-                   'hotel_amenities':Amenity.objects.filter(label='hotel')}
-        #print("date2 is ", self.convert_date_to_string(datetime.datetime.now()))
-        #print("date is ", self.convert_string_to_date(self.convert_date_to_string(datetime.datetime.now())))
+        context['form'] = form
 
-        #if 'check_in' not in request.GET:
-        #    return render(request, self.template_name, context)
+        pk = self.kwargs.get('pk')
+        rooms = Room.objects.filter(accommodation__id__exact=pk)
+        form = RoomSearchForm(self.request.GET)
+        if form.is_valid():
+            check_in = form.cleaned_data.get('check_in', '')
+            check_out = form.cleaned_data.get('check_out', '')
+            price = form.cleaned_data.get('price', '')
 
-        form = RoomSearchForm(request.GET)
-        if not form.is_valid():
-            print("search form is not valid, please try again")
-            return render(request, self.template_name, context)
+            if check_in:
+                check_in = self.convert_string_to_date(check_in)
+                check_out = self.convert_string_to_date(check_out)
+                availableRoomInfos = RoomInfo.objects.all().exclude(
+                    Q(reservation__check_in__range=(check_in, check_out - timedelta(days=1))) |
+                    Q(reservation__check_out__range=(check_in + timedelta(days=1), check_out))).filter(
+                    out_of_service=False)
+                rooms = rooms.filter(roominfo__in=availableRoomInfos).distinct()
 
-        print("rooms1 shit is ",rooms)
-        ## filtering based on check_in & check_out
-        #check_in = datetime.date(2019, 7, 8)
-        #check_out = datetime.date(2019, 7, 10)
-        if form.cleaned_data['check_in']:
-            check_in = form.cleaned_data['check_in']
-            check_out = check_in + timedelta(days=form.cleaned_data['check_out'])
-            availableRoomInfos = RoomInfo.objects.all().exclude(
-                Q(reservation__check_in__range=(check_in, check_out - timedelta(days=1))) |
-                Q(reservation__check_out__range=(check_in + timedelta(days=1), check_out))).filter(out_of_service=False)
-            print("rooms2.5 shit is ", availableRoomInfos)
-            rooms = rooms.filter(roominfo__in=availableRoomInfos).distinct()
+                context['check_in'] = self.convert_date_to_string_2(check_in)
+                context['check_out'] = form.cleaned_data['check_out']
 
-            ## updating context
-            context['check_in'] = self.convert_date_to_string_2(check_in)
-            context['check_out'] = form.cleaned_data['check_out']
-
-        print("rooms2 shit is ", rooms)
-
-        money_low = 300000
-        money_high = 0
-        flag = False
-        infinit = 100000000
-        if form.cleaned_data['money_first']:
-            flag = True
-            money_low = min(money_low, 0)
-            money_high = max(money_high, 100000)
-        if form.cleaned_data['money_second']:
-            flag = True
-            money_low = min(money_low, 100000)
-            money_high = max(money_high, 200000)
-        if form.cleaned_data['money_third']:
-            flag = True
-            money_low = min(money_low, 200000)
-            money_high = max(money_high, 300000)
-        if form.cleaned_data['money_forth']:
-            flag = True
-            money_low = min(money_low, 300000)
-            money_high = max(money_high, infinit)
-        if flag:
-            rooms = rooms.filter(price__gte=money_low).filter(price__lte=money_high)
-
-        print("rooms3 shit is ",rooms)
-
-
-        for amenity in Amenity.objects.all():
-            if amenity.name in request.GET:
-                print("Filtering for an amenity!")
-                rooms = rooms.filter(amenity__name=amenity.name)
-
-
-        print("rooms are ",rooms)
-
-
-        #reservations = Reservation(reserver=CustomUser.objects.all()[0], room=RoomInfo., check_in=datetime.date(2019, 1, 1), check_out=5)
-       # rooms = rooms.filter()
+            if price:
+                price_low = int(price.split('-')[0])
+                price_high = int(price.split('-')[1])
+                if price_high == 900:
+                    rooms = rooms.filter(price__gte=price_low)
+                else:
+                    rooms = rooms.filter(price__gte=price_low, price__lte=price_high)
 
         context['rooms'] = rooms
-        return render(request, self.template_name, context)
 
-    #def post(self, request, pk):
-    #    print(" here")
-    #    form = RoomSearchForm(request.POST)
-    #    print("money first is  ", form.money_first)
-    #    accommodation = get_object_or_404(Accommodation, pk=pk)
-    #    form = RoomCreationForm()
-    #    context = {'accommodation': accommodation, 'form': form}
-    #    return render(request, self.template_name, context)
-
-    def build_url(self, check_out, check_in, money_low, money_high, is_hotel, is_motel, is_house):
-        url = ''
-        first = True
-        if night_number:
-            url += '?check-in='
-            first = False
-        if arrival_date:
-            url += ('?arrival_date=' if first else '&arrival_date') + self.convert_date_to_string(check_in)
-            first = False
-        if money_low:
-            url += ('?money_low=' if first else '&city')  + str(money_low)
-            first = False
-        if money_high:
-            url += ('?money_high=' if first else '&city')  + str(money_high)
-            first = False
-        if is_hotel:
-            url += '?hotel=on' if first else '&hotel=on'
-            first = False
-        if is_motel:
-            url += '?motel=on' if first else '&motel=on'
-            first = False
-        if is_house:
-            url += '?house=on' if first else '&house=on'
-            first = False
-        return url
+        return context
 
     def convert_string_to_date(self, date_string):
         return datetime.datetime.strptime(date_string, self.format)
@@ -178,11 +98,6 @@ class AccommodationDetailView(View):
     def convert_date_to_string_2(self, datetime_object):
         format2 = '%Y-%m-%d'
         return datetime_object.strftime(format2)
-        #def get_context_data(self, **kwargs):
-    #    context = super().get_context_data(**kwargs)
-    #    form = RoomCreationForm()
-    #    context['form'] = form
-    #    return context
 
 
 @method_decorator([login_required, user_is_host, user_same_as_accommodation_user], name='dispatch')
@@ -303,4 +218,3 @@ class CreateAmenityView(View):
         else:
             messages.error(request, 'در اضافه کردن امکانات مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
         return redirect('/create_accommodation/')
-

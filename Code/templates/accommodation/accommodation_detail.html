@@ -4,212 +4,278 @@
 
 {% block main %}
     <div class="container">
-        <div class="col-md-12 col-sm-12 pull-right" dir="rtl">
-            <div class="quick-navigation" data-fixed-after-touch="">
-                <div class="wrapper">
-                    <ul>
-                        <li><a href="#description" class="scroll">توضیحات</a></li>
-                        <li><a href="#map" class="scroll">نقشه</a></li>
-                        <li><a href="#facilities" class="scroll">امکانات</a></li>
-                        {% if accommodation.room_set.all %}
-                            <li><a href="#rooms" class="scroll">اتاق‌ها</a></li>
-                        {% endif %}
-                    </ul>
+        <div class="row">
+            <div class="col-md-3 pull-right" dir="rtl">
+                <div class="sidebar">
+                    <div class="box filter">
+                        <h2>جست و جو</h2>
+                        <form class="labels-uppercase" method="get"
+                              action="{% url 'search' %}">
+                            <div class="form-group">
+                                <label for="form-filter-destination">نام مکان یا شهر</label>
+                                <input type="text" class="form-control" id="form-filter-destination" name="expression"
+                                       placeholder="نام مکان یا شهر">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-rounded form-control">جست و جو</button>
+                        </form>
+                        <form id="form-filter" class="labels-uppercase" method="get" action="{% url 'search' %}">
+                            <div class="center">
+                                <a href="#filter-advanced-search" class="link icon" data-toggle="collapse"
+                                   aria-expanded="false" aria-controls="filter-advanced-search"><i
+                                        class="fa fa-plus"></i>جست و جوی پیشرفته</a>
+                            </div>
+                            <div class="collapse" id="filter-advanced-search">
+                                <div class="wrapper">
+                                    <h2>فیلتر</h2>
+                                    <section dir="rtl">
+                                        <h3>نوع اقامتگاه </h3>
+                                        <ul class="checkboxes">
+                                            {% if is_hotel %}
+                                                <li><label><input type="checkbox"
+                                                                  name="hotel" checked>&nbsp;&nbsp;هتل</label></li>
+                                            {% else %}
+                                                <li><label><input type="checkbox"
+                                                                  name="hotel">&nbsp;&nbsp;هتل</label></li>
+                                            {% endif %}
+
+                                            {% if is_motel %}
+                                                <li><label><input type="checkbox"
+                                                                  name="motel" checked>&nbsp;&nbsp;اقامتگاه محلی
+                                                    (متل)</label>
+                                                </li>
+                                            {% else %}
+                                                <li><label><input type="checkbox"
+                                                                  name="motel">&nbsp;&nbsp;اقامتگاه محلی (متل)</label>
+                                                </li>
+                                            {% endif %}
+
+                                            {% if is_house %}
+                                                <li><label><input type="checkbox" name="house" checked>&nbsp;&nbsp;منزل
+                                                    شخصی</label>
+                                                </li>
+                                            {% else %}
+                                                <li><label><input type="checkbox" name="house">&nbsp;&nbsp;منزل
+                                                    شخصی</label>
+                                                </li>
+                                            {% endif %}
+
+                                        </ul>
+                                    </section>
+                                    <section>
+                                        <h3>موقعیت </h3>
+                                        <div class="ir-select">
+                                            <label for="province">استان</label>
+                                            <select class="ir-province framed width-100" id="province"
+                                                    name="province">
+                                                <option hidden value="{{ province }}" selected>{{ province }}</option>
+                                            </select>
+                                            <label for="city">شهر</label>
+                                            <select class="ir-city framed width-100" id="city" name="city">
+                                                <option hidden value="{{ city }}" selected>{{ city }}</option>
+                                            </select>
+                                        </div>
+                                    </section>
+                                </div>
+                                {% if expression %}
+                                    <input type="hidden" name="expression" value="{{ expression }}">
+                                {% endif %}
+                                <button type="submit" class="btn btn-primary btn-rounded form-control">اعمال فیلتر
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            {% if messages %}
-                {% for message in messages %}
-                    {% ifequal message.tags 'success' %}
-                        <div class="alert alert-success" dir="rtl" role="alert"
-                             style="padding: 5px; text-align: center;">
-                            <p style="display: inline-block;">{{ message }}</p>
-                        </div>
-                    {% endifequal %}
-                    {% ifequal message.tags 'error' %}
-                        <div class="alert alert-danger" dir="rtl" role="alert"
-                             style="padding: 5px; text-align: center;">
-                            <p style="display: inline-block;">{{ message }}</p>
-                        </div>
-                    {% endifequal %}
-                {% endfor %}
-            {% endif %}
-            <div class="main-content">
-                <div class="title">
-                    <div class="left">
-                        <h1>{{ accommodation.title }}</h1><span>&nbsp;({{ accommodation.accommodation_type }})</span>
-                    </div>
-                    <div class="right">
-                        <a href="#map" class="icon scroll"><i class="fa fa-map-marker"></i>روی نقشه ببینید</a>
-                        {% if request.user.is_authenticated %}
-                            {% ifequal request.user.username accommodation.owner.user.username %}
-                                <a href="" data-toggle="modal" data-tab="true"
-                                   data-target="#add-room-modal" class="btn btn-primary btn-rounded scroll">اضافه کردن
-                                    اتاق</a>
-                                <a href="{% url 'edit_accommodation' pk=accommodation.pk %}"
-                                   class="btn btn-primary btn-rounded scroll">تغییر مشخصات اقامتگاه</a>
-                            {% endifequal %}
-                        {% endif %}
+            <div class="col-md-9 col-sm-9 pull-right" dir="rtl">
+                <div class="quick-navigation" data-fixed-after-touch="">
+                    <div class="wrapper">
+                        <ul>
+                            <li><a href="#description" class="scroll">توضیحات</a></li>
+                            <li><a href="#map" class="scroll">نقشه</a></li>
+                            <li><a href="#facilities" class="scroll">امکانات</a></li>
+                            {% if accommodation.room_set.all %}
+                                <li><a href="#rooms" class="scroll">اتاق‌ها</a></li>
+                            {% endif %}
+                        </ul>
                     </div>
                 </div>
-
-                <section>
-                    <div id="demo" class="carousel slide" data-ride="carousel">
-
-                        <ul class="carousel-indicators" style="margin-bottom: -20px">
-                            {% for image in accommodation.image_set.all %}
-                                {% ifequal forloop.counter0 0 %}
-                                    <li data-target="#demo" data-slide-to="0" class="active"
-                                        style="border-color: black"></li>
-                                {% else %}
-                                    <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}"
-                                        style="border-color: black"></li>
-                                {% endifequal %}
-                            {% endfor %}
-                        </ul>
-
-                        <div class="carousel-inner">
-                            {% for image in accommodation.image_set.all %}
-                                {% ifequal forloop.counter0 0 %}
-                                    <div class="item active image">
-                                        <img src="{{ image.image.url }}" alt="" style="width: 1100px; height: 600px">
-                                    </div>
-                                {% else %}
-                                    <div class="item image">
-                                        <img src="{{ image.image.url }}" alt="" style="width: 1100px; height: 600px;">
-                                    </div>
-                                {% endifequal %}
-
-                            {% endfor %}
+                {% if messages %}
+                    {% for message in messages %}
+                        {% ifequal message.tags 'success' %}
+                            <div class="alert alert-success" dir="rtl" role="alert"
+                                 style="padding: 5px; text-align: center;">
+                                <p style="display: inline-block;">{{ message }}</p>
+                            </div>
+                        {% endifequal %}
+                        {% ifequal message.tags 'error' %}
+                            <div class="alert alert-danger" dir="rtl" role="alert"
+                                 style="padding: 5px; text-align: center;">
+                                <p style="display: inline-block;">{{ message }}</p>
+                            </div>
+                        {% endifequal %}
+                    {% endfor %}
+                {% endif %}
+                <div class="main-content">
+                    <div class="title">
+                        <div class="left">
+                            <h1>{{ accommodation.title }}</h1>
+                            <span>&nbsp;({{ accommodation.accommodation_type }})</span>
                         </div>
-
-                        <a class="carousel-control-prev" href="#demo" data-slide="prev">
-                            <span class="carousel-control-prev-icon"></span>
-                        </a>
-                        <a class="carousel-control-next" href="#demo" data-slide="next">
-                            <span class="carousel-control-next-icon"></span>
-                        </a>
+                        <div class="right">
+                            <a href="#map" class="icon scroll"><i class="fa fa-map-marker"></i>روی نقشه ببینید</a>
+                            {% if request.user.is_authenticated %}
+                                {% ifequal request.user.username accommodation.owner.user.username %}
+                                    <a href="" data-toggle="modal" data-tab="true"
+                                       data-target="#add-room-modal" class="btn btn-primary btn-rounded scroll">اضافه
+                                        کردن
+                                        اتاق</a>
+                                    <a href="{% url 'edit_accommodation' pk=accommodation.pk %}"
+                                       class="btn btn-primary btn-rounded scroll">تغییر مشخصات اقامتگاه</a>
+                                {% endifequal %}
+                            {% endif %}
+                        </div>
                     </div>
-                </section>
 
+                    <section>
+                        <div id="demo" class="carousel slide" data-ride="carousel">
 
-                <h2>توضیحات</h2>
-                <div class="row">
-                    <div class="col-md-8 pull-right">
-                        <section id="description">
-                            {{ accommodation.description }}
-                        </section>
-                        <section id="facilities">
-                            <h2>امکانات</h2>
-                            <ul class="bullets half">
-                                {% for amenity in accommodation.amenity.all %}
-                                    <li>  {{ amenity }}  </li>
+                            <ul class="carousel-indicators" style="margin-bottom: -20px">
+                                {% for image in accommodation.image_set.all %}
+                                    {% ifequal forloop.counter0 0 %}
+                                        <li data-target="#demo" data-slide-to="0" class="active"
+                                            style="border-color: black"></li>
+                                    {% else %}
+                                        <li data-target="#demo" data-slide-to="{{ forloop.counter0 }}"
+                                            style="border-color: black"></li>
+                                    {% endifequal %}
                                 {% endfor %}
                             </ul>
-                        </section>
-                        <section id="map">
-                            <h2>نقشه</h2>
-                            <div id="main-map" class="map height-300 box"></div>
-                        </section>
-                    </div>
-                    <div class="col-md-4 pull-right">
-                        <div class="sidebar">
-                            <aside class="box">
-                                <dl>
-                                    <dt>تعداد اتاق‌ها</dt>
-                                    <dd>{{ accommodation.rooms }}</dd>
-                                    <dt>ظرفیت مهمان</dt>
-                                    <dd>{{ accommodation.guests }}</dd>
-                                    <dt>اتاق یک نفره</dt>
-                                    <dd>{{ accommodation.single_beds }}</dd>
-                                    <dt>اتاق دو نفره</dt>
-                                    <dd>{{ accommodation.double_beds }}</dd>
-                                    <dt>اتاق دو نفره (تخت جدا)</dt>
-                                    <dd>{{ accommodation.twin_beds }}</dd>
-                                </dl>
-                            </aside>
-                            <aside class="text-center">
-                                <address>
-                                    {{ accommodation.city }}<br>
-                                    {{ accommodation.address }}<br>
-                                    <br>
-                                    {{ accommodation.phone }}<br>
-                                    <a href="#">{{ accommodation.email }}</a><br>
-                                </address>
-                            </aside>
-                        </div>
-                    </div>
-                </div>
-                {% if accommodation.room_set.all %}
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="sidebar">
-                                <div class="box filter">
-                                    <h2>جست و جو</h2>
-                                    <form id="form-filter" class="labels-uppercase">
-                                        <!--end form-group-->
-                                        <div class="form-group-inline">
-                                            <div class="form-group">
-                                                <label for="form-filter-check-in">ورود</label>
-                                                <input type="text" class="form-control date" id="form-filter-check-in" name="check_in" placeholder="ورود">
-                                            </div>
-                                            <!--end form-group-->
-                                            <div class="form-group">
-                                                <label for="form-filter-check-out">تعداد شب اقامت</label>
-                                                <input type="number" class="form-control" id="form-filter-check-out" name="check_out" placeholder="2">
-                                            </div>
-                                            <!--end form-group-->
+
+                            <div class="carousel-inner">
+                                {% for image in accommodation.image_set.all %}
+                                    {% ifequal forloop.counter0 0 %}
+                                        <div class="item active image">
+                                            <img src="{{ image.image.url }}" alt=""
+                                                 style="width: 1100px; height: 600px">
                                         </div>
-                                        <!--end form-group-inline-->
-                                        <div class="center">
-                                            <!-- <a href="#filter-advanced-search" class="link icon" data-toggle="collapse" aria-expanded="false" aria-controls="filter-advanced-search">Advanced Search<i class="fa fa-plus"></i></a> -->
+                                    {% else %}
+                                        <div class="item image">
+                                            <img src="{{ image.image.url }}" alt=""
+                                                 style="width: 1100px; height: 600px;">
                                         </div>
-                                        <div class="collapse in" id="filter-advanced-search">
-                                            <div class="wrapper">
-                                                <h2>سایر فیلتر ها<span data-show-after-time="1000" data-container="body" data-toggle="popover" data-placement="right" title="هر جور که دوست داری اتاقتو گلچین کن!" data-content="می تونی بر حسب زمان ورود و خروج، هزینه یا امکانات اتاق هارو گلچین کنی"></span></h2>
-                                                <section>
-                                                    <h3>نرخ هر شب اقامت</h3>
-                                                    <ul class="checkboxes list-unstyled">
-                                                        <li><label><input type="checkbox" name="money_first">  0 - 100  هزار تومان<span></span></label></li>
-                                                        <li><label><input type="checkbox" name="money_second">100 - 200  هزار تومان<span></span></label></li>
-                                                        <li><label><input type="checkbox" name="money_third">300 - 200 هزار تومان<span></span></label></li>
-                                                        <li><label><input type="checkbox" name="money_forth">300+  هزار تومان<span></span></label></li>
-                                                    </ul>
-                                                    <!--end checkboxes-->
-                                                </section>
-                                                <!--end section-->
-                                                <!--end section-->
-                                                <section>
-                                                    <h3>امکانات</h3>
-                                                    <ul class="checkboxes no-bottom-margin">
-                                                        {% for amenity in room_amenities %}
-                                                        <li><label><input type="checkbox" name="{{amenity.name}}">{{amenity.name}}<span></span></label></li>
-                                                        {% endfor %}
-                                                    </ul>
-                                                    <!--end checkboxes-->
-                                                </section>
-                                                <!--end section-->
-                                            </div>
-                                            <!--end filter-advanced-search-->
-                                        </div>
-                                        <!--end collapse-->
-                                        <div class="form-group center">
-                                            <button type="submit" class="btn btn-primary btn-rounded form-control">جست و جو</button>
-                                        </div>
-                                    </form>
-                                    <!--end form-filter-->
-                                </div>
-                                <!--end filter-->
-                                <a href="#" class="advertising-banner">
-                                    <span class="banner-badge">Advertising</span>
-                                    <img src="assets/img/ad-banner-02.jpg" alt="">
-                                </a>
+                                    {% endifequal %}
+
+                                {% endfor %}
                             </div>
 
-                    <!--end sidebar-->
+                            <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                                <span class="carousel-control-prev-icon"></span>
+                            </a>
+                            <a class="carousel-control-next" href="#demo" data-slide="next">
+                                <span class="carousel-control-next-icon"></span>
+                            </a>
                         </div>
-                        <div class="col-md-8">
-                        <div id="rooms">
+                    </section>
+
+
+                    <h2>توضیحات</h2>
+                    <div class="row">
+                        <div class="col-md-8 pull-right">
+                            <section id="description">
+                                {{ accommodation.description }}
+                            </section>
+                            <section id="facilities">
+                                <h2>امکانات</h2>
+                                <ul class="bullets half">
+                                    {% for amenity in accommodation.amenity.all %}
+                                        <li>  {{ amenity }}  </li>
+                                    {% endfor %}
+                                </ul>
+                            </section>
+                            <section id="map">
+                                <h2>نقشه</h2>
+                                <div id="main-map" class="map height-300 box"></div>
+                            </section>
+                        </div>
+                        <div class="col-md-4 pull-right">
+                            <div class="sidebar">
+                                <aside class="box">
+                                    <dl>
+                                        <dt>تعداد اتاق‌ها</dt>
+                                        <dd>{{ accommodation.rooms }}</dd>
+                                        <dt>ظرفیت مهمان</dt>
+                                        <dd>{{ accommodation.guests }}</dd>
+                                        <dt>اتاق یک نفره</dt>
+                                        <dd>{{ accommodation.single_beds }}</dd>
+                                        <dt>اتاق دو نفره</dt>
+                                        <dd>{{ accommodation.double_beds }}</dd>
+                                        <dt>اتاق دو نفره (تخت جدا)</dt>
+                                        <dd>{{ accommodation.twin_beds }}</dd>
+                                    </dl>
+                                </aside>
+                                <aside class="text-center">
+                                    <address>
+                                        {{ accommodation.city }}<br>
+                                        {{ accommodation.address }}<br>
+                                        <br>
+                                        {{ accommodation.phone }}<br>
+                                        <a href="#">{{ accommodation.email }}</a><br>
+                                    </address>
+                                </aside>
+                            </div>
+                        </div>
+                    </div>
+                    {% if rooms %}
+                        <section id="rooms">
                             <h2>اتاق‌ها</h2>
+                            <form class="labels-uppercase" id="form-availability">
+                                <div class="row">
+                                    <div class="col-md-3 pull-right">
+                                        <div class="form-group">
+                                            <label for="form-availability-check-in">تاریخ ورود</label>
+                                            <input type="text" class="form-control date" id="form-availability-check-in"
+                                                   name="check-in" placeholder="تاریخ ورود">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 pull-right">
+                                        <div class="form-group">
+                                            <label for="form-availability-check-out">تاریخ خروج</label>
+                                            <input type="text" class="form-control date"
+                                                   id="form-availability-check-out"
+                                                   name="check-out" placeholder="تاریخ خروج">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 pull-right">
+                                        <div class="form-group">
+                                            <label for="form-availability-price">محدوده قیمت</label>
+                                            <input type="text" class="js-range-slider" name="price" value=""
+                                                   id="form-availability-price"/>
+                                            <script src="https://cdnjs.cloudflare.com/ajax/libs/ion-rangeslider/2.3.0/js/ion.rangeSlider.min.js"></script>
+                                            <script>$(".js-range-slider").ionRangeSlider({
+                                                type: "double",
+                                                min: 0,
+                                                max: 900,
+                                                from: 200,
+                                                to: 500,
+                                                step: 100,
+                                                skin: "flat",
+                                                postfix: " هزار تومان",
+                                                max_postfix: "+",
+                                                input_values_separator: "-"
+                                            });
+                                            </script>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <label class="invisible">Hidden label</label>
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-rounded btn-framed form-control">جست و جو
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                             <div class="form-reservations">
                                 <div class="table-responsive">
                                     <table class="table">
@@ -217,260 +283,172 @@
                                         <tr>
                                             <th style="text-align: start">نوع اتاق</th>
                                             <th style="text-align: center">تعداد مهمان</th>
-                                            <th style="text-align: center">تعداد اتاق باقیمانده</th>
                                             <th style="text-align: center">قیمت</th>
+                                            <th style="text-align: center">تعداد اتاق</th>
                                             <th style="text-align: center"></th>
                                         </tr>
                                         </thead>
                                     </table>
                                 </div>
                                 {% for room in rooms %}
-                                    <table class="table">
-                                        <tbody>
-                                        <tr class="room">
-                                            <td class="room-type" style="text-align: start">
-                                                <a href="" data-toggle="modal" data-tab="true"
-                                                   data-target="#room-{{ room.id }}">
-                                                    <h3>{% get_room_type room.bed_type %}</h3></a>
-                                                <p>{{ room.description }}</p>
-                                            </td>
-                                            <td class="persons" style="text-align: center">{{ room.number_of_guests }}<i
-                                                    class="fa fa-user"></i></td>
-                                            <td class="persons" style="text-align: center">{{ room.reservable_count }}</td>
-                                            <td> {{room.price}} </td>
-                                            <td class="persons" style="text-align: center">
-                                                <div class="center"><a  onclick="setModal({% get_room_price_from_id room.pk %} , {% get_room_price_from_id_2 room.pk %});" data-toggle="modal" data-tab="true" data-target="#reserve-modal" class="btn btn-framed btn-default btn-rounded">رزرو</a></div></td>
-                                                <script type="text/javascript">
-                                                </script>
-
-
-                                                <div class="modal fade" id="reserve-modal" role="dialog"
-                                                     aria-labelledby="sign-in-register-modal">
-                                                    <div class="wrapper">
-                                                        <div class="inner">
-                                                            <div class="modal-dialog width-400px" role="document">
-                                                                <div class="modal-content">
-                                                                    <div class="modal-header">
-                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                                                                aria-hidden="true">&times;</span></button>
-                                                                        <ul class="nav nav-tabs " >
-                                                                            <li role="presentation" class="active" dir="rtl" style="text-align:right"><a href="#tab-sign-in"
-                                                                                                                      aria-controls="tab-sign-in" role="tab"
-                                                                                                                      data-toggle="tab"><h1
-                                                                                    style="margin-left: 150px" dir="rtl" >رزرو اتاق</h1></a></li>
-                                                                        </ul>
-                                                                    </div>
-                                                                     <div class="ribbon"><div id="discounted-price2" class="offer-number">20%</div><figure>هزار تومان</figure></div>
-                                                                    <div class="modal-body" dir="rtl" style="text-align:right">
-                                                                        <form method="post" id="form-sign" action="{{request.get_full_path}}">
-                                                                            {% csrf_token %}
-                                                                            <div class="row">
-                                                                            <div class="form-group"  style="text-align:right">
-                                                                                <label class="pull-right">قیمت بعد از تخفیف</label>
-                                                                                <!-- <div class="col-md-9"><h4 id="discounted-price2">  100   </h4></div>> -->
-                                                                                <figure  id="discounted-price" class="label label-info">{{room.price}}</figure>
-                                                                            </div>
-                                                                            </div>
-                                                                            <div class="form-group-inline" dir="rtl">
-                                                                                <div class="form-group" dir="rtl">
-                                                                                    <label for="form-filter-check-in">ورود</label>
-                                                                                    <input type="text" class="form-control date" id="form-filter-check-in" name="check_in" value="{{check_in}}" placeholder="ورود">
-                                                                                </div>
-                                                                                <!--end form-group-->
-                                                                                <div class="form-group">
-                                                                                    <label for="number-of-days">تعداد شب اقامت</label>
-                                                                                    <!-- <input type="number" class="form-control" id="form-filter-check-out" name="check_out" value="{{check_out}}" placeholder="{{check_out}}"> -->
-                                                                                    <input type="text" class="form-control" id="number-of-days" name="check_out" value="{{check_out}}"
-                                                                                           placeholder="{{check_out}}" onkeyup = "calculate_price()">
-                                                                                </div>
-                                                                                <!--end form-group-->
-                                                                            </div>
-                                                                            <div class="form-group">
-                                                                                <div class="form-group">
-                                                                                    <label for="number-of-rooms">تعداد اتاق</label>
-                                                                                    <input type="text" class="form-control" id="number-of-rooms" name="room_number_1" placeholder="1"
-                                                                                    onkeyup = "calculate_price()">
-                                                                                </div>
-                                                                            </div>
-                                                                            <div>
-                                                                                <label for="total-price">قابل پرداخت</label>
-                                                                                <span id = "total-price">
-                                                                                    0
-                                                                                </span>
-                                                                            </div>
-                                                                            <h5>رزرو امکانات</h5>
-                                                                                <ul class="checkboxes list-unstyled">
-                                                                                    {% for amenity in hotel_amenities %}
-                                                                                    <li><label><input type="checkbox" name="1">{{amenity.name}}</label></li>
-                                                                                    {% endfor %}
-                                                                                </ul>
-                                                                            <div class="clearfix action">
-                                                                                <div class="form-group center">
-                                                                                    <button type="submit" class="btn btn-primary btn-rounded">پرداخت و رزرو
-                                                                                    </button>
-                                                                                </div>
-
-                                                                            </div>
-                                                                            <script type="application/javascript">
-                                                                                global_price = 0
-                                                                                function calculate_price() {
-
-                                                                                    number_of_rooms = document.getElementById("number-of-rooms").value
-                                                                                    number_of_days = document.getElementById("number-of-days").value
-
-
-                                                                                    document.getElementById("total-price").innerText = number_of_rooms * number_of_days * global_price
-
-                                                                                }
-
-                                                                                function setModal(price, price2){
-                                                                                    global_price = price
-                                                                                    document.getElementById("discounted-price").innerText = price
-                                                                                    document.getElementById("discounted-price2").innerText = price2
-                                                                                }
-                                                                            </script>
-                                                                        </form>
-                                                                    </div>
-                                                                    <div class="modal-footer">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
+                                    <form id="room_1" method="post" action="{% url 'reserve' %}">
+                                        {% csrf_token %}
+                                        <table class="table">
+                                            <tbody>
+                                            <tr class="room">
+                                                <td class="room-type" style="text-align: start">
+                                                    <a href="" data-toggle="modal" data-tab="true"
+                                                       data-target="#room-{{ room.id }}">
+                                                        <h3>{% get_room_type room.bed_type %}</h3></a>
+                                                    <p>{{ room.description }}</p>
+                                                </td>
+                                                <td class="persons"
+                                                    style="text-align: center">{{ room.number_of_guests }}<i
+                                                        class="fa fa-user"></i></td>
+                                                <td class="price" style="text-align: center">{{ room.price }}</td>
+                                                <td class="rooms" style="text-align: center">
+                                                    <select class="framed" name="room_1_nights">
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                    </select>
+                                                </td>
+                                                <td style="text-align: center">
+                                                    <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary btn-rounded">رزرو
+                                                        </button>
                                                     </div>
-                                                </div>
-
-
-
-
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </form>
                                 {% endfor %}
                             </div>
                         </section>
-
+                    {% endif %}
+                    <section id="reviews">
+                        <div>
+                            <h2 style="display: inline-block">نظرات</h2>
+                            <a href="#write-a-review" class="btn btn-primary btn-rounded pull-left scroll"
+                               style="display: inline-block;">نظر خود را
+                                بنویسید</a>
                         </div>
-                    </div>
-                {% endif %}
-                <section id="reviews">
-                    <div>
-                        <h2 style="display: inline-block">نظرات</h2>
-                        <a href="#write-a-review" class="btn btn-primary btn-rounded pull-left scroll"
-                           style="display: inline-block;">نظر خود را
-                            بنویسید</a>
-                    </div>
-                    <h3>امتیاز کلی</h3>
-                    <ul class="rating-score">
-                        <li class="overall"><i class="fa fa-star"></i>&nbsp;{{ accommodation.overall_score }}</li>
-                        <li><span>{{ accommodation.overall_cleanliness }}</span>
-                            <figure>نظافت</figure>
-                        </li>
-                        <li><span>{{ accommodation.overall_comfort }}</span>
-                            <figure>راحتی</figure>
-                        </li>
-                        <li><span>{{ accommodation.overall_location }}</span>
-                            <figure>موقعیت</figure>
-                        </li>
-                        <li><span>{{ accommodation.overall_facilities }}</span>
-                            <figure>امکانات</figure>
-                        </li>
-                        <li><span>{{ accommodation.overall_staff }}</span>
-                            <figure>پرسنل</figure>
-                        </li>
-                        <li><span>{{ accommodation.overall_value }}</span>
-                            <figure>ارزش نسبت به قیمت</figure>
-                        </li>
-                    </ul>
-                    <div class="reviews">
-                        {% for review in accommodation.review_set.all %}
-                            <div class="review">
-                                <div class="row">
-                                    <div class="col-md-3 pull-right">
-                                        <div style="margin-right: 85px">
-                                            <aside class="name">{{ review.user.full_name }}</aside>
-                                            <aside class="date">{{ review.creation_date }}</aside>
-                                        </div>
-
-                                    </div>
-                                    <div class="col-md-9">
-                                        <div class="comment">
-                                            <div class="comment-title">
-                                                {% if review.rating %}
-                                                    <figure class="rating">{{ review.rating.overall }}</figure>
-                                                {% endif %}
-                                                <h4>{{ review.title }}</h4>
+                        <h3>امتیاز کلی</h3>
+                        <ul class="rating-score">
+                            <li class="overall"><i class="fa fa-star"></i>&nbsp;{{ accommodation.overall_score }}</li>
+                            <li><span>{{ accommodation.overall_cleanliness }}</span>
+                                <figure>نظافت</figure>
+                            </li>
+                            <li><span>{{ accommodation.overall_comfort }}</span>
+                                <figure>راحتی</figure>
+                            </li>
+                            <li><span>{{ accommodation.overall_location }}</span>
+                                <figure>موقعیت</figure>
+                            </li>
+                            <li><span>{{ accommodation.overall_facilities }}</span>
+                                <figure>امکانات</figure>
+                            </li>
+                            <li><span>{{ accommodation.overall_staff }}</span>
+                                <figure>پرسنل</figure>
+                            </li>
+                            <li><span>{{ accommodation.overall_value }}</span>
+                                <figure>ارزش نسبت به قیمت</figure>
+                            </li>
+                        </ul>
+                        <div class="reviews">
+                            {% for review in accommodation.review_set.all %}
+                                <div class="review">
+                                    <div class="row">
+                                        <div class="col-md-3 pull-right">
+                                            <div style="margin-right: 85px">
+                                                <aside class="name">{{ review.user.full_name }}</aside>
+                                                <aside class="date">{{ review.creation_date }}</aside>
                                             </div>
-                                            <p>{{ review.text }}</p>
-                                            {% for reply in review.reply_set.all %}
-                                                <div class="answer">
-                                                    <h4>{{ reply.name_position }}</h4>
-                                                    <p>{{ reply.text }}</p>
+
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="comment">
+                                                <div class="comment-title">
+                                                    {% if review.rating %}
+                                                        <figure class="rating">{{ review.rating.overall }}</figure>
+                                                    {% endif %}
+                                                    <h4>{{ review.title }}</h4>
                                                 </div>
-                                            {% endfor %}
+                                                <p>{{ review.text }}</p>
+                                                {% if review.reply %}
+                                                    <div class="answer">
+                                                        <h4>{{ review.reply.name_position }}</h4>
+                                                        <p>{{ review.reply.text }}</p>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </section>
-                <section id="write-a-review">
-                    <h2>نظر خود را بنویسید</h2>
-                    <form method="post" class="labels-uppercase clearfix" id="form_reply_1"
-                          action="{% url 'create_review' accommodation.id %}">
-                        {% csrf_token %}
-                        {% if not user.is_authenticated %}
-                            <div class="alert alert-dark fade in center" role="alert">
-                                <a href="{% url 'login' %}">برای نوشتن نظر ابتدا باید وارد سایت شوید.</a>
-                            </div>
-                        {% endif %}
-                        <div class="review write switch" id="review-write">
-                            <div class="comment">
-                                <div class="row">
-                                    <div class="col-md-8">
-                                        <div class="comment-title">
-                                            <h4>درباره‌ی اقامت خود نظر دهید</h4>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="form_reply_1-name">عنوان نظر<em>*</em></label>
-                                            <input type="text" class="form-control" id="form_reply_1-name" name="title"
-                                                   placeholder="تعطیلات به یاد ماندنی!" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="form_reply_1-message">متن نظر<em>*</em></label>
-                                            <textarea class="form-control" id="form_reply_1-message" rows="8"
-                                                      name="text" required
-                                                      placeholder="اقامت خود را توصیف کنید"></textarea>
-                                        </div>
-                                        <div class="form-group pull-right">
-                                            <button type="submit" class="btn btn-primary btn-rounded">ثبت نظر
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 pull-right">
-                                        <div class="comment-title">
-                                            <h4>ثبت امتیاز</h4>
-                                        </div>
-                                        <dl class="visitor-rating pull-right">
-                                            <dt>نظافت</dt>
-                                            <dd class="star-rating active" data-name="cleanliness"></dd>
-                                            <dt>راحتی</dt>
-                                            <dd class="star-rating active" data-name="comfort"></dd>
-                                            <dt>موقعیت</dt>
-                                            <dd class="star-rating active" data-name="location"></dd>
-                                            <dt>امکانات</dt>
-                                            <dd class="star-rating active" data-name="facilities"></dd>
-                                            <dt>پرسنل</dt>
-                                            <dd class="star-rating active" data-name="staff"></dd>
-                                            <dt>ارزش نسبت به قیمت</dt>
-                                            <dd class="star-rating active" data-name="value"></dd>
-                                        </dl>
-                                    </div>
-                                </div>
-                            </div>
+                            {% endfor %}
                         </div>
-                    </form>
-                </section>
+                    </section>
+                    <section id="write-a-review">
+                        <h2>نظر خود را بنویسید</h2>
+                        <form method="post" class="labels-uppercase clearfix" id="form_reply_1"
+                              action="{% url 'create_review' accommodation.id %}">
+                            {% csrf_token %}
+                            {% if not user.is_authenticated %}
+                                <div class="alert alert-dark fade in center" role="alert">
+                                    <a href="{% url 'login' %}">برای نوشتن نظر ابتدا باید وارد سایت شوید.</a>
+                                </div>
+                            {% endif %}
+                            <div class="review write switch" id="review-write">
+                                <div class="comment">
+                                    <div class="row">
+                                        <div class="col-md-8 pull-right">
+                                            <div class="comment-title">
+                                                <h4>درباره‌ی اقامت خود نظر دهید</h4>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="form_reply_1-name">عنوان نظر<em>*</em></label>
+                                                <input type="text" class="form-control" id="form_reply_1-name"
+                                                       name="title"
+                                                       placeholder="تعطیلات به یاد ماندنی!" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="form_reply_1-message">متن نظر<em>*</em></label>
+                                                <textarea class="form-control" id="form_reply_1-message" rows="8"
+                                                          name="text" required
+                                                          placeholder="اقامت خود را توصیف کنید"></textarea>
+                                            </div>
+                                            <div class="form-group pull-left">
+                                                <button type="submit" class="btn btn-primary btn-rounded">ثبت نظر
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="comment-title">
+                                                <h4>ثبت امتیاز</h4>
+                                            </div>
+                                            <dl class="visitor-rating">
+                                                <dt>نظافت</dt>
+                                                <dd class="star-rating active" data-name="cleanliness"></dd>
+                                                <dt>راحتی</dt>
+                                                <dd class="star-rating active" data-name="comfort"></dd>
+                                                <dt>موقعیت</dt>
+                                                <dd class="star-rating active" data-name="location"></dd>
+                                                <dt>امکانات</dt>
+                                                <dd class="star-rating active" data-name="facilities"></dd>
+                                                <dt>پرسنل</dt>
+                                                <dd class="star-rating active" data-name="staff"></dd>
+                                                <dt>ارزش نسبت به قیمت</dt>
+                                                <dd class="star-rating active" data-name="value"></dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+                </div>
             </div>
         </div>
         <div class="modal fade" id="add-room-modal" role="dialog"
@@ -499,7 +477,8 @@
                                             <div class="form-group-inline">
                                                 <div class="form-group width-60">
                                                     <label class="pull-right">تعداد و نوع تخت</label>
-                                                    <select class="framed width-100" name="bed_type" id="room-type_1"
+                                                    <select class="framed width-100" name="bed_type"
+                                                            id="room-type_1"
                                                             dir="rtl">
                                                         <option value="Single">تخت یک نفره</option>
                                                         <option value="Double">تخت دو نفره</option>
@@ -533,7 +512,8 @@
                                             <div class="col-md-6">
                                                 <div class="form-group" style="padding-right: 20px">
                                                     <label for="number-of-guests_1">تعداد مهمان</label>
-                                                    <input type="number" class="form-control" id="number-of-guests_1"
+                                                    <input type="number" class="form-control"
+                                                           id="number-of-guests_1"
                                                            name="number_of_guests"
                                                            placeholder="1" value="1">
                                                 </div>
@@ -567,7 +547,8 @@
                                     <hr>
                                     <section>
                                         <div class="form-group center">
-                                            <button type="submit" class="btn btn-primary btn-rounded btn-large">ثبت اتاق
+                                            <button type="submit" class="btn btn-primary btn-rounded btn-large">ثبت
+                                                اتاق
                                             </button>
                                         </div>
                                     </section>
@@ -586,13 +567,16 @@
                         <div class="modal-dialog width-600px" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    <button type="button" class="close" data-dismiss="modal"
+                                            aria-label="Close"><span
                                             aria-hidden="true">&times;</span></button>
                                     <ul class="nav nav-tabs ">
                                         <li role="presentation" class="active"><a href="#tab-sign-in"
-                                                                                  aria-controls="tab-sign-in" role="tab"
+                                                                                  aria-controls="tab-sign-in"
+                                                                                  role="tab"
                                                                                   data-toggle="tab"><h1
-                                                style="margin-left: 200px">{% get_room_type room.bed_type %}</h1></a>
+                                                style="margin-left: 200px">{% get_room_type room.bed_type %}</h1>
+                                        </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -638,4 +622,5 @@
             {% endif %}
         });
     </script>
+    </div>
 {% endblock %}

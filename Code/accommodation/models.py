@@ -1,5 +1,4 @@
 from django.db import models
-from osm_field.fields import OSMField, LatitudeField, LongitudeField
 
 from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES
 from registration.models import Host, CustomUser
@@ -67,17 +66,20 @@ class Accommodation(models.Model):
     @property
     def overall_score(self):
         score_sum = 0
-        num = 0
+        num = self.review_set.count()
+        if num == 0:
+            return 0.0
         for r in self.review_set.all():
             if r.rating:
                 score_sum += r.rating.overall
-                num += 1
         return round(score_sum / num, 1)
 
     @property
     def overall_cleanliness(self):
         score_sum = 0
-        num = 0
+        num = self.review_set.count()
+        if num == 0:
+            return 0.0
         for r in self.review_set.all():
             if r.rating:
                 score_sum += r.rating.score_cleanliness
@@ -87,7 +89,9 @@ class Accommodation(models.Model):
     @property
     def overall_comfort(self):
         score_sum = 0
-        num = 0
+        num = self.review_set.count()
+        if num == 0:
+            return 0.0
         for r in self.review_set.all():
             if r.rating:
                 score_sum += r.rating.score_comfort
@@ -97,7 +101,9 @@ class Accommodation(models.Model):
     @property
     def overall_location(self):
         score_sum = 0
-        num = 0
+        num = self.review_set.count()
+        if num == 0:
+            return 0.0
         for r in self.review_set.all():
             if r.rating:
                 score_sum += r.rating.score_location
@@ -107,7 +113,9 @@ class Accommodation(models.Model):
     @property
     def overall_facilities(self):
         score_sum = 0
-        num = 0
+        num = self.review_set.count()
+        if num == 0:
+            return 0.0
         for r in self.review_set.all():
             if r.rating:
                 score_sum += r.rating.score_facilities
@@ -117,7 +125,9 @@ class Accommodation(models.Model):
     @property
     def overall_staff(self):
         score_sum = 0
-        num = 0
+        num = self.review_set.count()
+        if num == 0:
+            return 0.0
         for r in self.review_set.all():
             if r.rating:
                 score_sum += r.rating.score_staff
@@ -127,7 +137,9 @@ class Accommodation(models.Model):
     @property
     def overall_value(self):
         score_sum = 0
-        num = 0
+        num = self.review_set.count()
+        if num == 0:
+            return 0.0
         for r in self.review_set.all():
             if r.rating:
                 score_sum += r.rating.score_value

@@ -19,8 +19,8 @@
                         <form id="form-filter" class="labels-uppercase" method="get" action="{% url 'search' %}">
                             <div class="center">
                                 <a href="#filter-advanced-search" class="link icon" data-toggle="collapse"
-                                   aria-expanded="false" aria-controls="filter-advanced-search">جست و جوی پیشرفته<i
-                                        class="fa fa-plus"></i></a>
+                                   aria-expanded="false" aria-controls="filter-advanced-search"><i
+                                        class="fa fa-plus"></i>جست و جوی پیشرفته</a>
                             </div>
                             <div class="collapse" id="filter-advanced-search">
                                 <div class="wrapper">
@@ -161,7 +161,7 @@
                                 {% if content.has_next %}
                                     <li class="next">
                                         {% if page_url %}
-                                            <a href="{{ page_url }}&page={{ content.next_page_number}}"><i
+                                            <a href="{{ page_url }}&page={{ content.next_page_number }}"><i
                                                     class="arrow_right"></i></a>
                                         {% else %}
                                             <a href="?page={{ content.next_page_number }}"><i
