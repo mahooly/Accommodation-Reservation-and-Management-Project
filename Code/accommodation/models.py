@@ -65,6 +65,76 @@ class Accommodation(models.Model):
 
     rooms = property(_get_all_rooms)
 
+    @property
+    def overall_score(self):
+        score_sum = 0
+        num = 0
+        for r in self.review_set.all():
+            if r.rating:
+                score_sum += r.rating.overall
+                num += 1
+        return round(score_sum / num, 1)
+
+    @property
+    def overall_cleanliness(self):
+        score_sum = 0
+        num = 0
+        for r in self.review_set.all():
+            if r.rating:
+                score_sum += r.rating.score_cleanliness
+                num += 1
+        return round(score_sum / num, 1)
+
+    @property
+    def overall_comfort(self):
+        score_sum = 0
+        num = 0
+        for r in self.review_set.all():
+            if r.rating:
+                score_sum += r.rating.score_comfort
+                num += 1
+        return round(score_sum / num, 1)
+
+    @property
+    def overall_location(self):
+        score_sum = 0
+        num = 0
+        for r in self.review_set.all():
+            if r.rating:
+                score_sum += r.rating.score_location
+                num += 1
+        return round(score_sum / num, 1)
+
+    @property
+    def overall_facilities(self):
+        score_sum = 0
+        num = 0
+        for r in self.review_set.all():
+            if r.rating:
+                score_sum += r.rating.score_facilities
+                num += 1
+        return round(score_sum / num, 1)
+
+    @property
+    def overall_staff(self):
+        score_sum = 0
+        num = 0
+        for r in self.review_set.all():
+            if r.rating:
+                score_sum += r.rating.score_staff
+                num += 1
+        return round(score_sum / num, 1)
+
+    @property
+    def overall_value(self):
+        score_sum = 0
+        num = 0
+        for r in self.review_set.all():
+            if r.rating:
+                score_sum += r.rating.score_value
+                num += 1
+        return round(score_sum / num, 1)
+
 
 class Room(models.Model):
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)

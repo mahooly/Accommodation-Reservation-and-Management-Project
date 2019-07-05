@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'admin_dashboard',
     'search_index',
     'blog',
+    'review',
     'django_filters',
     'django_summernote',
     'reservation'

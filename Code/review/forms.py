@@ -1,9 +1,21 @@
 from django import forms
 
-from review.models import Comment
+from review.models import Review, Rating, Reply
 
 
-class CommentForm(forms.ModelForm):
+class ReviewForm(forms.ModelForm):
     class Meta:
-        model = Comment
-        exclude = ('accommodation', 'user',)
+        model = Review
+        exclude = ('accommodation', 'user', 'reply', 'rating', 'helpful_count')
+
+
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = '__all__'
+
+
+class ReplyForm(forms.ModelForm):
+    class Meta:
+        model = Reply
+        fields = '__all__'

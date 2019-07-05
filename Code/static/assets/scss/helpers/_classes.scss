@@ -767,7 +767,7 @@
   .visitor-rating {
     dt { font-weight: normal; }
     dd { font-weight: bold; color: $color-default;
-      &.star-rating { clear: left; margin-bottom: 10px; text-align: left; padding: 0; }
+      &.star-rating { clear: left; margin-bottom: 10px; text-align: right; padding: 0; }
     }
   }
   .ribbon { @include box-shadow(1px 1px 6px rgba(0,0,0,.4)); padding: 8px; }

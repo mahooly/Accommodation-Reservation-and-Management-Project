@@ -1,13 +1,8 @@
-
 {% extends 'base.html' %}
 {% load accommodation_extras %}
-
-
+{% load staticfiles %}
 
 {% block main %}
-
-
-
     <div class="container">
         <div class="col-md-12 col-sm-12 pull-right" dir="rtl">
             <div class="quick-navigation" data-fixed-after-touch="">
@@ -209,6 +204,7 @@
                                     <img src="assets/img/ad-banner-02.jpg" alt="">
                                 </a>
                             </div>
+
                     <!--end sidebar-->
                         </div>
                         <div class="col-md-8">
@@ -313,6 +309,7 @@
                                                                                     <button type="submit" class="btn btn-primary btn-rounded">پرداخت و رزرو
                                                                                     </button>
                                                                                 </div>
+
                                                                             </div>
                                                                             <script type="application/javascript">
                                                                                 global_price = 0
@@ -320,6 +317,7 @@
 
                                                                                     number_of_rooms = document.getElementById("number-of-rooms").value
                                                                                     number_of_days = document.getElementById("number-of-days").value
+
 
                                                                                     document.getElementById("total-price").innerText = number_of_rooms * number_of_days * global_price
 
@@ -343,133 +341,136 @@
 
 
 
+
                                         </tr>
                                         </tbody>
                                     </table>
                                 {% endfor %}
                             </div>
                         </section>
+
                         </div>
                     </div>
                 {% endif %}
                 <section id="reviews">
-                            <div class="title">
-                                <h2 class="pull-right">نظرات</h2>
-                                <a href="#write-a-review" class="btn btn-primary btn-rounded pull-right scroll">نظر خود را بنویسید</a>
-                            </div>
-                            <h3></h3>
-                            <ul class="rating-score">
-                                <li class="overall"><i class="fa fa-star"></i>9.9</li>
-                                <li><span>9.6</span>
-                                    <figure>Cleanliness</figure>
-                                </li>
-                                <li><span>10</span>
-                                    <figure>Comfort</figure>
-                                </li>
-                                <li><span>9.4</span>
-                                    <figure>Location</figure>
-                                </li>
-                                <li><span>9.8</span>
-                                    <figure>Facilities</figure>
-                                </li>
-                                <li><span>10</span>
-                                    <figure>Staff</figure>
-                                </li>
-                                <li><span>10</span>
-                                    <figure>Value for money</figure>
-                                </li>
-                            </ul>
-                            <div class="reviews">
-                                <div class="review">
-                                    <div class="row">
-                                        <div class="col-md-3">
-                                            <aside class="name">John Doe</aside>
-                                            <aside class="date">10.03.2015</aside>
+                    <div>
+                        <h2 style="display: inline-block">نظرات</h2>
+                        <a href="#write-a-review" class="btn btn-primary btn-rounded pull-left scroll"
+                           style="display: inline-block;">نظر خود را
+                            بنویسید</a>
+                    </div>
+                    <h3>امتیاز کلی</h3>
+                    <ul class="rating-score">
+                        <li class="overall"><i class="fa fa-star"></i>&nbsp;{{ accommodation.overall_score }}</li>
+                        <li><span>{{ accommodation.overall_cleanliness }}</span>
+                            <figure>نظافت</figure>
+                        </li>
+                        <li><span>{{ accommodation.overall_comfort }}</span>
+                            <figure>راحتی</figure>
+                        </li>
+                        <li><span>{{ accommodation.overall_location }}</span>
+                            <figure>موقعیت</figure>
+                        </li>
+                        <li><span>{{ accommodation.overall_facilities }}</span>
+                            <figure>امکانات</figure>
+                        </li>
+                        <li><span>{{ accommodation.overall_staff }}</span>
+                            <figure>پرسنل</figure>
+                        </li>
+                        <li><span>{{ accommodation.overall_value }}</span>
+                            <figure>ارزش نسبت به قیمت</figure>
+                        </li>
+                    </ul>
+                    <div class="reviews">
+                        {% for review in accommodation.review_set.all %}
+                            <div class="review">
+                                <div class="row">
+                                    <div class="col-md-3 pull-right">
+                                        <div style="margin-right: 85px">
+                                            <aside class="name">{{ review.user.full_name }}</aside>
+                                            <aside class="date">{{ review.creation_date }}</aside>
                                         </div>
-                                        <div class="col-md-9">
-                                            <div class="comment">
-                                                <div class="comment-title">
-                                                    <figure class="rating">9.5</figure>
-                                                    <h4>Beautiful Holiday</h4>
-                                                </div>
-                                                <p>Consectetur adipiscing elit. Vivamus nec augue ac dui sodales euismod.
-                                                    Suspendisse at dui sit amet felis commodo dictum. Class aptent taciti
-                                                    sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
-                                                    Integer commodo eleifend erat, vitae tincidunt urna volutpat et.
-                                                    Mauris laoreet, sem ut sodales sodales, massa turpis posuere lectus, non
-                                                    aliquet massa nisl ac orci.
-                                                </p>
-                                                <div class="clearfix options">
-                                                    <span class="pull-left"><a href="" class="btn btn-framed btn-default btn-rounded btn-small icon"><i class="fa fa-thumbs-up font-color-default"></i>3</a>Helpful Review?</span>
-                                                    <span class="pull-right"><a href="" class="link icon font-color-grey"><i class="fa fa-flag"></i>Report</a></span>
-                                                </div>
+
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="comment">
+                                            <div class="comment-title">
+                                                {% if review.rating %}
+                                                    <figure class="rating">{{ review.rating.overall }}</figure>
+                                                {% endif %}
+                                                <h4>{{ review.title }}</h4>
+                                            </div>
+                                            <p>{{ review.text }}</p>
+                                            {% for reply in review.reply_set.all %}
                                                 <div class="answer">
-                                                    <h4>James Green, CEO of the Mountain Paradise Hotel</h4>
-                                                    <p>Phasellus venenatis vel orci et lacinia. Duis sollicitudin arcu et hendrerit
-                                                        tempor. Aliquam at urna fringilla, auctor tellus eget, vehicula lorem.
-                                                        Pellentesque ornare faucibus sapien eget max
-                                                    </p>
+                                                    <h4>{{ reply.name_position }}</h4>
+                                                    <p>{{ reply.text }}</p>
                                                 </div>
-                                            </div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </section>
-                        <section id="write-a-review">
-                            <h2>Write a Review</h2>
-                            <form  class="labels-uppercase clearfix" id="form_reply_1">
-                                <div class="alert alert-dark fade in center" role="alert">
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" data-switch="#review-write">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <span class="sr-only">Error:</span>
-                                    <a href="#tab-sign-in" data-toggle="modal" data-tab="true" data-target="#sign-in-register-modal">Please Sign in to write a review</a>
-                                </div>
-                                <div class="review write switch" id="review-write">
-                                    <aside class="name">John Doe</aside>
-                                    <div class="comment">
-                                        <div class="row">
-                                            <div class="col-md-8">
-                                                <div class="comment-title">
-                                                    <h4>Review Your Stay</h4>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="form_reply_1-name">Title of your review<em>*</em></label>
-                                                    <input type="text" class="form-control" id="form_reply_1-name" name="name" placeholder="Beautiful holiday!" required="">
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="form_reply_1-message">Your Answer<em>*</em></label>
-                                                    <textarea class="form-control" id="form_reply_1-message" rows="8" name="answer" required="" placeholder="Describe your stay"></textarea>
-                                                </div>
-                                                <div class="form-group pull-right">
-                                                    <button type="submit" class="btn btn-primary btn-rounded">Send Review</button>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="comment-title">
-                                                    <h4>Rating</h4>
-                                                </div>
-                                                <dl class="visitor-rating">
-                                                    <dt>Cleanliness</dt>
-                                                    <dd class="star-rating active" data-name="cleanliness"></dd>
-                                                    <dt>Comfort</dt>
-                                                    <dd class="star-rating active" data-name="comfort"></dd>
-                                                    <dt>Location</dt>
-                                                    <dd class="star-rating active" data-name="location"></dd>
-                                                    <dt>Facilities</dt>
-                                                    <dd class="star-rating active" data-name="facilities"></dd>
-                                                    <dt>Staff</dt>
-                                                    <dd class="star-rating active" data-name="staff"></dd>
-                                                    <dt>Value for money</dt>
-                                                    <dd class="star-rating active" data-name="value"></dd>
-                                                </dl>
-                                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+                <section id="write-a-review">
+                    <h2>نظر خود را بنویسید</h2>
+                    <form method="post" class="labels-uppercase clearfix" id="form_reply_1"
+                          action="{% url 'create_review' accommodation.id %}">
+                        {% csrf_token %}
+                        {% if not user.is_authenticated %}
+                            <div class="alert alert-dark fade in center" role="alert">
+                                <a href="{% url 'login' %}">برای نوشتن نظر ابتدا باید وارد سایت شوید.</a>
+                            </div>
+                        {% endif %}
+                        <div class="review write switch" id="review-write">
+                            <div class="comment">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="comment-title">
+                                            <h4>درباره‌ی اقامت خود نظر دهید</h4>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="form_reply_1-name">عنوان نظر<em>*</em></label>
+                                            <input type="text" class="form-control" id="form_reply_1-name" name="title"
+                                                   placeholder="تعطیلات به یاد ماندنی!" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="form_reply_1-message">متن نظر<em>*</em></label>
+                                            <textarea class="form-control" id="form_reply_1-message" rows="8"
+                                                      name="text" required
+                                                      placeholder="اقامت خود را توصیف کنید"></textarea>
+                                        </div>
+                                        <div class="form-group pull-right">
+                                            <button type="submit" class="btn btn-primary btn-rounded">ثبت نظر
+                                            </button>
                                         </div>
                                     </div>
+                                    <div class="col-md-4 pull-right">
+                                        <div class="comment-title">
+                                            <h4>ثبت امتیاز</h4>
+                                        </div>
+                                        <dl class="visitor-rating pull-right">
+                                            <dt>نظافت</dt>
+                                            <dd class="star-rating active" data-name="cleanliness"></dd>
+                                            <dt>راحتی</dt>
+                                            <dd class="star-rating active" data-name="comfort"></dd>
+                                            <dt>موقعیت</dt>
+                                            <dd class="star-rating active" data-name="location"></dd>
+                                            <dt>امکانات</dt>
+                                            <dd class="star-rating active" data-name="facilities"></dd>
+                                            <dt>پرسنل</dt>
+                                            <dd class="star-rating active" data-name="staff"></dd>
+                                            <dt>ارزش نسبت به قیمت</dt>
+                                            <dd class="star-rating active" data-name="value"></dd>
+                                        </dl>
+                                    </div>
                                 </div>
-                            </form>
-                        </section>
+                            </div>
+                        </div>
+                    </form>
+                </section>
             </div>
         </div>
         <div class="modal fade" id="add-room-modal" role="dialog"
@@ -628,12 +629,13 @@
                 </div>
             </div>
         {% endfor %}
-
-
-
-
-
-
-
     </div>
+    <script src="{% static 'assets/js/jquery-2.2.1.min.js' %}"></script>
+    <script>
+        $(document).ready(function ($) {
+            {% if user.is_authenticated %}
+                $("#review-write").removeClass('switch');
+            {% endif %}
+        });
+    </script>
 {% endblock %}
