@@ -1,4 +1,5 @@
 from django.db import models
+from osm_field.fields import OSMField, LatitudeField, LongitudeField
 
 from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES
 from registration.models import Host, CustomUser
@@ -23,7 +24,6 @@ class Accommodation(models.Model):
     phone = models.CharField(max_length=15)
     email = models.EmailField()
     amenity = models.ManyToManyField(Amenity)
-
     is_authenticated = models.BooleanField(default=False)
 
     def _get_singles(self):
@@ -142,6 +142,7 @@ class Room(models.Model):
     bed_type = models.CharField(max_length=20, choices=BED_TYPE_CHOICES)
     number_of_guests = models.IntegerField()
     image = models.ImageField(upload_to='../media/room_pics/')
+    price = models.IntegerField(default=0)
 
     @property
     def how_many(self):

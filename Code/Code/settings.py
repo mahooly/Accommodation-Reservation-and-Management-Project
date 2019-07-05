@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'review',
     'django_filters',
     'django_summernote',
+    'leaflet'
 ]
 
 MIDDLEWARE = [
