@@ -4745,7 +4745,7 @@ input[type="number"] {
 
 .form-group-inline .form-group {
     display: table-cell;
-    padding-right: 20px;
+    padding-left: 20px;
     vertical-align: top;
 }
 
@@ -5975,4 +5975,8 @@ body::before {
 .table.no-border tr td, .table.no-border tr th {
     border-width: 0;
     text-align: right;
+}
+
+.none {
+    display: none;
 }

@@ -2,7 +2,7 @@
 {% load staticfiles %}
 {% block main %}
     <div class="hero-section" data-height="400">
-        <form id="form-hero" method='GET' action="{% url 'search' %}">
+        <form id="form-hero" method='GET' action="{% url 'search' %}" onsubmit="checkOutError(event);">
             <div class="hero-inner">
                 <div class="hero-wrapper">
                     <div class="caption">
@@ -19,18 +19,16 @@
                                                    placeholder="نام مکان یا شهر مورد نظر خود را وارد کنید" dir="rtl">
                                         </div>
                                     </div>
-                                    <div class="col-md-2 col-sm-2 pull-right">
+                                    <div class="col-md-2 col-sm-2 pull-right" dir="rtl">
                                         <div class="form-group">
-                                            <label class="label-on-input" for="form-check-in">تاریخ ورود</label>
                                             <input type="text" class="form-control date" id="form-check-in"
-                                                   name="nights" placeholder="تاریخ ورود">
+                                                   name="check_in" placeholder="تاریخ ورود">
                                         </div>
                                     </div>
-                                    <div class="col-md-2 col-sm-2 pull-right">
+                                    <div class="col-md-2 col-sm-2 pull-right" dir="rtl">
                                         <div class="form-group">
-                                            <label class="label-on-input" for="form-nights">تاریخ خروج</label>
                                             <input type="text" class="form-control date" id="form-check-out"
-                                                   name="nights"
+                                                   name="check_out"
                                                    placeholder="تاریخ خروج">
                                         </div>
                                     </div>

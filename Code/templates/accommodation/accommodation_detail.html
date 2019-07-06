@@ -228,21 +228,21 @@
                     {% if rooms %}
                         <section id="rooms">
                             <h2>اتاق‌ها</h2>
-                            <form class="labels-uppercase" id="form-availability">
+                            <form class="labels-uppercase" id="form-availability" onsubmit="checkOutError(event);">
                                 <div class="row">
                                     <div class="col-md-3 pull-right">
                                         <div class="form-group">
-                                            <label for="form-availability-check-in">تاریخ ورود</label>
-                                            <input type="text" class="form-control date" id="form-availability-check-in"
-                                                   name="check_in" placeholder="تاریخ ورود">
+                                            <label for="form-check-in">تاریخ ورود</label>
+                                            <input type="text" class="form-control date" id="form-check-in"
+                                                   name="check_in" placeholder="تاریخ ورود" value="{{ check_in }}">
                                         </div>
                                     </div>
                                     <div class="col-md-3 pull-right">
                                         <div class="form-group">
-                                            <label for="form-availability-check-out">تاریخ خروج</label>
+                                            <label for="form-check-out">تاریخ خروج</label>
                                             <input type="text" class="form-control date"
-                                                   id="form-availability-check-out"
-                                                   name="check_out" placeholder="تاریخ خروج">
+                                                   id="form-check-out"
+                                                   name="check_out" placeholder="تاریخ خروج" value="{{ check_out }}">
                                         </div>
                                     </div>
                                     <div class="col-md-3 pull-right">
@@ -276,6 +276,10 @@
                                     </div>
                                 </div>
                             </form>
+                            <div class="alert alert-danger none" dir="rtl" role="alert"
+                                 style="padding: 5px; text-align: center;" id="reserve-error">
+                                <p style="display: inline-block;">لطفا ابتدا تاریخ ورود و خروج خود را جست و جو کنید</p>
+                            </div>
                             <div class="form-reservations">
                                 <div class="table-responsive">
                                     <table class="table">
@@ -291,7 +295,8 @@
                                     </table>
                                 </div>
                                 {% for room in rooms %}
-                                    <form method="post" action="{% url 'make_reservation' room.id %}">
+                                    <form method="post" action="{% url 'make_reservation' room.id %}"
+                                          onsubmit="reserveError(event)">
                                         {% csrf_token %}
                                         <table class="table">
                                             <tbody>
@@ -313,8 +318,10 @@
                                                         <option value="3">3</option>
                                                         <option value="4">4</option>
                                                     </select>
-                                                    <input type="hidden" value="{{ check_in }}" name="check_in">
-                                                    <input type="hidden" value="{{ check_out }}" name="check_out">
+                                                    <input type="hidden" value="{{ check_in }}" name="check_in"
+                                                           id="hidden-check-in">
+                                                    <input type="hidden" value="{{ check_out }}" name="check_out"
+                                                           id="hidden-check-out">
                                                 </td>
                                                 <td style="text-align: center">
                                                     <div class="form-group">

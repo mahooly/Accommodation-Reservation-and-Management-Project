@@ -79,8 +79,7 @@ class AccommodationDetailView(DetailView):
                     Q(reservation__is_canceled=False))
                 availableRoomInfos = availableRoomInfos2.filter(out_of_service=False)
                 rooms = rooms.filter(roominfo__in=availableRoomInfos).distinct()
-                print(check_in)
-                print(check_out)
+                accs = Accommodation.objects.filter(room__in=rooms)
 
             if price:
                 price_low = int(price.split('-')[0]) * 1000

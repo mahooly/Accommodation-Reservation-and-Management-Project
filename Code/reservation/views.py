@@ -11,7 +11,7 @@ from accommodation.models import Room, RoomInfo
 
 
 class ReservationDetail(View):
-    template_name = "reservation/reservation-detail.html"
+    template_name = "reservation/accommodation_reservation.html"
 
     def get(self, request):
         return render(request, self.template_name)

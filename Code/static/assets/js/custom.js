@@ -63,6 +63,24 @@ $(document).ready(function ($) {
         });
     });
 
+    $('#form-check-in').on('change', function () {
+        if ($('#form-check-in').val()) {
+            $('#form-check-out').attr('required', true);
+            $('#form-check-out').attr('oninvalid', "this.setCustomValidity('این فیلد لازم است.')");
+        } else {
+            $('#form-check-out').attr('required', false);
+        }
+    });
+
+    $('#form-check-out').on('change', function () {
+        if ($('#form-check-out').val()) {
+            $('#form-check-in').attr('required', true);
+            $('#form-check-in').attr('oninvalid', "this.setCustomValidity('این فیلد لازم است.')");
+        } else {
+            $('#form-check-in').attr('required', false);
+        }
+    });
+
 //  Tab in Modal -------------------------------------------------------------------------------------------------------
 
     $("a[data-toggle=modal]").on('click', function (e) {
@@ -627,4 +645,28 @@ function previewImage(input) {
             reader.readAsDataURL(input.files[0]);
         }
     }
+}
+
+function checkOutError(e) {
+    var checkIn = $('#form-check-in');
+    if (checkIn.val()) {
+        var checkOut = $('#form-check-out');
+        var val = checkOut.val();
+        if (!val) {
+            e.preventDefault();
+            e.stopPropagation();
+            checkOut.trigger('invalid');
+        }
+    }
+}
+
+function reserveError(e) {
+    var checkIn = $('#hidden-check-in');
+    var checkOut = $('#hidden-check-out');
+    if (checkIn.val() && checkOut.val()) {
+        return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    $('#reserve-error').removeClass('none');
 }

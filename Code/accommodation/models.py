@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Min, Max
 
 from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES
 from registration.models import Host, CustomUser
@@ -139,6 +140,14 @@ class Accommodation(models.Model):
             if r.rating:
                 score_sum += r.rating.score_value
         return round(score_sum / num, 1)
+
+    @property
+    def min_price(self):
+        return self.room_set.all().aggregate(Min('price')).get('price__min')
+
+    @property
+    def max_price(self):
+        return self.room_set.all().aggregate(Max('price')).get('price__max')
 
 
 class Room(models.Model):

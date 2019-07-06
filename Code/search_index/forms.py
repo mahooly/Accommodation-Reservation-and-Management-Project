@@ -3,6 +3,8 @@ from django import forms
 
 class LocationSearchForm(forms.Form):
     expression = forms.CharField(label='expression', max_length=20)
+    check_in = forms.CharField(max_length=15, required=False)
+    check_out = forms.CharField(max_length=15, required=False)
 
 
 class FilterForm(forms.Form):
