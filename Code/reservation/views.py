@@ -1,5 +1,4 @@
 import datetime
-
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import render
@@ -8,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import MakeReservationForm, PaymentForm
 from .models import Reservation, Transaction
 from accommodation.models import Room, RoomInfo
+from Code.settings import DEFAULT_FROM_EMAIL
 
 
 class ReservationDetail(View):
@@ -55,6 +55,25 @@ class MakeReservation(View):
             reserve = Reservation.objects.create(reserver=request.user, check_in=check_in,
                                                  check_out=check_out)
             reserve.save()
+            email_text = 'محل اقامت شما به آدرس '
+            email_text += room.accommodation.address
+            email_text += ' توسط '
+            email_text += request.user.first_name
+            email_text += request.user.last_name
+            email_text += ' برای تاریخ '
+            email_text += check_in
+            email_text += ' تا '
+            email_text += check_out
+            email_text += ' رزرو شده است. مقدار '
+            email_text += str(reserve.total_price * 0.95)
+            email_text += ' برای شما در تاریخ شروع واریز خواهد شد.'
+            send_mail(
+            'رزرو محل اقامت',
+            email_text,
+            DEFAULT_FROM_EMAIL,
+            [acc.email],
+            fail_silently=False,
+            )
             for room_info in available_room_infos:
                 if count < how_many:
                     reserve.roominfo.add(room_info)
