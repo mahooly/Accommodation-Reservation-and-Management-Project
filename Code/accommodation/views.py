@@ -63,24 +63,29 @@ class AccommodationDetailView(DetailView):
         if form.is_valid():
             check_in = form.cleaned_data.get('check_in', '')
             check_out = form.cleaned_data.get('check_out', '')
+            context['check_in'] = check_in
+            context['check_out'] = check_out
             price = form.cleaned_data.get('price', '')
 
             if check_in:
                 check_in = self.convert_string_to_date(check_in)
                 check_out = self.convert_string_to_date(check_out)
-                availableRoomInfos = RoomInfo.objects.all().exclude(
-                    Q(reservation__check_in__range=(check_in, check_out - timedelta(days=1))) |
-                    Q(reservation__check_out__range=(check_in + timedelta(days=1), check_out))).filter(
-                    out_of_service=False)
-                rooms = rooms.filter(roominfo__in=availableRoomInfos).distinct()
 
-                context['check_in'] = self.convert_date_to_string_2(check_in)
-                context['check_out'] = form.cleaned_data['check_out']
+                availableRoomInfos1 = RoomInfo.objects.all().exclude(
+                    Q(reservation__check_in__range=(check_in, check_out - timedelta(days=1))),
+                    Q(reservation__is_canceled=False))
+                availableRoomInfos2 = availableRoomInfos1.exclude(
+                    Q(reservation__check_out__range=(check_in + timedelta(days=1), check_out)),
+                    Q(reservation__is_canceled=False))
+                availableRoomInfos = availableRoomInfos2.filter(out_of_service=False)
+                rooms = rooms.filter(roominfo__in=availableRoomInfos).distinct()
+                print(check_in)
+                print(check_out)
 
             if price:
-                price_low = int(price.split('-')[0])
-                price_high = int(price.split('-')[1])
-                if price_high == 900:
+                price_low = int(price.split('-')[0]) * 1000
+                price_high = int(price.split('-')[1]) * 1000
+                if price_high == 900 * 1000:
                     rooms = rooms.filter(price__gte=price_low)
                 else:
                     rooms = rooms.filter(price__gte=price_low, price__lte=price_high)

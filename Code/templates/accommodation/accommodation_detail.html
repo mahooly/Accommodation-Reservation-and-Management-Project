@@ -234,7 +234,7 @@
                                         <div class="form-group">
                                             <label for="form-availability-check-in">تاریخ ورود</label>
                                             <input type="text" class="form-control date" id="form-availability-check-in"
-                                                   name="check-in" placeholder="تاریخ ورود">
+                                                   name="check_in" placeholder="تاریخ ورود">
                                         </div>
                                     </div>
                                     <div class="col-md-3 pull-right">
@@ -242,7 +242,7 @@
                                             <label for="form-availability-check-out">تاریخ خروج</label>
                                             <input type="text" class="form-control date"
                                                    id="form-availability-check-out"
-                                                   name="check-out" placeholder="تاریخ خروج">
+                                                   name="check_out" placeholder="تاریخ خروج">
                                         </div>
                                     </div>
                                     <div class="col-md-3 pull-right">
@@ -291,7 +291,7 @@
                                     </table>
                                 </div>
                                 {% for room in rooms %}
-                                    <form id="room_1" method="post" action="{% url 'reserve' %}">
+                                    <form method="post" action="{% url 'make_reservation' room.id %}">
                                         {% csrf_token %}
                                         <table class="table">
                                             <tbody>
@@ -307,12 +307,14 @@
                                                         class="fa fa-user"></i></td>
                                                 <td class="price" style="text-align: center">{{ room.price }}</td>
                                                 <td class="rooms" style="text-align: center">
-                                                    <select class="framed" name="room_1_nights">
+                                                    <select class="framed" name="how_many">
                                                         <option value="1">1</option>
                                                         <option value="2">2</option>
                                                         <option value="3">3</option>
                                                         <option value="4">4</option>
                                                     </select>
+                                                    <input type="hidden" value="{{ check_in }}" name="check_in">
+                                                    <input type="hidden" value="{{ check_out }}" name="check_out">
                                                 </td>
                                                 <td style="text-align: center">
                                                     <div class="form-group">
@@ -501,7 +503,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-md-12 text-center">
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group" style="padding-right: 20px">
                                                     <label for="number-of-rooms_1">تعداد اتاق</label>
                                                     <input type="number" class="form-control" id="number-of-rooms_1"
@@ -509,13 +511,23 @@
                                                            placeholder="1" value="1">
                                                 </div>
                                             </div>
-                                            <div class="col-md-6">
+                                            <div class="col-md-4">
                                                 <div class="form-group" style="padding-right: 20px">
                                                     <label for="number-of-guests_1">تعداد مهمان</label>
                                                     <input type="number" class="form-control"
                                                            id="number-of-guests_1"
                                                            name="number_of_guests"
                                                            placeholder="1" value="1">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 text-center">
+                                                <div class="form-group-inline">
+                                                    <div class="form-group">
+                                                        <label for="price" dir="rtl">نرخ هر شب اقامت (به تومان)</label>
+                                                        <input type="number" class="form-control" id="price"
+                                                               name="price"
+                                                               placeholder="10000">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

@@ -1,5 +1,5 @@
 from django.test import TestCase
-from ..models import Amenity, Accommodation, Room, Image
+from ..models import Amenity, Accommodation, Room, Image, RoomInfo
 import datetime
 from django.core.files.uploadedfile import SimpleUploadedFile
 import os
@@ -15,7 +15,6 @@ class TestAccommodationModels(TestCase):
                                       content_type='image/jpeg')
 
     def createAmenity(self):
-        exp_data = {"name": "Couch", "label": "Red"}
         amenity = Amenity.objects.create(name="Couch", label="Red")
         amenity.save()
         return amenity
@@ -45,9 +44,6 @@ class TestAccommodationModels(TestCase):
     def createAccommodation(self):
         the_host = self.createHost()
         the_amenity = self.createAmenity()
-        exp_data = {"owner": the_host, "title": "Model_Ghoo", "description": "A decent luxury hotel.",
-                    "accommodation_type": "هتل", "province": "Tehran", "city": "Tehran", "address": "1234",
-                    "phone": "02144239859", "email": "armin@gmail.com", "amenity": the_amenity}
         the_accommodation = Accommodation.objects.create(owner=the_host, title="Model_Ghoo",
                                                          description="A decent luxury hotel.",
                                                          accommodation_type="هتل", province="Tehran", city="Tehran",
@@ -84,21 +80,24 @@ class TestAccommodationModels(TestCase):
 
         # testing accommodation model methods
         data_1 = {"description": "a convenient room.",
-                  "bed_type": "Single", "number_of_guests": 4, "image": self.img, "how_many": 1}
+                  "bed_type": "Single", "number_of_guests": 4, "image": self.img}
         data_2 = {"description": "a double convenient room.",
-                  "bed_type": "Double", "number_of_guests": 6, "image": self.img, "how_many": 1}
+                  "bed_type": "Double", "number_of_guests": 6, "image": self.img}
         data_3 = {"description": "a twin convenient room.",
-                  "bed_type": "Twin", "number_of_guests": 5, "image": self.img, "how_many": 1}
+                  "bed_type": "Twin", "number_of_guests": 5, "image": self.img}
 
         the_room_1 = self.createRoomFromAccomodation(the_accommodation, data_1)
         the_room_1.amenity.add(the_amenity)
         the_room_1.save()
+        RoomInfo.objects.create(room=the_room_1)
         the_room_2 = self.createRoomFromAccomodation(the_accommodation, data_2)
         the_room_2.amenity.add(the_amenity)
         the_room_2.save()
+        RoomInfo.objects.create(room=the_room_2)
         the_room_3 = self.createRoomFromAccomodation(the_accommodation, data_3)
         the_room_3.amenity.add(the_amenity)
         the_room_3.save()
+        RoomInfo.objects.create(room=the_room_3)
 
         self.assertEqual(the_accommodation.rooms, 3)
         self.assertEqual(the_accommodation.single_beds, 1)
@@ -110,7 +109,7 @@ class TestAccommodationModels(TestCase):
     def createRoomFromAccomodation(self, accommodation, data):
         the_room = Room.objects.create(accommodation=accommodation, description=data["description"],
                                        bed_type=data["bed_type"], number_of_guests=data["number_of_guests"],
-                                       image=data["image"], how_many=data["how_many"])
+                                       image=data["image"])
         the_room.save()
         return the_room
 
@@ -121,7 +120,7 @@ class TestAccommodationModels(TestCase):
         exp_data = {"accommodation": the_accommodation, "amenity": the_amenity, "description": "a convenient room.",
                     "bed_type": "Single", "number_of_guests": 4, "image": self.img, "how_many": 2}
         the_room = Room.objects.create(accommodation=the_accommodation, description="a convenient room.",
-                                       bed_type="Single", number_of_guests=4, image=self.img, how_many=2)
+                                       bed_type="Single", number_of_guests=4, image=self.img)
         the_room.amenity.add(the_amenity)
         the_room.save()
         self.assertEqual(Room.objects.count(), r_count + 1)
@@ -131,7 +130,6 @@ class TestAccommodationModels(TestCase):
         self.assertEqual(the_room.description, exp_data["description"])
         self.assertEqual(the_room.bed_type, exp_data["bed_type"])
         self.assertEqual(the_room.number_of_guests, exp_data["number_of_guests"])
-        self.assertEqual(the_room.how_many, exp_data["how_many"])
 
     def testImage(self):
         the_accommodation = self.createAccommodation()

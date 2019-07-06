@@ -1,15 +1,12 @@
 from django.test import TestCase, Client, RequestFactory
-from django.contrib.messages.storage.fallback import FallbackStorage
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 from registration.models import CustomUser, Host
-from accommodation.views import CreateAccommodationView, AccommodationDetailView
-from accommodation.models import Amenity, Accommodation
-from accommodation.forms import AccommodationCreationForm, FileFieldForm
-from ..views import MakeReservation
+from accommodation.views import AccommodationDetailView
+from accommodation.models import Amenity, Accommodation, Room, RoomInfo
+from reservation.models import Reservation
 import os
 import datetime
-
 
 
 class TestAccommocationView(TestCase):
@@ -44,39 +41,44 @@ class TestAccommocationView(TestCase):
         amenity = Amenity.objects.create(name="Couch" + str(index), label="Red")
         amenity.save()
         return amenity
-    
+
     def createAccommodation(self, host):
         a1 = self.createAmenity(1)
         a2 = self.createAmenity(2)
         a1.save()
         a2.save()
-        the_acc = Accommodation.objects.create(owner=the_host, accommodation_type='هتل', title="Model_Ghoo", description="A decent luxury hotel.", province="Tehran"
-                                                city='Tehran', address='1234', email='armin@gmail.com', phone='02122334455', amenity=[a1, a2])
+        the_acc = Accommodation.objects.create(owner=host, accommodation_type='هتل', title="Model_Ghoo",
+                                               description="A decent luxury hotel.", province="Tehran",
+                                               city='Tehran', address='1234', email='armin@gmail.com',
+                                               phone='02122334455')
+        the_acc.amenity.add(a1)
+        the_acc.amenity.add(a2)
         the_acc.save()
         return the_acc
-    
+
     def addRooms(self, acc, how_many):
         a1 = self.createAmenity(3)
         a2 = self.createAmenity(4)
         a1.save()
         a2.save()
 
-        the_room = Room.objects.create(accommodation=acc, amenity=[a1, a2], description='hi hi hi', bed_type='Single', number_of_guests=1, image=self.img2, price=123)
+        the_room = Room.objects.create(accommodation=acc, description='hi hi hi', bed_type='Single',
+                                       number_of_guests=1, image=self.img2, price=123)
+        the_room.amenity.add(a1)
+        the_room.amenity.add(a2)
         the_room.save()
         for i in range(how_many):
-                RoomInfo.objects.create(room=the_room)
+            RoomInfo.objects.create(room=the_room)
         return the_room
-        
+
     def searchForRoom(self, user, acc):
-        req = {'user':user, 'form': {'check_in': '12122019', 'check_out': '14122019', 'price':'100-200'}}
+        req = {'user': user, 'form': {'check_in': '12122019', 'check_out': '14122019', 'price': '100-200'}}
         view = AccommodationDetailView.as_view()
         response = view(req, pk=acc.pk)
         print(response)
         return response
 
-    
     def test_reserve(self):
-        # url = reverse("create_accommodation")
         the_host = self.createHost()
         the_user = the_host.user
         the_user.set_password("armin1234")
@@ -84,9 +86,11 @@ class TestAccommocationView(TestCase):
         self.client.force_login(the_user)
         acc = self.createAccommodation(the_host)
         room = self.addRooms(acc, 3)
-        # self.searchForRoom(the_user, acc)
-        req = {}
-        view = MakeReservation(req, rid=room.pk)
-
-
-
+        response = self.client.post(reverse('make_reservation', kwargs={'rid': room.id}),
+                                    {'check_in': '07/12/2019', 'check_out': '07/15/2019',
+                                     'how_many': 3})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Reservation.objects.count(), 1)
+        reservation = Reservation.objects.get(reserver=the_user)
+        self.assertEqual(reservation.check_in, datetime.date(2019, 7, 12))
+        self.assertEqual(reservation.check_out, datetime.date(2019, 7, 15))

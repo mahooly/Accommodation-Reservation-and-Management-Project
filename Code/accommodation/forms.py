@@ -20,7 +20,7 @@ class RoomCreationForm(forms.ModelForm):
 
     class Meta:
         model = Room
-        fields = ['bed_type', 'number_of_guests', 'amenity', 'description', 'image']
+        fields = ['bed_type', 'number_of_guests', 'amenity', 'description', 'image', 'price']
 
     def __init__(self, *args, **kwargs):
         super(RoomCreationForm, self).__init__(*args, **kwargs)

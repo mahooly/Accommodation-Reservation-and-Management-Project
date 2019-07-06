@@ -24,8 +24,10 @@
         <p class="remaining-time">9:39</p>
     </div>
     <hr style="margin-left: 20px; border-width: 2px; margin-right: 20px; opacity: 0.4">
-    <form>
+    <form method="post">
+        <input type="hidden" value="success" name="success">
         <div>
+            {% csrf_token %}
             <div id="card-form">
                 <label class="input-label"><em style="color: #ff0002;">*</em>شماره کارت</label>
                 <div style="margin-top: -20px; margin-left: 283px">
@@ -120,7 +122,7 @@
     <div class="white-background" style="margin-top: 6px">
         <img src="{% static 'assets/img/Bitmap (4).png' %}" style="margin-left: 313px; margin-top: 7px">
         <p class="merchant-text-name" style="margin-left: 210px;">مبلغ قابل پرداخت</p>
-        <p class="merchant-text-info" style="margin-left: 95px;" dir="rtl">2400000 ریال</p>
+        <p class="merchant-text-info" style="margin-left: 95px;" dir="rtl">{{ amount }} تومان</p>
     </div>
 </div>
 <footer class="footer">

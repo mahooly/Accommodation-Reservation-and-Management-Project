@@ -1,9 +1,11 @@
 from django import forms
 
-from .models import Reservation
 
 class MakeReservationForm(forms.Form):
+    check_in = forms.CharField(max_length=20)
+    check_out = forms.CharField(max_length=20)
+    how_many = forms.CharField(max_length=1)
 
-    class Meta:
-        model = Reservation
-        fields = ['check_in', 'check_out', 'how_many']
+
+class PaymentForm(forms.Form):
+    success = forms.CharField(max_length=10)
