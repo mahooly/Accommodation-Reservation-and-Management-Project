@@ -54,7 +54,7 @@ class TestRegistrationForm(TestCase):
 
         valid_data = {'how_many': 5, 'bed_type': "Double", 'number_of_guests': 7,
                       'amenity': [the_amenity1, the_amenity2],
-                      'description': 'a nice double room with great view over sea'}
+                      'description': 'a nice double room with great view over sea', 'price': 10000}
         form = RoomCreationForm(data=valid_data, files={'image': self.img})
         form.is_valid()
         self.assertFalse(form.errors)

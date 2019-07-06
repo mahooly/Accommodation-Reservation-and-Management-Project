@@ -31,6 +31,10 @@ class MakeReservation(View):
     def convert_string_to_date(self, date_string):
         return datetime.datetime.strptime(date_string, self.format)
 
+    def convert_date_to_string(self, datetime_object):
+        format2 = '%Y-%m-%d'
+        return datetime_object.strftime(format2)
+
     def get_available_room_infos(self, room, check_in, check_out):
 
         availableRoomInfos1 = RoomInfo.objects.all().exclude(
@@ -46,7 +50,6 @@ class MakeReservation(View):
         form = MakeReservationForm(request.POST)
         room_id = kwargs['rid']
         room = get_object_or_404(Room, pk=room_id)
-        print(form)
         if form.is_valid():
             how_many = int(form.cleaned_data.get('how_many'))
             check_in = self.convert_string_to_date(form.cleaned_data.get('check_in'))
@@ -55,30 +58,29 @@ class MakeReservation(View):
             count = 0
             reserve = Reservation.objects.create(reserver=request.user, check_in=check_in,
                                                  check_out=check_out)
-            reserve.save()
+            for room_info in available_room_infos:
+                if count < how_many:
+                    reserve.roominfo.add(room_info)
+                    count += 1
             email_text = 'محل اقامت شما به آدرس '
             email_text += room.accommodation.address
             email_text += ' توسط '
             email_text += request.user.first_name
             email_text += request.user.last_name
             email_text += ' برای تاریخ '
-            email_text += check_in
+            email_text += self.convert_date_to_string(check_in)
             email_text += ' تا '
-            email_text += check_out
+            email_text += self.convert_date_to_string(check_out)
             email_text += ' رزرو شده است. مقدار '
             email_text += str(reserve.total_price * 0.95)
             email_text += ' برای شما در تاریخ شروع واریز خواهد شد.'
             send_mail(
-            'رزرو محل اقامت',
-            email_text,
-            DEFAULT_FROM_EMAIL,
-            [acc.email],
-            fail_silently=False,
+                'رزرو محل اقامت',
+                email_text,
+                DEFAULT_FROM_EMAIL,
+                [room.accommodation.owner.user.email],
+                fail_silently=False,
             )
-            for room_info in available_room_infos:
-                if count < how_many:
-                    reserve.roominfo.add(room_info)
-                    count += 1
             messages.success(request, 'رزرو شما با موفقیت ثبت شد.')
             url = '/payment/' + str(reserve.pk)
             context = {'rid': reserve.pk}
@@ -96,7 +98,7 @@ class CancelReservation(View):
         check_in = reservation.check_in
         diff = today - check_in
         return diff.days
-    
+
     def get_host_email_text(self, reservation):
         diff = self.how_late(reservation)
         due = 0
@@ -111,7 +113,7 @@ class CancelReservation(View):
             text += ' مقدار '
             text += str(due)
             text += ' به حساب شما واریز خواهد شد.'
-        
+
         return text
 
     def get_guest_email_text(self, reservation):
@@ -120,7 +122,7 @@ class CancelReservation(View):
         due = 0
         if diff <= 10:
             ekh = 11 - diff
-            due += reservation.total_price *(1 - ekh * 0.1)
+            due += reservation.total_price * (1 - ekh * 0.1)
         text = 'رزرو با کد '
         text += reservation.id
         text += ' لغو شده است. '
@@ -129,15 +131,16 @@ class CancelReservation(View):
             text += ' مقدار '
             text += str(due)
             text += ' به حساب شما واریز خواهد شد.'
-        
+
         return text
-    
+
     def post(self, request, *args, **kwargs):
         res_id = kwargs['resid']
         reservation = get_object_or_404(Reservation, res_id)
         reservation.is_canceled = True
         reservation.save()
-        host_email, guest_email = reservation.roominfo.all()[0].room.accommodation.owner.email, reservation.reserver.email
+        host_email, guest_email = reservation.roominfo.all()[
+                                      0].room.accommodation.owner.email, reservation.reserver.email
         send_mail(
             'لغو رزرو',
             self.get_host_email_text,
