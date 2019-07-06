@@ -9,16 +9,25 @@ class Reservation(models.Model):
     roominfo  = models.ManyToManyField(RoomInfo)
     check_in = models.DateField()
     check_out = models.DateField()
-    amenity = models.ManyToManyField(Amenity)
+    is_canceled = models.BooleanField(default=False)
+
+    @property
+    def is_confirmed(self):
+        try:
+            return Transaction.objects.filter(reservation=self.pk).is_successful
+        except:
+            return False
 
     @property
     def total_price(self):
         return self.roominfo_set[0].room.price * len(self.roominfo_set)
 
 
-
-
 class Transaction(models.Model):
-    value = models.IntegerField(default=0)
     is_successful = models.BooleanField(default=False)
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE, null=True)
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    creation_date = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def total_price(self):
+        return self.reservation.roominfo_set[0].room.price * len(self.reservation.roominfo_set)
