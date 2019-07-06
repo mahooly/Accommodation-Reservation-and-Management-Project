@@ -2029,6 +2029,7 @@ ul.half li {
 }
 
 .hero-section .options .wrapper {
+    margin: 30px 0;
     padding: 30px 0;
 }
 
@@ -3138,10 +3139,14 @@ ul.half li {
 }
 
 .my-items {
-    margin-top: -60px;
     overflow: visible;
+    margin-top: -40px;
 }
 
+.my-items th {
+    text-align: start;
+    font-size: large;
+}
 .my-items .my-item {
     -moz-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
     -webkit-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
@@ -3181,7 +3186,7 @@ ul.half li {
 }
 
 .my-items .my-item .info {
-    margin-left: 180px;
+    margin-right: 180px;
     padding: 20px 0;
 }
 
@@ -3289,18 +3294,12 @@ ul.half li {
     left: 180px;
 }
 
-.my-items .edit-options {
-    position: absolute;
-    right: 0;
-    bottom: -35px;
-}
-
 .my-items .edit-options a {
     filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=60);
     opacity: 0.6;
     color: #1f1f1f;
     padding: 10px;
-    display: inline-block;
+    line-break: strict;
 }
 
 .my-items .edit-options a:hover {

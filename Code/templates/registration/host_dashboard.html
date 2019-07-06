@@ -1,47 +1,60 @@
 {% extends 'registration/user_dashboard.html' %}
 
 {% block contents %}
-    <div class="col-md-9">
+    <div class="col-md-9" dir="rtl">
         <div class="main-content">
-            {% for accommodation in object_list %}
-                <div class="col-md-4 col-sm-6 pull-right">
-                    <div class="item big equal-height">
-                        <div class="item-wrapper">
-                            <div class="image">
-                                <div class="mark-circle top" data-toggle="tooltip" data-placement="right"
-                                     title="{{ accommodation.description }}"><i class="fa fa-question"></i>
-                                </div>
-                                <a href="{% url 'accommodation_detail' pk=accommodation.pk %}"
-                                   class="wrapper">
-                                    <div class="profile-pic">
-                                        {% with accommodation.image_set.all|first as image %}
-                                            <img class="image" src="{{ image.image.url }}" alt=""
-                                                 style="height: 280px; width: 280px;">
-                                        {% endwith %}
-                                    </div>
-                                </a>
-                                <div class="owl-navigation"></div>
-                            </div>
-                            <div class="description">
-                                <div class="meta">
-                                    <span><i class="fa fa-bed"></i>{{ accommodation.rooms }}</span>
+            <div class="my-items table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>اقامتگاه</th>
+                        <th>نظرات</th>
+                        <th>امتیاز</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for accommodation in object_list %}
+                        <tr class="my-item">
+                            <td>
+                                <div class="image-wrapper pull-right">
+                                    <a href="{% url 'edit_accommodation' accommodation.pk %}" class="image">
+                                        <div class="bg-transfer">
+                                            {% with accommodation.image_set.all|first as image %}
+                                                <img class="image" src="{{ image.image.url }}" alt="">
+                                            {% endwith %}
+                                        </div>
+                                    </a>
                                 </div>
                                 <div class="info">
-                                    <figure class="label label-info">{{ accommodation.accommodation_type }}</figure>
                                     <a href="{% url 'accommodation_detail' pk=accommodation.pk %}">
-                                        <h3>{{ accommodation.title }}</h3></a>
-                                    <figure class="location"
-                                            style="margin-bottom: 10px">{{ accommodation.city }}</figure>
-                                    <a href="{% url 'delete_accommodation' pk=accommodation.pk %}"
-                                       class="btn btn-danger btn-rounded btn-sm scroll">حذف محل اقامت</a>
-                                    <a href="{% url 'edit_accommodation' pk=accommodation.pk %}"
-                                       class="btn btn-primary btn-rounded btn-sm scroll">مشاهده و تغییر اطلاعات</a>
+                                        <h2>{{ accommodation.title }}</h2></a>
+                                    <figure class="location">{{ accommodation.city }}</figure>
+                                    <figure class="label label-info">{{ accommodation.accommodation_type }}</figure>
+                                    <div class="meta">
+                                        <span>{{ accommodation.rooms }}<i class="fa fa-bed"></i></span>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+                            </td>
+                            <td class="reviews" style="padding-right: 9px">{{ accommodation.review_set.count }}</td>
+                            <td class="rating" style="padding-right: 5px">{{ accommodation.overall_score }}</td>
+                            <td>
+                                <div class="edit-options">
+                                    <a href="{% url 'edit_accommodation' accommodation.pk %}" class="link icon"><i
+                                            class="fa fa-edit"></i>تغییر مشخصات</a><br>
+                                    <a href="reservations.html" class="link icon"><i class="fa fa-check-square-o"></i>تاریخچه
+                                        رزرو</a><br>
+                                    <a href="{% url 'accommodation_review' accommodation.pk %}" class="link icon"><i
+                                            class="fa fa-comment"></i>نظرات</a>
+                                    <a href="{% url 'delete_accommodation' accommodation.pk %}"
+                                       class="link icon delete"><i class="fa fa-trash"></i>حذف</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 {% endblock %}
