@@ -8,6 +8,7 @@ from .forms import MakeReservationForm, PaymentForm
 from .models import Reservation, Transaction
 from accommodation.models import Room, RoomInfo
 from Code.settings import DEFAULT_FROM_EMAIL
+from django.core.mail import send_mail
 
 
 class ReservationDetail(View):
@@ -90,11 +91,67 @@ class MakeReservation(View):
 
 
 class CancelReservation(View):
+    def how_late(self, reservation):
+        today = datetime.datetime.now()
+        check_in = reservation.check_in
+        diff = today - check_in
+        return diff.days
+    
+    def get_host_email_text(self, reservation):
+        diff = self.how_late(reservation)
+        due = 0
+        if diff <= 10:
+            ekh = 11 - diff
+            due += reservation.total_price * ekh * 0.1
+        text = 'رزرو با کد '
+        text += reservation.id
+        text += ' لغو شده است. '
+
+        if due > 0:
+            text += ' مقدار '
+            text += str(due)
+            text += ' به حساب شما واریز خواهد شد.'
+        
+        return text
+
+    def get_guest_email_text(self, reservation):
+        host = reservation.roominfo.all()[0].room.accommodation.owner
+        diff = self.how_late(reservation)
+        due = 0
+        if diff <= 10:
+            ekh = 11 - diff
+            due += reservation.total_price *(1 - ekh * 0.1)
+        text = 'رزرو با کد '
+        text += reservation.id
+        text += ' لغو شده است. '
+
+        if due > 0:
+            text += ' مقدار '
+            text += str(due)
+            text += ' به حساب شما واریز خواهد شد.'
+        
+        return text
+    
     def post(self, request, *args, **kwargs):
         res_id = kwargs['resid']
         reservation = get_object_or_404(Reservation, res_id)
         reservation.is_canceled = True
         reservation.save()
+        host_email, guest_email = reservation.roominfo.all()[0].room.accommodation.owner.email, reservation.reserver.email
+        send_mail(
+            'لغو رزرو',
+            self.get_host_email_text,
+            DEFAULT_FROM_EMAIL,
+            [host_email],
+            fail_silently=False,
+        )
+        send_mail(
+            'لغو رزرو',
+            self.get_guest_email_text,
+            DEFAULT_FROM_EMAIL,
+            [guest_email],
+            fail_silently=False,
+        )
         messages.success(request, 'لغو رزرو با موفقیت انجام شد.')
         url = '/accommodation/' + str(reservation.roominfo.all()[0].room.accommodation.pk)
         return redirect(url)
