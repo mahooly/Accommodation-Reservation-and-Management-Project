@@ -144,6 +144,9 @@ class Accommodation(models.Model):
     def max_price(self):
         return self.room_set.all().aggregate(Max('price')).get('price__max')
 
+    def __str__(self):
+        return self.title
+
 
 class Room(models.Model):
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)
@@ -162,6 +165,9 @@ class Room(models.Model):
     def reservable_count(self):
         return RoomInfo.objects.filter(room=self, is_reserved=False).count()
 
+    def __str__(self):
+        return self.accommodation.title
+
 
 class Image(models.Model):
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)
@@ -172,3 +178,6 @@ class RoomInfo(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     is_reserved = models.BooleanField(default=False)
     out_of_service = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.room) + self.room.bed_type

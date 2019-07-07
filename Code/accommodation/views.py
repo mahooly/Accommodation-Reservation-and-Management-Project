@@ -61,6 +61,9 @@ class AccommodationDetailView(DetailView):
         rooms = Room.objects.filter(accommodation__id__exact=pk)
         form = RoomSearchForm(self.request.GET)
         stay_length = 0
+        rooms_fat = {}
+        for r in list(rooms):
+            rooms_fat[r] = range(r.how_many)
 
         if form.is_valid():
             check_in = form.cleaned_data.get('check_in', '')
@@ -80,8 +83,10 @@ class AccommodationDetailView(DetailView):
                     Q(reservation__check_out__range=(check_in + timedelta(days=1), check_out)),
                     Q(reservation__is_canceled=False))
                 availableRoomInfos = availableRoomInfos2.filter(out_of_service=False)
-                rooms = rooms.filter(roominfo__in=availableRoomInfos).distinct()
-                accs = Accommodation.objects.filter(room__in=rooms)
+                rooms = rooms.filter(roominfo__in=availableRoomInfos)
+                for r in list(rooms):
+                    rooms_fat[r] = range(list(rooms).count(r))
+                rooms = rooms.distinct()
                 stay_length = (check_out - check_in).days
 
             if price:
@@ -94,6 +99,7 @@ class AccommodationDetailView(DetailView):
 
         context['rooms'] = rooms
         context['stay_length'] = stay_length
+        context['room_count'] = rooms_fat
         return context
 
     def convert_string_to_date(self, date_string):

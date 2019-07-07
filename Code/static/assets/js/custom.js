@@ -674,6 +674,7 @@ function reserveError(e, id) {
         $('#table-how-many-' + id).html(selected);
         $('#table-price-' + id).html(total);
         $('#price-all-' + id).html(total);
+        $('#form-how-' + id).val(selected);
         modal.show();
         return;
     }

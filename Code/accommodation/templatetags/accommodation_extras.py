@@ -27,3 +27,8 @@ def get_room_price_from_id(room_id):
 @register.simple_tag
 def get_room_price_from_id_2(room_id):
     return Room.objects.get(pk=room_id).price / 1000
+
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)

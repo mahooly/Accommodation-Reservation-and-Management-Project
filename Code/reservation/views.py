@@ -77,7 +77,8 @@ class MakeReservation(View):
             check_out = self.convert_string_to_date(form.cleaned_data.get('check_out'))
             available_room_infos = self.get_available_room_infos(room, check_in, check_out)
             if len(available_room_infos) < how_many:
-                messages.error(request, 'در رزرو کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید. به این تعداد اتاق خالی وجود ندارد.')
+                messages.error(request,
+                               'در رزرو کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید. به این تعداد اتاق خالی وجود ندارد.')
                 accommodation_id = room.accommodation.pk
                 url = '/accommodation/' + str(accommodation_id)
                 return redirect(url)
@@ -89,7 +90,10 @@ class MakeReservation(View):
                     reserve.roominfo.add(room_info)
                     count += 1
 
-            email_text = 'محل اقامت شما به آدرس {} توسط {} {} برای تاریخ {} تا {} رزرو شده است. مقدار {} برای شما در تاریخ شرو واریز خواهد شد.'.format(room.accommodation.address, request.user.first_name, request.user.last_name, self.convert_date_to_string(check_in), self.convert_date_to_string(check_out), str(reserve.total_price * 0.95))
+            email_text = 'محل اقامت شما به آدرس {} توسط {} {} برای تاریخ {} تا {} رزرو شده است. مقدار {} برای شما در تاریخ شرو واریز خواهد شد.'.format(
+                room.accommodation.address, request.user.first_name, request.user.last_name,
+                self.convert_date_to_string(check_in), self.convert_date_to_string(check_out),
+                str(reserve.total_price * 0.95))
             send_mail(
                 'رزرو محل اقامت',
                 email_text,
@@ -122,7 +126,7 @@ class CancelReservation(View):
         if diff <= 10:
             ekh = 11 - diff
             due += reservation.total_price * ekh * 0.1
-        
+
         text = 'رزرو با کد {} لغو شده است.'.format(reservation.id)
         if due > 0: text += 'مقدار {} به حساب شما واریز خواهد شد.'.format(str(due))
         return text

@@ -290,13 +290,12 @@
                                             <th style="text-align: center">قیمت</th>
                                             <th style="text-align: center">تعداد اتاق</th>
                                             <th style="text-align: center"></th>
-
-                                            <input type="hidden" value="{{ check_in }}" name="check_in"
-                                                   id="hidden-check-in">
-                                            <input type="hidden" value="{{ check_out }}" name="check_out"
-                                                   id="hidden-check-out">
-                                            <input type="hidden" value="{{ stay_length }}" id="stay_length">
                                         </tr>
+                                        <input type="hidden" value="{{ check_in }}" name="check_in"
+                                               id="hidden-check-in">
+                                        <input type="hidden" value="{{ check_out }}" name="check_out"
+                                               id="hidden-check-out">
+                                        <input type="hidden" value="{{ stay_length }}" id="stay_length">
                                         </thead>
                                     </table>
                                 </div>
@@ -319,10 +318,13 @@
                                                     id="price-{{ room.id }}">{{ room.price }}</td>
                                                 <td class="rooms" style="text-align: center">
                                                     <select class="framed" name="how_many" id="how-many-{{ room.id }}">
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
+                                                        {% for r, count in room_count.items %}
+                                                            {% if r.id == room.id %}
+                                                                {% for i in count %}
+                                                                    <option value="{{ i }}">{{ i }}</option>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% endfor %}
                                                     </select>
                                                 </td>
                                                 <td style="text-align: center">
@@ -381,7 +383,9 @@
                                                                                 <th style="text-align: start; padding-right: 20px; padding-top: 10px">
                                                                                     قیمت
                                                                                 </th>
-                                                                                <th style="text-align: start; padding-right: 20px; padding-top: 10px">قیمت کل (تومان)</th>
+                                                                                <th style="text-align: start; padding-right: 20px; padding-top: 10px">
+                                                                                    قیمت کل (تومان)
+                                                                                </th>
                                                                                 </thead>
                                                                                 <tbody>
                                                                                 <tr>
@@ -397,14 +401,21 @@
                                                                                     <input type="hidden"
                                                                                            value="{{ check_out }}"
                                                                                            name="check_out">
+                                                                                    <input type="hidden"
+                                                                                           id="form-how-{{ room.id }}"
+                                                                                           name="how_many">
                                                                                 </tr>
                                                                                 <tr>
-                                                                                    <td colspan="5">مبلغ قابل پرداخت (تومان)</td>
-                                                                                    <td id="price-all-{{ room.id }}" style="text-align: center;"></td>
+                                                                                    <td colspan="5">مبلغ قابل پرداخت
+                                                                                        (تومان)
+                                                                                    </td>
+                                                                                    <td id="price-all-{{ room.id }}"
+                                                                                        style="text-align: center;"></td>
                                                                                 </tr>
                                                                                 </tbody>
                                                                             </table>
-                                                                            <div class="form-group" style="padding-top: 20px; padding-right: 500px">
+                                                                            <div class="form-group"
+                                                                                 style="padding-top: 20px; padding-right: 500px">
                                                                                 <button type="submit"
                                                                                         class="btn btn-primary btn-rounded">
                                                                                     پرداخت

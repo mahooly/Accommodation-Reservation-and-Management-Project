@@ -160,7 +160,8 @@
                             </div>
                             <div class="description" dir="rtl">
                                 <div class="meta">
-                                    <span><i class="fa fa-bed"></i>{{ obj.rooms }}</span>
+                                    <span><i class="fa fa-star"></i>{{ obj.overall_score }}</span>
+                                    <span><i class="fa fa-bed"></i> {{ obj.rooms }} </span>
                                 </div>
                                 <div class="info">
                                     <a href="{{ obj.pk|get_url:url }}"><h3>{{ obj.title }}</h3></a>
