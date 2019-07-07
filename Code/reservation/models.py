@@ -19,9 +19,21 @@ class Reservation(models.Model):
 
     @property
     def total_price(self):
+        stay_len = self.stay_length
+        return self.roominfo.first().room.price * stay_len * self.roominfo.count()
+
+    @property
+    def stay_length(self):
         stay_len = self.check_out - self.check_in
-        stay_len = stay_len.days
-        return self.roominfo.all()[0].room.price * stay_len * self.roominfo.count()
+        return stay_len.days
+
+    @property
+    def room_type(self):
+        return self.roominfo.first().room.bed_type
+
+    @property
+    def accommodation(self):
+        return self.roominfo.first().room.accommodation
 
 
 class Transaction(models.Model):
@@ -33,4 +45,4 @@ class Transaction(models.Model):
     def total_price(self):
         stay_len = self.reservation.check_out - self.reservation.check_in
         stay_len = stay_len.days
-        return self.reservation.roominfo.all()[0].room.price * stay_len * self.reservation.roominfo.count()
+        return self.reservation.roominfo.first().room.price * stay_len * self.reservation.roominfo.count()

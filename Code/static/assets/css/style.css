@@ -3147,6 +3147,7 @@ ul.half li {
     text-align: start;
     font-size: large;
 }
+
 .my-items .my-item {
     -moz-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
     -webkit-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
@@ -3844,6 +3845,14 @@ ul.half li {
     -webkit-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
     box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
     background-color: #fff;
+}
+
+.reservations .reservation td {
+    text-align: start;
+}
+
+.reservations .header th {
+    text-align: start;
 }
 
 .reservations .header-copy {

@@ -660,10 +660,21 @@ function checkOutError(e) {
     }
 }
 
-function reserveError(e) {
+function reserveError(e, id) {
     var checkIn = $('#hidden-check-in');
     var checkOut = $('#hidden-check-out');
     if (checkIn.val() && checkOut.val()) {
+        modal = $('#reserve-' + id).modal();
+        e.preventDefault();
+        var howMany = $("#how-many-" + id);
+        var selected = howMany.find(':selected').text();
+        var price = $('#price-' + id).text();
+        var stay = $('#stay_length').val();
+        var total = parseInt(price) * parseInt(selected) * parseInt(stay);
+        $('#table-how-many-' + id).html(selected);
+        $('#table-price-' + id).html(total);
+        $('#price-all-' + id).html(total);
+        modal.show();
         return;
     }
     e.preventDefault();

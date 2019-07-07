@@ -1,0 +1,96 @@
+{% extends 'registration/user_dashboard.html' %}
+
+{% block contents %}
+    <div class="col-md-9 col-sm-9" dir="rtl">
+        {% if messages %}
+            {% for message in messages %}
+                {% ifequal message.tags 'success' %}
+                    <div class="alert alert-success" dir="rtl" role="alert"
+                         style="padding: 5px; text-align: center;">
+                        <p style="display: inline-block;">{{ message }}</p>
+                    </div>
+                {% endifequal %}
+                {% ifequal message.tags 'error' %}
+                    <div class="alert alert-danger" dir="rtl" role="alert"
+                         style="padding: 5px; text-align: center;">
+                        <p style="display: inline-block;">{{ message }}</p>
+                    </div>
+                {% endifequal %}
+            {% endfor %}
+        {% endif %}
+        {% if object_list %}
+            <div class="reservations table-responsive">
+                <table class="table table-fixed-header">
+                    <thead class="header">
+                    <tr>
+                        <th>شماره</th>
+                        <th style="padding-right: 10px">نام اقامتگاه</th>
+                        <th style="padding-right: 15px">از تاریخ</th>
+                        <th style="padding-right: 15px">تا تاریخ</th>
+                        <th>تعداد شب</th>
+                        <th>نوع اتاق</th>
+                        <th>تعداد اتاق</th>
+                        <th style="padding-right: 15px">قیمت</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for reserve in object_list %}
+                        <tr class="reservation">
+                            <td style="padding-right: 10px">{{ reserve.id }}</td>
+                            <td>
+                                <a href="{% url 'accommodation_detail' reserve.accommodation.pk %}">{{ reserve.accommodation.title }}</a>
+                            </td>
+                            <td>{{ reserve.check_in }}</td>
+                            <td>{{ reserve.check_out }}</td>
+                            <td style="padding-right: 25px">{{ reserve.stay_length }}</td>
+                            <td>{{ reserve.room_type }}</td>
+                            <td style="padding-right: 30px">{{ reserve.roominfo.count }}</td>
+                            <td>{{ reserve.total_price }}</td>
+                            {% if reserve.is_cancelled %}
+                                <td>لغو شده</td>
+                            {% else %}
+                                <td><a class="btn btn-danger" href="{% url 'cancel_reservation' reserve.id %}">لغو</a>
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        <div class="center">
+            {% if object_list %}
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="prev">
+                            <a href="?page={{ page_obj.previous_page_number }}"><i
+                                    class="arrow_left"></i></a>
+                        </li>
+                        <li>
+                            <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+                        </li>
+                    {% endif %}
+                    <li class="active">
+                        <a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li>
+                            <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                        </li>
+                        <li class="next">
+                            <a href="{{ page_url }}?page={{ page_obj.next_page_number }}"><i
+                                    class="arrow_right"></i></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% else %}
+                <h4 dir="rtl" style="margin-top: 100px">شما هنوز اقامتگاهی رزرو نکرده‌اید.</h4>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+{% block sidebar %}
+{% endblock %}

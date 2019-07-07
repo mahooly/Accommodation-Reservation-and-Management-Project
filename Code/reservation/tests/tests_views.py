@@ -75,7 +75,6 @@ class TestAccommocationView(TestCase):
         req = {'user': user, 'form': {'check_in': '12122019', 'check_out': '14122019', 'price': '100-200'}}
         view = AccommodationDetailView.as_view()
         response = view(req, pk=acc.pk)
-        print(response)
         return response
 
     def test_reserve(self):

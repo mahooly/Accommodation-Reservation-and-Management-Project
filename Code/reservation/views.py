@@ -1,30 +1,51 @@
 import datetime
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.shortcuts import render
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
+from django.views.generic import ListView
+
+from accommodation.decorators import user_same_as_accommodation_user
+from registration.decorators import user_is_host
 from .forms import MakeReservationForm, PaymentForm
 from .models import Reservation, Transaction
-from accommodation.models import Room, RoomInfo
+from accommodation.models import Room, RoomInfo, Accommodation
 from Code.settings import DEFAULT_FROM_EMAIL
 from django.core.mail import send_mail
 
 
-class ReservationDetail(View):
+@method_decorator([login_required, user_is_host, user_same_as_accommodation_user], name='dispatch')
+class AccommodationReservationList(ListView):
     template_name = "reservation/accommodation_reservation.html"
+    paginate_by = 10
 
-    def get(self, request):
-        return render(request, self.template_name)
+    def get_queryset(self):
+        id = self.kwargs['pk']
+        return Reservation.objects.filter(roominfo__room__accommodation_id=id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        acc = self.get_accommodation()
+        context['accommodation'] = acc
+        return context
+
+    def get_accommodation(self):
+        pk = self.kwargs.get('pk')
+        return Accommodation.objects.get(pk=pk)
 
 
-class AllReservations(View):
-    template_name = "reservation/all-reservations.html"
+class UserReservationList(ListView):
+    template_name = "reservation/user-reservations.html"
+    paginate_by = 10
 
-    def get(self, request):
-        return render(request, self.template_name)
+    def get_queryset(self):
+        user = self.request.user
+        return Reservation.objects.filter(reserver=user)
 
 
+@method_decorator(login_required, name='dispatch')
 class MakeReservation(View):
     format = '%m/%d/%Y'
 
@@ -92,6 +113,7 @@ class MakeReservation(View):
             return redirect(url)
 
 
+@method_decorator(login_required, name='dispatch')
 class CancelReservation(View):
     def how_late(self, reservation):
         today = datetime.datetime.now()
@@ -117,7 +139,6 @@ class CancelReservation(View):
         return text
 
     def get_guest_email_text(self, reservation):
-        host = reservation.roominfo.all()[0].room.accommodation.owner
         diff = self.how_late(reservation)
         due = 0
         if diff <= 10:
@@ -134,13 +155,12 @@ class CancelReservation(View):
 
         return text
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         res_id = kwargs['resid']
-        reservation = get_object_or_404(Reservation, res_id)
+        reservation = get_object_or_404(Reservation, id=res_id)
         reservation.is_canceled = True
         reservation.save()
-        host_email, guest_email = reservation.roominfo.all()[
-                                      0].room.accommodation.owner.email, reservation.reserver.email
+        host_email, guest_email = reservation.roominfo.first().room.accommodation.owner.user.email, reservation.reserver.email
         send_mail(
             'لغو رزرو',
             self.get_host_email_text,
@@ -156,10 +176,10 @@ class CancelReservation(View):
             fail_silently=False,
         )
         messages.success(request, 'لغو رزرو با موفقیت انجام شد.')
-        url = '/accommodation/' + str(reservation.roominfo.all()[0].room.accommodation.pk)
-        return redirect(url)
+        return redirect('user_reserve')
 
 
+@method_decorator(login_required, name='dispatch')
 class PaymentView(View):
     template_name = 'bank.html'
 
@@ -181,10 +201,11 @@ class PaymentView(View):
                 success = False
             reservation = get_object_or_404(Reservation, pk=reservation_id)
             Transaction.objects.create(is_successful=success, reservation=reservation)
-            acc_id = reservation.roominfo.all()[0].room.accommodation.pk
+            acc_id = reservation.roominfo.first().room.accommodation.pk
             if success:
                 messages.success(request, 'پرداخت شما با موفقیت انجام شد.')
+                return redirect('user_reserve')
             else:
                 messages.error(request, 'پرداخت شما با موفقیت انجام نشد. دوباره تلاش کنید.')
-            url = '/accommodation/' + str(acc_id)
-            return redirect(url)
+                url = '/accommodation/' + str(acc_id)
+                return redirect(url)

@@ -5,7 +5,7 @@
         <div class="main-content float-right" dir="rtl">
             <div class="title">
                 <h1><a href="{% url 'edit_accommodation' form.instance.pk %}">تغییر مشخصات اقامتگاه</a></h1>
-                <h1 class="inactive"><a href="reservations.html">تاریخچه رزرو</a></h1>
+                <h1 class="inactive"><a href="{% url 'accommodation_reserve' form.instance.pk %}">تاریخچه رزرو</a></h1>
                 <h1 class="inactive"><a href="{% url 'accommodation_review' form.instance.pk %}">نظرات</a></h1>
             </div>
             <div class="info">

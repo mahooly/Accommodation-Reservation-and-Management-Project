@@ -26,43 +26,38 @@ class Accommodation(models.Model):
     amenity = models.ManyToManyField(Amenity)
     is_authenticated = models.BooleanField(default=False)
 
-    def _get_singles(self):
+    @property
+    def single_beds(self):
         try:
             return Room.objects.get(accommodation=self, bed_type='Single').how_many
         except Room.DoesNotExist:
             return 0
 
-    single_beds = property(_get_singles)
-
-    def _get_doubles(self):
+    @property
+    def double_beds(self):
         try:
             return Room.objects.get(accommodation=self, bed_type='Double').how_many
         except Room.DoesNotExist:
             return 0
 
-    double_beds = property(_get_doubles)
-
-    def _get_twins(self):
+    @property
+    def twin_beds(self):
         try:
             return Room.objects.get(accommodation=self, bed_type='Twin').how_many
         except Room.DoesNotExist:
             return 0
 
-    twin_beds = property(_get_twins)
-
-    def _get_guests(self):
+    @property
+    def guests(self):
         rooms = Room.objects.filter(accommodation=self)
         guests = 0
         for r in rooms:
             guests += (r.how_many * r.number_of_guests)
         return guests
 
-    guests = property(_get_guests)
-
-    def _get_all_rooms(self):
+    @property
+    def rooms(self):
         return self.single_beds + self.double_beds + self.twin_beds
-
-    rooms = property(_get_all_rooms)
 
     @property
     def overall_score(self):

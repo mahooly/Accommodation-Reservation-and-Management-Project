@@ -49,7 +49,6 @@ class BlogCreateView(View):
             url = '/blog/post/' + str(post.id)
             return redirect(url)
         else:
-            print(form.errors)
             return render(request, self.template_name, {'form': form})
 
 

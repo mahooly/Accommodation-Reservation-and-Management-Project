@@ -60,6 +60,8 @@ class AccommodationDetailView(DetailView):
         pk = self.kwargs.get('pk')
         rooms = Room.objects.filter(accommodation__id__exact=pk)
         form = RoomSearchForm(self.request.GET)
+        stay_length = 0
+
         if form.is_valid():
             check_in = form.cleaned_data.get('check_in', '')
             check_out = form.cleaned_data.get('check_out', '')
@@ -80,6 +82,7 @@ class AccommodationDetailView(DetailView):
                 availableRoomInfos = availableRoomInfos2.filter(out_of_service=False)
                 rooms = rooms.filter(roominfo__in=availableRoomInfos).distinct()
                 accs = Accommodation.objects.filter(room__in=rooms)
+                stay_length = (check_out - check_in).days
 
             if price:
                 price_low = int(price.split('-')[0]) * 1000
@@ -90,7 +93,7 @@ class AccommodationDetailView(DetailView):
                     rooms = rooms.filter(price__gte=price_low, price__lte=price_high)
 
         context['rooms'] = rooms
-
+        context['stay_length'] = stay_length
         return context
 
     def convert_string_to_date(self, date_string):
