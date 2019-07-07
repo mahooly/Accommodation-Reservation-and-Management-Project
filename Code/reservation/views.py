@@ -76,6 +76,11 @@ class MakeReservation(View):
             check_in = self.convert_string_to_date(form.cleaned_data.get('check_in'))
             check_out = self.convert_string_to_date(form.cleaned_data.get('check_out'))
             available_room_infos = self.get_available_room_infos(room, check_in, check_out)
+            if len(available_room_infos) < how_many:
+                messages.error(request, 'در رزرو کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید. به این تعداد اتاق خالی وجود ندارد.')
+                accommodation_id = room.accommodation.pk
+                url = '/accommodation/' + str(accommodation_id)
+                return redirect(url)
             count = 0
             reserve = Reservation.objects.create(reserver=request.user, check_in=check_in,
                                                  check_out=check_out)
@@ -83,18 +88,8 @@ class MakeReservation(View):
                 if count < how_many:
                     reserve.roominfo.add(room_info)
                     count += 1
-            email_text = 'محل اقامت شما به آدرس '
-            email_text += room.accommodation.address
-            email_text += ' توسط '
-            email_text += request.user.first_name
-            email_text += request.user.last_name
-            email_text += ' برای تاریخ '
-            email_text += self.convert_date_to_string(check_in)
-            email_text += ' تا '
-            email_text += self.convert_date_to_string(check_out)
-            email_text += ' رزرو شده است. مقدار '
-            email_text += str(reserve.total_price * 0.95)
-            email_text += ' برای شما در تاریخ شروع واریز خواهد شد.'
+
+            email_text = 'محل اقامت شما به آدرس {} توسط {} {} برای تاریخ {} تا {} رزرو شده است. مقدار {} برای شما در تاریخ شرو واریز خواهد شد.'.format(room.accommodation.address, request.user.first_name, request.user.last_name, self.convert_date_to_string(check_in), self.convert_date_to_string(check_out), str(reserve.total_price * 0.95))
             send_mail(
                 'رزرو محل اقامت',
                 email_text,
@@ -127,15 +122,9 @@ class CancelReservation(View):
         if diff <= 10:
             ekh = 11 - diff
             due += reservation.total_price * ekh * 0.1
-        text = 'رزرو با کد '
-        text += reservation.id
-        text += ' لغو شده است. '
-
-        if due > 0:
-            text += ' مقدار '
-            text += str(due)
-            text += ' به حساب شما واریز خواهد شد.'
-
+        
+        text = 'رزرو با کد {} لغو شده است.'.format(reservation.id)
+        if due > 0: text += 'مقدار {} به حساب شما واریز خواهد شد.'.format(str(due))
         return text
 
     def get_guest_email_text(self, reservation):
@@ -144,15 +133,8 @@ class CancelReservation(View):
         if diff <= 10:
             ekh = 11 - diff
             due += reservation.total_price * (1 - ekh * 0.1)
-        text = 'رزرو با کد '
-        text += reservation.id
-        text += ' لغو شده است. '
-
-        if due > 0:
-            text += ' مقدار '
-            text += str(due)
-            text += ' به حساب شما واریز خواهد شد.'
-
+        text = 'رزرو با کد {} لغو شده است.'.format(reservation.id)
+        if due > 0: text += 'مقدار {} به حساب شما واریز خواهد شد.'.format(str(due))
         return text
 
     def get(self, request, *args, **kwargs):

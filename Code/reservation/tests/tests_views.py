@@ -93,3 +93,16 @@ class TestAccommocationView(TestCase):
         reservation = Reservation.objects.get(reserver=the_user)
         self.assertEqual(reservation.check_in, datetime.date(2019, 7, 12))
         self.assertEqual(reservation.check_out, datetime.date(2019, 7, 15))
+
+        # try to reserve again
+
+        response2 = self.client.post(reverse('make_reservation', kwargs={'rid': room.id}),
+                                    {'check_in': '07/12/2019', 'check_out': '07/14/2019',
+                                     'how_many': 1})
+        messages = list(response2.context['messages'])
+        self.assertEqual(len(messages), 1)
+        self.assertEqual(str(messages[0]),  'در رزرو کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید. به این تعداد اتاق خالی وجود ندارد.')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Reservation.objects.count(), 1)
+        reservation = Reservation.objects.get(reserver=the_user)
+        self.assertEqual(reservation.check_out, datetime.date(2019, 7, 15))
