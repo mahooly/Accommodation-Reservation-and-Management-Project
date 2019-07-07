@@ -63,7 +63,7 @@ class AccommodationDetailView(DetailView):
         stay_length = 0
         rooms_fat = {}
         for r in list(rooms):
-            rooms_fat[r] = range(r.how_many)
+            rooms_fat[r] = range(1, r.how_many + 1)
 
         if form.is_valid():
             check_in = form.cleaned_data.get('check_in', '')
@@ -85,7 +85,7 @@ class AccommodationDetailView(DetailView):
                 availableRoomInfos = availableRoomInfos2.filter(out_of_service=False)
                 rooms = rooms.filter(roominfo__in=availableRoomInfos)
                 for r in list(rooms):
-                    rooms_fat[r] = range(list(rooms).count(r))
+                    rooms_fat[r] = range(1, list(rooms).count(r) + 1)
                 rooms = rooms.distinct()
                 stay_length = (check_out - check_in).days
 
