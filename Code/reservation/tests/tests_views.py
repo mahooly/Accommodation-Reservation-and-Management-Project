@@ -107,3 +107,9 @@ class TestAccommocationView(TestCase):
         self.assertEqual(Reservation.objects.count(), 1)
         reservation = Reservation.objects.get(reserver=the_user)
         self.assertEqual(reservation.check_out, datetime.date(2019, 7, 15))
+
+
+        response3 = self.client.get(reverse('accommodation', kwargs={'pk':acc.id}), {'check_in': '07/12/2019', 'check_out': '07/14/2019',
+                                     'price': '100-200'})
+        rooms = response3.context['rooms']
+        self.assertEquals(len(rooms), 0)
