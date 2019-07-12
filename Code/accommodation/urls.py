@@ -6,7 +6,8 @@ urlpatterns = [
     path('create_amenity/', views.CreateAmenityView.as_view(), name='create_amenity'),
     path('accommodation/<int:pk>/', views.AccommodationDetailView.as_view(), name='accommodation_detail'),
     path('room/<int:accid>/', views.CreateRoomView.as_view(), name='create_room'),
-    path('delete_accommodation/<int:pk>/', views.DeleteAccommodation.as_view(), name='delete_accommodation'),
-    path('edit_accommodation/<int:pk>/', views.EditAccommodation.as_view(), name='edit_accommodation'),
+    path('accommodation/<int:pk>/delete', views.DeleteAccommodation.as_view(), name='delete_accommodation'),
+    path('accommodation/<int:pk>/edit/', views.EditAccommodation.as_view(), name='edit_accommodation'),
     path('image/<int:pk>/', views.DeleteImage.as_view(), name='delete_image'),
+    path('accommodation/<int:pk>/rooms', views.RoomListView.as_view(), name='room_list'),
 ]

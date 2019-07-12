@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load jalali_tags %}
 {% block main %}
     <div class="container">
         <div class="row">
@@ -30,7 +30,7 @@
                                 </header>
                                 <figure class="meta">
                                     <a href="#" class="link icon" dir="rtl"><i
-                                            class="fa fa-calendar"></i>{{ post.date }}
+                                            class="fa fa-calendar"></i>{{ post.date|to_jalali:'%y/%m/%d' }}
                                     </a>
                                     <a href="{% url 'profile' post.owner.id %}"
                                        class="link icon"><i class="fa fa-user"></i>{{ post.owner.username }}</a>

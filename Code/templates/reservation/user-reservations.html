@@ -1,5 +1,5 @@
 {% extends 'registration/user_dashboard.html' %}
-
+{% load jalali_tags %}
 {% block contents %}
     <div class="col-md-9 col-sm-9" dir="rtl">
         {% if messages %}
@@ -41,8 +41,8 @@
                             <td>
                                 <a href="{% url 'accommodation_detail' reserve.accommodation.pk %}">{{ reserve.accommodation.title }}</a>
                             </td>
-                            <td>{{ reserve.check_in }}</td>
-                            <td>{{ reserve.check_out }}</td>
+                            <td>{{ reserve.check_in|to_jalali:'%y/%m/%d' }}</td>
+                            <td>{{ reserve.check_out|to_jalali:'%y/%m/%d' }}</td>
                             <td style="padding-right: 25px">{{ reserve.stay_length }}</td>
                             <td>{{ reserve.room_type }}</td>
                             <td style="padding-right: 30px">{{ reserve.roominfo.count }}</td>
@@ -93,4 +93,37 @@
     </div>
 {% endblock %}
 {% block sidebar %}
+    <div class="sidebar">
+        <div class="box filter">
+            <div class="text-center">
+                <h2 dir="rtl">فیلتر بر اساس تاریخ</h2>
+            </div>
+            <form method="get" dir="rtl">
+                <div class="form-group">
+                    <label for="id_check_in_range">تاریخ ورود</label>
+                    <select class="framed width-100" name="check_in_range" id="id_check_in_range">
+                        <option value="" selected="">هر تاریخی</option>
+                        <option value="1">امروز</option>
+                        <option value="2">۷ روز اخیر</option>
+                        <option value="3">این ماه</option>
+                        <option value="4">امسال</option>
+                        <option value="5">دیروز</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="id_check_out_range">تاریخ خروج</label>
+                    <select class="framed width-100" name="check_out_range" id="id_check_out_range">
+                        <option value="" selected="">هر تاریخی</option>
+                        <option value="1">امروز</option>
+                        <option value="2">۷ روز اخیر</option>
+                        <option value="3">این ماه</option>
+                        <option value="4">امسال</option>
+                        <option value="5">دیروز</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-rounded form-control">اعمال فیلتر
+                </button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

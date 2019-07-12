@@ -5,6 +5,8 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import DetailView
 from django.views.generic import ListView
+
+from registration.decorators import user_is_confirmed
 from .models import Post, Comment
 from .forms import BlogCreationForm, CommentCreationForm
 from django.shortcuts import get_object_or_404, redirect
@@ -32,7 +34,7 @@ class BlogListView(ListView):
         return context
 
 
-@method_decorator([login_required, user_same_as_dashboard_user], name='dispatch')
+@method_decorator([login_required, user_is_confirmed, user_same_as_dashboard_user], name='dispatch')
 class BlogCreateView(View):
     template_name = "blog/create_blog.html"
 
@@ -57,7 +59,7 @@ class BlogDetailView(DetailView):
     model = Post
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator([login_required, user_is_confirmed], name='dispatch')
 class CreateCommentView(View):
     def post(self, request, *args, **kwargs):
         comment_form = CommentCreationForm(request.POST)
@@ -76,7 +78,7 @@ class CreateCommentView(View):
             return redirect(url)
 
 
-@method_decorator([login_required, user_same_as_comment_user_or_admin], name='dispatch')
+@method_decorator([login_required, user_is_confirmed, user_same_as_comment_user_or_admin], name='dispatch')
 class CommentDelete(View):
     def get(self, request, *args, **kwargs):
         comment_id = kwargs['id']

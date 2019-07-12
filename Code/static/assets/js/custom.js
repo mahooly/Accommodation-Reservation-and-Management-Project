@@ -142,9 +142,6 @@ $(document).ready(function ($) {
         $("[data-toggle=popover]").popover({
             template: '<div class="popover" role="tooltip"><div class="close"><i class="fa fa-close"></i></div><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
         });
-        $(".popover .close").live('click', function () {
-            $(this).closest(".popover").popover("hide");
-        });
         $("[data-show-after-time]").each(function () {
             var _this = $(this);
             setTimeout(function () {

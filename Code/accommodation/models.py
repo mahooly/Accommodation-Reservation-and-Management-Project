@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models import Min, Max
+from django.db.models import Min, Max, deletion
 
 from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES
 from registration.models import Host, CustomUser
@@ -161,10 +161,6 @@ class Room(models.Model):
     def how_many(self):
         return RoomInfo.objects.filter(room=self).count()
 
-    @property
-    def reservable_count(self):
-        return RoomInfo.objects.filter(room=self, is_reserved=False).count()
-
     def __str__(self):
         return self.accommodation.title
 
@@ -176,8 +172,14 @@ class Image(models.Model):
 
 class RoomInfo(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    is_reserved = models.BooleanField(default=False)
-    out_of_service = models.BooleanField(default=False)
+    number = models.IntegerField(default=None, null=True)
 
     def __str__(self):
         return str(self.room) + self.room.bed_type
+
+
+class RoomOutOfService(models.Model):
+    room_info = models.ForeignKey(RoomInfo, on_delete=deletion.CASCADE)
+    from_date = models.DateField()
+    to_date = models.DateField()
+    reason = models.TextField()

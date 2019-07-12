@@ -6,24 +6,31 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
+from khayyam import JalaliDate
 
 from accommodation.decorators import user_same_as_accommodation_user
-from registration.decorators import user_is_host
+from registration.decorators import user_is_host, user_is_confirmed
+from reservation.filters import ReservationFilter
 from .forms import MakeReservationForm, PaymentForm
 from .models import Reservation, Transaction
 from accommodation.models import Room, RoomInfo, Accommodation
 from Code.settings import DEFAULT_FROM_EMAIL
 from django.core.mail import send_mail
 
+persian_numbers = '۱۲۳۴۵۶۷۸۹۰'
+english_numbers = '1234567890'
+trans_num = str.maketrans(persian_numbers, english_numbers)
 
-@method_decorator([login_required, user_is_host, user_same_as_accommodation_user], name='dispatch')
+
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class AccommodationReservationList(ListView):
     template_name = "reservation/accommodation_reservation.html"
     paginate_by = 10
 
     def get_queryset(self):
         id = self.kwargs['pk']
-        return Reservation.objects.filter(roominfo__room__accommodation_id=id)
+        reserve_list = Reservation.objects.filter(roominfo__room__accommodation_id=id)
+        return ReservationFilter(self.request.GET, reserve_list).qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -36,21 +43,24 @@ class AccommodationReservationList(ListView):
         return Accommodation.objects.get(pk=pk)
 
 
+@method_decorator([login_required, user_is_confirmed], name='dispatch')
 class UserReservationList(ListView):
     template_name = "reservation/user-reservations.html"
     paginate_by = 10
 
     def get_queryset(self):
         user = self.request.user
-        return Reservation.objects.filter(reserver=user)
+        reserve_list = Reservation.objects.filter(reserver=user)
+        return ReservationFilter(self.request.GET, reserve_list).qs
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator([login_required, user_is_confirmed], name='dispatch')
 class MakeReservation(View):
     format = '%m/%d/%Y'
 
     def convert_string_to_date(self, date_string):
-        return datetime.datetime.strptime(date_string, self.format)
+        split_string = [int(x.translate(trans_num)) for x in date_string.split('/')]
+        return JalaliDate(split_string[0], split_string[1], split_string[2]).todate()
 
     def convert_date_to_string(self, datetime_object):
         format2 = '%Y-%m-%d'
@@ -90,7 +100,7 @@ class MakeReservation(View):
                     reserve.roominfo.add(room_info)
                     count += 1
 
-            email_text = 'محل اقامت شما به آدرس {} توسط {} {} برای تاریخ {} تا {} رزرو شده است. مقدار {} برای شما در تاریخ شرو واریز خواهد شد.'.format(
+            email_text = 'محل اقامت شما به آدرس {} توسط {} {} برای تاریخ {} تا {} رزرو شده است. مقدار {} برای شما در تاریخ شروع واریز خواهد شد.'.format(
                 room.accommodation.address, request.user.first_name, request.user.last_name,
                 self.convert_date_to_string(check_in), self.convert_date_to_string(check_out),
                 str(reserve.total_price * 0.95))
@@ -112,7 +122,7 @@ class MakeReservation(View):
             return redirect(url)
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator([login_required, user_is_confirmed], name='dispatch')
 class CancelReservation(View):
     def how_late(self, reservation):
         today = datetime.datetime.now()
@@ -165,7 +175,7 @@ class CancelReservation(View):
         return redirect('user_reserve')
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator([login_required, user_is_confirmed], name='dispatch')
 class PaymentView(View):
     template_name = 'bank.html'
 

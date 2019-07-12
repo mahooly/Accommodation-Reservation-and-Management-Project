@@ -1,5 +1,5 @@
 {% extends 'registration/user_dashboard.html' %}
-
+{% load jalali_tags %}
 {% block contents %}
     <div class="col-md-9 col-sm-9" dir="rtl">
         <section>
@@ -28,7 +28,7 @@
                         </tr>
                         <tr>
                             <th scope="row">تاریخ تولد:</th>
-                            <td>{{ user.birth_date }}</td>
+                            <td>{{ user.birth_date|to_jalali:'%y/%m/%d' }}</td>
                         </tr>
                         <tr>
                             <th scope="row">جنسیت:</th>

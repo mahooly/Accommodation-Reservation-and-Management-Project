@@ -21,15 +21,33 @@
                                     </div>
                                     <div class="col-md-2 col-sm-2 pull-right" dir="rtl">
                                         <div class="form-group">
-                                            <input type="text" class="form-control date" id="form-check-in"
+                                            <input type="text" class="form-control" id="form-check-in"
                                                    name="check_in" placeholder="تاریخ ورود">
+                                            <script>
+                                                $('#form-check-in').persianDatepicker({
+                                                    initialValue: false,
+                                                    format: 'YYYY/MM/DD',
+                                                    timePicker: {
+                                                        enabled: false
+                                                    }
+                                                });
+                                            </script>
                                         </div>
                                     </div>
                                     <div class="col-md-2 col-sm-2 pull-right" dir="rtl">
                                         <div class="form-group">
-                                            <input type="text" class="form-control date" id="form-check-out"
+                                            <input type="text" class="form-control jalali_date-date" id="form-check-out"
                                                    name="check_out"
                                                    placeholder="تاریخ خروج">
+                                            <script>
+                                                $('#form-check-out').persianDatepicker({
+                                                    initialValue: false,
+                                                    format: 'YYYY/MM/DD',
+                                                    timePicker: {
+                                                        enabled: false
+                                                    }
+                                                });
+                                            </script>
                                         </div>
                                     </div>
                                     <div class="col-md-2 col-sm-2">

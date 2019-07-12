@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'jalali_date',
     'registration',
     'accommodation',
     'admin_dashboard',
@@ -155,4 +156,22 @@ SUMMERNOTE_CONFIG = {
     'height': '600',
     'direction': 'rtl',
     'lang': 'fa-IR',
+}
+
+JALALI_DATE_DEFAULTS = {
+    'Strftime': {
+        'date': '%y/%m/%d',
+        'datetime': '%H:%M:%S _ %y/%m/%d',
+    },
+    'Static': {
+        'js': [
+            'admin/jquery.ui.datepicker.jalali/scripts/jquery-1.10.2.min.js',
+            'admin/js/django_jalali.min.js',
+        ],
+        'css': {
+            'all': [
+                'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css',
+            ]
+        }
+    },
 }

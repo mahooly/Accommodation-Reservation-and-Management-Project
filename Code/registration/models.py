@@ -9,21 +9,20 @@ class CustomUser(AbstractUser):
     birth_date = models.DateField(null=True)
     image = models.ImageField(upload_to='../media/profile_pics/', default='../media/profile_pics/no-picture.png')
     is_host = models.BooleanField(default=False)
+    is_confirmed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
 
-    def _get_age(self):
-        today = datetime.date.today()
+    @property
+    def age(self):
+        today = datetime.today()
         return today.year - self.birth_date.year - (
-                    (today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+                (today.month, today.day) < (self.birth_date.month, self.birth_date.day))
 
-    age = property(_get_age)
-
-    def _get_full_name(self):
+    @property
+    def _full_name(self):
         return self.first_name + ' ' + self.last_name
-
-    full_name = property(_get_full_name)
 
 
 class Host(models.Model):

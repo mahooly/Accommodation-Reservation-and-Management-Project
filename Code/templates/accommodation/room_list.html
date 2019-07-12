@@ -1,8 +1,110 @@
 {% extends 'base.html' %}
+{% load jalali_tags %}
+{% load accommodation_extras %}
 {% block main %}
-    <div class="main-content">
-            {% for room in object_list %}
-                <p>{{room.bed_type}} -- {{room.number_of_guests}}</p>
-            {%endfor%}
+    <div class="container">
+        <div class="main-content float-right" dir="rtl">
+            {% if messages %}
+                {% for message in messages %}
+                    {% ifequal message.tags 'success' %}
+                        <div class="alert alert-success" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                    {% ifequal message.tags 'error' %}
+                        <div class="alert alert-danger" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                {% endfor %}
+            {% endif %}
+            <div class="title">
+                <h1 class="inactive"><a href="{% url 'edit_accommodation' accommodation.pk %}">تغییر مشخصات اقامتگاه</a>
+                </h1>
+                <h1 class="active"><a href="{% url 'room_list' accommodation.pk %}">اتاق‌ها</a></h1>
+                <h1 class="inactive"><a href="{% url 'accommodation_reserve' accommodation.pk %}">تاریخچه رزرو</a></h1>
+                <h1 class="inactive"><a href="{% url 'accommodation_review' accommodation.pk %}">نظرات</a></h1>
+            </div>
+            <div class="info">
+                <strong style="display: inline-block">اقامتگاه:</strong>
+                <h2 class="no-margin" style="display: inline-block"><a
+                        href="{% url 'accommodation_detail' pk=accommodation.pk %}">&nbsp;{{ accommodation.title }}&nbsp;</a>
+                </h2>
+                <hr>
+            </div>
+            <div class="row">
+                <form class="labels-uppercase">
+                    <div class="row">
+                        <div class="col-md-3 pull-right">
+                            <div class="form-group">
+                                <label for="id_check_in_range">تاریخ ورود</label>
+                                <select class="framed width-100" name="check_in_range" id="id_check_in_range">
+                                    <option value="" selected="">هر تاریخی</option>
+                                    <option value="1">امروز</option>
+                                    <option value="2">۷ روز اخیر</option>
+                                    <option value="3">این ماه</option>
+                                    <option value="4">امسال</option>
+                                    <option value="5">دیروز</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3 pull-right">
+                            <div class="form-group">
+                                <label for="id_check_out_range">تاریخ خروج</label>
+                                <select class="framed width-100" name="check_out_range" id="id_check_out_range">
+                                    <option value="" selected="">هر تاریخی</option>
+                                    <option value="1">امروز</option>
+                                    <option value="2">۷ روز اخیر</option>
+                                    <option value="3">این ماه</option>
+                                    <option value="4">امسال</option>
+                                    <option value="5">دیروز</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-md-offset-4">
+                            <div class="form-group">
+                                <label class="invisible">Hidden label</label>
+                                <button type="submit"
+                                        class="btn btn-primary btn-rounded btn-framed form-control">فیلتر
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <hr>
+            </div>
+            <div class="reservations table-responsive">
+                <table class="table table-fixed-header">
+                    <thead class="header">
+                    <tr>
+                        <th>نوع اتاق</th>
+                        <th>تعداد اتاق</th>
+                        <th>تعداد مهمان</th>
+                        <th style="padding-right: 15px">قیمت (تومان)</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for room in object_list %}
+                        <tr class="reservation">
+                            <td style="padding-right: 25px">{% get_room_type room.bed_type %}</td>
+                            <td style="padding-right: 25px">{{ room.how_many }}</td>
+                            <td style="padding-right: 25px">{{ room.number_of_guests }}</td>
+                            <td style="padding-right: 25px">{{ room.price }}</td>
+                            <td>
+                                <div class="center">
+                                    <a href="#filter-advanced-search" class="link icon" data-toggle="collapse"
+                                       aria-expanded="false" aria-controls="filter-advanced-search"><i
+                                            class="fa fa-arrow-down"></i>مشاهده‌ی اتاق‌ها</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-{%endblock%}
+{% endblock %}

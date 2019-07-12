@@ -4,20 +4,25 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.generic import ListView
 from django.views.generic.detail import DetailView
+from khayyam import JalaliDate
 
 from Code.settings import DEFAULT_FROM_EMAIL
 from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm, FileFieldForm, \
     RoomSearchForm
 from .models import Accommodation, Amenity, Image, RoomInfo, Room
-from registration.decorators import user_is_host
+from registration.decorators import user_is_host, user_is_confirmed
 from .decorators import user_same_as_accommodation_user, user_host_or_superuser, user_same_as_image_user
 from datetime import timedelta
 from django.db.models import Q
-import datetime
+
+persian_numbers = '۱۲۳۴۵۶۷۸۹۰'
+english_numbers = '1234567890'
+trans_num = str.maketrans(persian_numbers, english_numbers)
 
 
-@method_decorator([login_required, user_is_host], name='dispatch')
+@method_decorator([login_required, user_is_confirmed, user_is_host], name='dispatch')
 class CreateAccommodationView(View):
     template_name = 'accommodation/create_accommodation.html'
 
@@ -61,9 +66,9 @@ class AccommodationDetailView(DetailView):
         rooms = Room.objects.filter(accommodation__id__exact=pk)
         form = RoomSearchForm(self.request.GET)
         stay_length = 0
-        rooms_fat = {}
+        rooms_count = {}
         for r in list(rooms):
-            rooms_fat[r] = range(1, r.how_many + 1)
+            rooms_count[r] = range(1, r.how_many + 1)
 
         if form.is_valid():
             check_in = form.cleaned_data.get('check_in', '')
@@ -85,7 +90,7 @@ class AccommodationDetailView(DetailView):
                 availableRoomInfos = availableRoomInfos2.filter(out_of_service=False)
                 rooms = rooms.filter(roominfo__in=availableRoomInfos)
                 for r in list(rooms):
-                    rooms_fat[r] = range(1, list(rooms).count(r) + 1)
+                    rooms_count[r] = range(1, list(rooms).count(r) + 1)
                 rooms = rooms.distinct()
                 stay_length = (check_out - check_in).days
 
@@ -99,21 +104,15 @@ class AccommodationDetailView(DetailView):
 
         context['rooms'] = rooms
         context['stay_length'] = stay_length
-        context['room_count'] = rooms_fat
+        context['room_count'] = rooms_count
         return context
 
     def convert_string_to_date(self, date_string):
-        return datetime.datetime.strptime(date_string, self.format)
-
-    def convert_date_to_string(self, datetime_object):
-        return datetime_object.strftime(self.format)
-
-    def convert_date_to_string_2(self, datetime_object):
-        format2 = '%Y-%m-%d'
-        return datetime_object.strftime(format2)
+        split_string = [int(x.translate(trans_num)) for x in date_string.split('/')]
+        return JalaliDate(split_string[0], split_string[1], split_string[2]).todate()
 
 
-@method_decorator([login_required, user_is_host, user_same_as_accommodation_user], name='dispatch')
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class CreateRoomView(View):
     def post(self, request, *args, **kwargs):
         form = RoomCreationForm(request.POST, request.FILES)
@@ -136,7 +135,7 @@ class CreateRoomView(View):
             return redirect(url)
 
 
-@method_decorator([login_required, user_host_or_superuser], name='dispatch')
+@method_decorator([login_required, user_is_confirmed, user_host_or_superuser], name='dispatch')
 class DeleteAccommodation(View):
     def get(self, request, *args, **kwargs):
         acc_pk = kwargs['pk']
@@ -156,7 +155,7 @@ class DeleteAccommodation(View):
             return redirect('/admin_dashboard/accommodations')
 
 
-@method_decorator([login_required, user_is_host, user_same_as_accommodation_user], name='dispatch')
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class EditAccommodation(View):
     template_name = 'accommodation/edit_accommodation.html'
 
@@ -209,7 +208,7 @@ class EditAccommodation(View):
                       {'form': form, 'image_form': image_form, 'amenities': amenities})
 
 
-@method_decorator([login_required, user_is_host, user_same_as_image_user], name='dispatch')
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_image_user], name='dispatch')
 class DeleteImage(View):
     def get(self, request, *args, **kwargs):
         img_pk = kwargs['pk']
@@ -221,7 +220,7 @@ class DeleteImage(View):
         return redirect(url)
 
 
-@method_decorator([login_required, user_is_host], name='dispatch')
+@method_decorator([login_required, user_is_confirmed, user_is_host], name='dispatch')
 class CreateAmenityView(View):
     def post(self, request, *args, **kwargs):
         form = AmenityForm(request.POST)
@@ -231,3 +230,16 @@ class CreateAmenityView(View):
         else:
             messages.error(request, 'در اضافه کردن امکانات مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
         return redirect('/create_accommodation/')
+
+
+class RoomListView(ListView):
+    template_name = 'accommodation/room_list.html'
+
+    def get_queryset(self):
+        return Room.objects.filter(accommodation__id=self.kwargs['pk'])
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(RoomListView, self).get_context_data(**kwargs)
+        accommodation = get_object_or_404(Accommodation, pk=self.kwargs['pk'])
+        context['accommodation'] = accommodation
+        return context

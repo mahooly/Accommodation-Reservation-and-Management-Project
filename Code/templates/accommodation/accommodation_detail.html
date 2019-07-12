@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load accommodation_extras %}
+{% load jalali_tags %}
 {% load staticfiles %}
 
 {% block main %}
@@ -233,8 +234,17 @@
                                     <div class="col-md-3 pull-right">
                                         <div class="form-group">
                                             <label for="form-check-in">تاریخ ورود</label>
-                                            <input type="text" class="form-control date" id="form-check-in"
+                                            <input type="text" class="form-control" id="form-check-in"
                                                    name="check_in" placeholder="تاریخ ورود" value="{{ check_in }}">
+                                            <script>
+                                                $('#form-check-in').persianDatepicker({
+                                                    initialValue: false,
+                                                    format: 'YYYY/MM/DD',
+                                                    timePicker: {
+                                                        enabled: false
+                                                    }
+                                                });
+                                            </script>
                                         </div>
                                     </div>
                                     <div class="col-md-3 pull-right">
@@ -243,6 +253,15 @@
                                             <input type="text" class="form-control date"
                                                    id="form-check-out"
                                                    name="check_out" placeholder="تاریخ خروج" value="{{ check_out }}">
+                                            <script>
+                                                $('#form-check-out').persianDatepicker({
+                                                    initialValue: false,
+                                                    format: 'YYYY/MM/DD',
+                                                    timePicker: {
+                                                        enabled: false
+                                                    }
+                                                });
+                                            </script>
                                         </div>
                                     </div>
                                     <div class="col-md-3 pull-right">
@@ -471,7 +490,7 @@
                                         <div class="col-md-3 pull-right">
                                             <div style="margin-right: 85px">
                                                 <aside class="name">{{ review.user.full_name }}</aside>
-                                                <aside class="date">{{ review.creation_date }}</aside>
+                                                <aside class="date">{{ review.creation_date|to_jalali:'%y/%m/%d' }}</aside>
                                             </div>
 
                                         </div>

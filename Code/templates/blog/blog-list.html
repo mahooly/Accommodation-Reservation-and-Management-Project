@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load jalali_tags %}
 {% block main %}
 
     <div class="container">
@@ -26,7 +27,8 @@
                             <header dir="rtl"><a href="{% url 'blog_detail' post.id %}"><h2>{{ post.title }}</h2></a>
                             </header>
                             <figure class="meta">
-                                <a href="#" class="link icon" dir="rtl"><i class="fa fa-calendar"></i>{{ post.date }}
+                                <a href="#" class="link icon" dir="rtl"><i
+                                        class="fa fa-calendar"></i>{{ post.date|to_jalali:'%y/%m/%d' }}
                                 </a>
                                 <a href="{% url 'profile' post.owner.id %}"
                                    class="link icon"><i class="fa fa-user"></i>{{ post.owner.username }}</a>
