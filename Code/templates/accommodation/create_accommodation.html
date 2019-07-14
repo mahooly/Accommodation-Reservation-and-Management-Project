@@ -3,7 +3,7 @@
 {% block main %}
     <div class="container">
         <div class="main-content float-right" dir="rtl">
-            <form class="form-submit labels-uppercase" id="form-submit" enctype="multipart/form-data" method="post">
+            <form class="form-submit labels-uppercase" enctype="multipart/form-data" method="post">
                 {% csrf_token %}
                 {% if form.errors %}
                     {% for field in form %}
@@ -101,12 +101,48 @@
                             </div>
                             <div class="form-group text-center">
                                 <label>محل روی نقشه</label>
-                                <div class="map height-300 box" id="main-map"></div>
+                                <div id="map"></div>
                             </div>
                             <div class="form-group hidden">
-                                <input type="text" class="form-control" id="latitude" name="latitude" hidden="">
-                                <input type="text" class="form-control" id="longitude" name="longitude" hidden="">
+                                <input type="hidden" class="form-control" id="latitude" name="lat">
+                                <input type="hidden" class="form-control" id="longitude" name="long">
                             </div>
+                            <script>
+                                mapboxgl.accessToken = 'pk.eyJ1IjoibWFob29seSIsImEiOiJjankxbnY2OXAwZXJvM25wY2pxb2cxaml2In0.pPibyeH8fp9snLodRu9QQg';
+                                if (navigator.geolocation) {
+                                    navigator.geolocation.getCurrentPosition(initMap);
+                                }
+
+                                function initMap(position) {
+                                    var map = new mapboxgl.Map({
+                                        container: 'map',
+                                        style: 'mapbox://styles/mapbox/streets-v11',
+                                        center: [position.coords.longitude, position.coords.latitude],
+                                        zoom: 15,
+                                        hash: true
+                                    });
+                                    mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.1.0/mapbox-gl-rtl-text.js');
+                                    map.addControl(new MapboxLanguage({
+                                        defaultLanguage: 'ar'
+                                    }));
+
+                                    var marker = new mapboxgl.Marker({
+                                        draggable: true,
+                                        color: '#488f3e'
+                                    }).setLngLat({
+                                        lng: position.coords.longitude,
+                                        lat: position.coords.latitude
+                                    }).addTo(map);
+
+                                    function onDragEnd() {
+                                        var lngLat = marker.getLngLat();
+                                        $('#latitude').val(lngLat.lat);
+                                        $('#longitude').val(lngLat.lng);
+                                    }
+
+                                    marker.on('dragend', onDragEnd);
+                                }
+                            </script>
                         </div>
                         <div class="col-md-5 pull-right">
                             <h2>راه‌های ارتباطی</h2>

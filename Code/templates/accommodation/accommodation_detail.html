@@ -193,10 +193,34 @@
                                     {% endfor %}
                                 </ul>
                             </section>
-                            <section id="map">
+                            <section>
                                 <h2>نقشه</h2>
-                                <div id="main-map" class="map height-300 box"></div>
+                                <div id="map"></div>
                             </section>
+                            <script>
+                                mapboxgl.accessToken = 'pk.eyJ1IjoibWFob29seSIsImEiOiJjankxbnY2OXAwZXJvM25wY2pxb2cxaml2In0.pPibyeH8fp9snLodRu9QQg';
+
+                                var map = new mapboxgl.Map({
+                                    container: 'map',
+                                    style: 'mapbox://styles/mapbox/streets-v11',
+                                    center: [{{ accommodation.longitude }}, {{ accommodation.latitude }}],
+                                    zoom: 15,
+                                    hash: true
+                                });
+                                mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.1.0/mapbox-gl-rtl-text.js');
+                                map.addControl(new MapboxLanguage({
+                                    defaultLanguage: 'ar'
+                                }));
+
+                                var marker = new mapboxgl.Marker({
+                                    draggable: true,
+                                    color: '#488f3e'
+                                }).setLngLat({
+                                    lng: {{ accommodation.longitude }},
+                                    lat: {{ accommodation.latitude }}
+                                }).addTo(map);
+
+                            </script>
                         </div>
                         <div class="col-md-4 pull-right">
                             <div class="sidebar">

@@ -4,10 +4,13 @@ from .models import Accommodation, Amenity, Room
 
 
 class AccommodationCreationForm(forms.ModelForm):
+    lat = forms.CharField(max_length=20)
+    long = forms.CharField(max_length=20)
+
     class Meta:
         model = Accommodation
         fields = ['accommodation_type', 'title', 'description', 'province', 'city', 'address', 'email',
-                  'phone', 'amenity']
+                  'phone', 'amenity', 'lat', 'long']
 
     def __init__(self, *args, **kwargs):
         super(AccommodationCreationForm, self).__init__(*args, **kwargs)

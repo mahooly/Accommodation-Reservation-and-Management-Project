@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'assets/css/ion.rangeSlider.css' %}"/>
     <link rel="stylesheet" href="{% static 'assets/css/calendar.css' %}"/>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.css' rel='stylesheet'/>
     {% block extra_css %}
     {% endblock %}
     <script type="text/javascript" src="{% static 'assets/js/jquery-2.2.1.min.js' %}"></script>
@@ -23,7 +24,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
     <script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
-
+    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v1.1.0/mapbox-gl.js'></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-language/v0.10.1/mapbox-gl-language.js'></script>
     <title>مکان</title>
 
 </head>
@@ -205,17 +207,4 @@
 <!--[if lte IE 9]>
 <script src="assets/js/ie.js"></script>
 <![endif]-->
-<script>
-    function initMap() {
-        var iran = {lat: 32.4279, lng: 53.6880};
-        var map = new google.maps.Map(
-            document.getElementById('main-map'), {zoom: 4, center: iran});
-        var marker = new google.maps.Marker({position: iran, map: map});
-    }
-</script>
-<script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDaZ-c6dTmF0hbnN-BfLYsRb7Ztc_fenfk&callback=initMap">
-</script>
-<script type="text/javascript" src="{% static 'assets/js/richmarker-compiled.js' %}"></script>
-<script type="text/javascript" src="{% static 'assets/js/infobox.js' %}"></script>
 </body>
