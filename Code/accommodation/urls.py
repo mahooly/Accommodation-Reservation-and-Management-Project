@@ -1,5 +1,4 @@
 from django.urls import path
-from django.views.generic import TemplateView
 
 from accommodation import views
 
@@ -12,5 +11,4 @@ urlpatterns = [
     path('accommodation/<int:pk>/edit/', views.EditAccommodation.as_view(), name='edit_accommodation'),
     path('image/<int:pk>/', views.DeleteImage.as_view(), name='delete_image'),
     path('accommodation/<int:pk>/rooms', views.RoomListView.as_view(), name='room_list'),
-    path('map/', TemplateView.as_view(template_name='accommodation/map.html'), name='map'),
 ]
