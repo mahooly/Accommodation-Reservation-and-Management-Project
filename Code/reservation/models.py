@@ -10,6 +10,9 @@ class Reservation(models.Model):
     check_out = models.DateField()
     is_canceled = models.BooleanField(default=False)
 
+    class Meta:
+        ordering = ['-check_out']
+
     @property
     def is_confirmed(self):
         try:

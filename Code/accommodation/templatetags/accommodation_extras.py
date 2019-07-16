@@ -11,3 +11,8 @@ def get_room_type(bed_type):
         return 'اتاق دابل'
     else:
         return 'اتاق تویین'
+
+
+@register.filter
+def verbose_name(obj):
+    return obj._meta.verbose_name

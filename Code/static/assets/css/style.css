@@ -5984,3 +5984,18 @@ body::before {
 .none {
     display: none;
 }
+
+.mapboxgl-popup {
+    max-width: 400px;
+    font-family: 'BKoodakBold';
+    direction: rtl;
+    text-align: right !important;
+}
+
+.hidden-row {
+    display: none;
+}
+
+.room-list {
+    background-color: white;
+}

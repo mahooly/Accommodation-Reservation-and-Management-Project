@@ -74,7 +74,10 @@ class MakeReservation(View):
         availableRoomInfos2 = availableRoomInfos1.exclude(
             Q(reservation__check_out__range=(check_in + datetime.timedelta(days=1), check_out)),
             Q(reservation__is_canceled=False))
-        availableRoomInfos = availableRoomInfos2.filter(out_of_service=False, room=room)
+        availableRoomInfos = availableRoomInfos2.exclude(
+            Q(roomoutofservice__from_date__range=(check_in, check_out - datetime.timedelta(days=1))),
+            Q(roomoutofservice__to_date__range=(check_in + datetime.timedelta(days=1), check_out)))
+        availableRoomInfos = availableRoomInfos.filter(room=room)
         return availableRoomInfos
 
     def post(self, request, *args, **kwargs):
@@ -109,7 +112,7 @@ class MakeReservation(View):
                 email_text,
                 DEFAULT_FROM_EMAIL,
                 [room.accommodation.owner.user.email],
-                fail_silently=False,
+                fail_silently=True,
             )
             messages.success(request, 'رزرو شما با موفقیت ثبت شد.')
             url = '/payment/' + str(reserve.pk)

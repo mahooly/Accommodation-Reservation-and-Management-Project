@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Accommodation, Amenity, Room
+from .models import Accommodation, Amenity, Room, RoomInfo
 
 
 class AccommodationCreationForm(forms.ModelForm):
@@ -41,7 +41,7 @@ class AccommodationChangeForm(forms.ModelForm):
     class Meta:
         model = Accommodation
         fields = ['accommodation_type', 'title', 'description', 'address', 'email',
-                  'phone', 'amenity']
+                  'phone', 'amenity', 'latitude', 'longitude']
 
     def __init__(self, *args, **kwargs):
         super(AccommodationChangeForm, self).__init__(*args, **kwargs)
@@ -57,3 +57,9 @@ class RoomSearchForm(forms.Form):
     check_in = forms.CharField(required=False)
     check_out = forms.CharField(required=False)
     price = forms.CharField(required=False)
+
+
+class RoomInfoForm(forms.ModelForm):
+    class Meta:
+        model = RoomInfo
+        exclude = ('room',)
