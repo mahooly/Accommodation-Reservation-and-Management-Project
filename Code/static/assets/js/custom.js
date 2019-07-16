@@ -40,6 +40,9 @@ $(document).ready(function ($) {
         });
     }
 
+    $('.mapboxgl-canvas').attr('style', function (i, style) {
+        return style.replace(/position[^;]+;?/g, '');
+    });
 //  iCheck -------------------------------------------------------------------------------------------------------------
 
     if ($("input[type=checkbox]").length) {
@@ -336,13 +339,6 @@ $(document).ready(function ($) {
         $($(this).attr("data-switch")).toggleClass("switch");
     });
 
-//  Enable image previews in multi file input --------------------------------------------------------------------------
-
-    if ($("input[type=file].with-preview").length) {
-        $("input.file-upload-input").MultiFile({
-            list: ".file-upload-previews"
-        });
-    }
 
 //  Enable image preview in file upload with single image --------------------------------------------------------------
 

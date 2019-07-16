@@ -23,6 +23,8 @@ class Accommodation(models.Model):
     address = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
+    latitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
     amenity = models.ManyToManyField(Amenity)
     is_authenticated = models.BooleanField(default=False)
 

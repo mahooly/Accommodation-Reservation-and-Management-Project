@@ -39,6 +39,8 @@ class CreateAccommodationView(View):
             owner = request.user.host
             house = form.save(commit=False)
             house.owner = owner
+            house.latitude = float(form.cleaned_data['lat'])
+            house.longitude = float(form.cleaned_data['long'])
             house.save()
             form.save_m2m()
             files = request.FILES.getlist('image')
