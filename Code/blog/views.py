@@ -12,7 +12,8 @@ from .forms import BlogCreationForm, CommentCreationForm
 from django.shortcuts import get_object_or_404, redirect
 from registration.models import CustomUser
 from .decorators import user_same_as_comment_user_or_admin, user_same_as_dashboard_user
-
+from django.db.models import Q
+from .forms import BlogSearchForm
 
 class BlogListView(ListView):
     template_name = "blog/blog-list.html"
@@ -21,11 +22,27 @@ class BlogListView(ListView):
     ordering = '-date'
 
     def get_queryset(self):
+        form = BlogSearchForm(self.request.GET)
+        posts = Post.objects.all()
+        print("I am here")
         if 'uid' in self.kwargs.keys():
             user = get_object_or_404(CustomUser, id=self.kwargs['uid'])
-            return Post.objects.filter(owner=user)
-        else:
-            return Post.objects.all()
+            posts = Post.objects.filter(owner=user)
+        if 'makan' in self.request.GET:
+            print("hoora!!!")
+            if form.is_valid():
+                makan = form.cleaned_data.get('makan')
+                if makan != '':
+                    posts = posts.filter(Q(city=makan) | Q(province=makan))
+        if 'keyword' in self.request.GET:
+            if form.is_valid():
+                keyword = form.cleaned_data.get('keyword')
+                if keyword != '':
+                    posts = posts.filter(Q(title__contains=keyword) | Q(owner__first_name=keyword) | Q(owner__last_name=keyword)
+                                     | Q(description__contains=keyword))
+
+
+        return posts
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -54,10 +71,43 @@ class BlogCreateView(View):
             return render(request, self.template_name, {'form': form})
 
 
+class BlogEditView(View):
+    template_name = "blog/create_blog.html"
+
+    def get(self, request, uid, blog_id):
+        flag = (CustomUser.objects.get(post__pk=blog_id) == self.request.user)
+        if flag == False:
+            return redirect('/')
+        blog = Post.objects.get(pk=int(blog_id))
+        initial = {'title':blog.title, 'description':blog.description, 'province':blog.province,
+                   'city':blog.city, 'image':blog.image}
+        form = BlogCreationForm(initial=initial)
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, uid, blog_id):
+        blog = Post.objects.get(pk=int(blog_id))
+        form = BlogCreationForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            blog.title = post.title
+            blog.description = post.description
+            blog.province = post.province
+            blog.city = post.city
+            blog.image = post.image
+            blog.save()
+            url = '/blog/post/' + str(blog.id)
+            return redirect(url)
+        else:
+            return render(request, self.template_name, {'form': form})
+
 class BlogDetailView(DetailView):
     template_name = "blog/blog_detail.html"
     model = Post
-
+    def get_context_data(self, **kwargs):
+        context = super(BlogDetailView, self).get_context_data(**kwargs)
+        context['flag'] =  (CustomUser.objects.get(post__pk=self.kwargs['pk']) == self.request.user)
+        context['uid'] = self.request.user.pk
+        return context
 
 @method_decorator([login_required, user_is_confirmed], name='dispatch')
 class CreateCommentView(View):
