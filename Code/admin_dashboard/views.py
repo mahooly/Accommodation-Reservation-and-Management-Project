@@ -2,7 +2,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.db.models.functions import TruncMonth
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -31,6 +31,8 @@ class AdminDashboard(View):
         reservations_month = list(
             set([JalaliDate(x).strftime('%B') for x in list(reservations.values_list('month', flat=True))]))
         reservations_count = list(reservations.values_list('count', flat=True))
+        daily_earning = Transaction.objects.all().values('creation_date').annotate(daily_earn=Sum('total_price'))
+        print(daily_earning)
         earnings = [[datetime.combine(x.creation_date, datetime.min.time()).timestamp() * 1000, x.total_price * 0.05]
                     for x in
                     Transaction.objects.all()]
