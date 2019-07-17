@@ -30,3 +30,4 @@ class Reservation(models.Model):
     @property
     def accommodation(self):
         return self.roominfo.first().room.accommodation
+
