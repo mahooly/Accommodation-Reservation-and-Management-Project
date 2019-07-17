@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_filters',
     'django_summernote',
     'reservation',
+    'payment',
 ]
 
 MIDDLEWARE = [
