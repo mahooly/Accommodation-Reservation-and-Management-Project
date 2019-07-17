@@ -1,7 +1,7 @@
 from django.db import models
 from registration.models import CustomUser
 from accommodation.models import RoomInfo, Amenity, Room
-
+import datetime
 
 class Reservation(models.Model):
     reserver = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
