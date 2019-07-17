@@ -11,6 +11,7 @@ from registration.decorators import user_is_host, user_is_confirmed
 from reservation.filters import ReservationFilter
 from .forms import MakeReservationForm
 from .models import Reservation
+from payment.models import Transaction
 from accommodation.models import Room, RoomInfo, Accommodation
 from Code.settings import DEFAULT_FROM_EMAIL
 from django.core.mail import send_mail
@@ -132,6 +133,9 @@ class CancelReservation(View):
         if due > 0: text += 'مقدار {} به حساب شما واریز خواهد شد.'.format(str(due))
         return text
 
+    def create_opposite_transaction(self, reservation):
+        Transaction.objects.create(is_successful=True, reservation=reservation, coefficient=-1)
+
     def get(self, request, *args, **kwargs):
         res_id = kwargs['resid']
         reservation = get_object_or_404(Reservation, id=res_id)
@@ -152,5 +156,8 @@ class CancelReservation(View):
             [guest_email],
             fail_silently=False,
         )
+
+
+        self.create_opposite_transaction(reservation)
         messages.success(request, 'لغو رزرو با موفقیت انجام شد.')
         return redirect('user_reserve')
