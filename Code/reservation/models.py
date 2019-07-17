@@ -1,12 +1,6 @@
 from django.db import models
 from registration.models import CustomUser
 from accommodation.models import RoomInfo, Amenity, Room
-<<<<<<< HEAD
-import datetime
-=======
-# from payment.models import Transaction
-
->>>>>>> e7a8c008fc222a518460401edca60daacda0d144
 
 class Reservation(models.Model):
     reserver = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
