@@ -24,6 +24,15 @@ decorators = [login_required, user_is_superuser]
 @method_decorator(decorators, name='dispatch')
 class AdminDashboard(View):
     template_name = 'admin_dashboard/admin_dashboard.html'
+    def get_daily_earn(self):
+        all_transactions = Transaction.objects.all()
+        daily_earn = {}
+        for transaction in all_transactions:
+            if transaction.creation_date in daily_earn:
+                daily_earn[transaction.creation_date] += transaction.total_price
+            else:
+                daily_earn[transaction.creation_date] = transaction.total_price
+        return daily_earn
 
     def get(self, request, *args, **kwargs):
         reservations = Reservation.objects.annotate(month=TruncMonth('transaction__creation_date')).values(
@@ -31,11 +40,10 @@ class AdminDashboard(View):
         reservations_month = list(
             set([JalaliDate(x).strftime('%B') for x in list(reservations.values_list('month', flat=True))]))
         reservations_count = list(reservations.values_list('count', flat=True))
-        daily_earning = Transaction.objects.all().values('creation_date').annotate(daily_earn=Sum('total_price'))
-        print(daily_earning)
         earnings = [[datetime.combine(x.creation_date, datetime.min.time()).timestamp() * 1000, x.total_price * 0.05]
                     for x in
                     Transaction.objects.all()]
+        print(self.get_daily_earn())
         all_reservations_count = Reservation.objects.count()
         all_cancelled_reservations_count = Reservation.objects.filter(is_canceled=True).count()
         return render(request, self.template_name,
