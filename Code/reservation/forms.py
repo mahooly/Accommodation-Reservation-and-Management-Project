@@ -7,5 +7,3 @@ class MakeReservationForm(forms.Form):
     how_many = forms.CharField(max_length=1)
 
 
-class PaymentForm(forms.Form):
-    success = forms.CharField(max_length=10)

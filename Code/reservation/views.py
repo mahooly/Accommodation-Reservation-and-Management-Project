@@ -11,8 +11,9 @@ from khayyam import JalaliDate
 from accommodation.decorators import user_same_as_accommodation_user
 from registration.decorators import user_is_host, user_is_confirmed
 from reservation.filters import ReservationFilter
-from .forms import MakeReservationForm, PaymentForm
-from .models import Reservation, Transaction
+from .forms import MakeReservationForm
+from .models import Reservation
+from payment.models import Transaction
 from accommodation.models import Room, RoomInfo, Accommodation
 from Code.settings import DEFAULT_FROM_EMAIL
 from django.core.mail import send_mail
@@ -177,34 +178,3 @@ class CancelReservation(View):
         messages.success(request, 'لغو رزرو با موفقیت انجام شد.')
         return redirect('user_reserve')
 
-
-@method_decorator([login_required, user_is_confirmed], name='dispatch')
-class PaymentView(View):
-    template_name = 'bank.html'
-
-    def get(self, request, *args, **kwargs):
-        res_id = kwargs['resid']
-        amount = get_object_or_404(Reservation, id=res_id)
-        amount = amount.total_price
-        return render(request, self.template_name, {'amount': amount, 'reservation_id': res_id})
-
-    def post(self, request, *args, **kwargs):
-        reservation_id = kwargs['resid']
-        form = PaymentForm(request.POST)
-        success = ''
-        if form.is_valid():
-            success = form.cleaned_data.get('success')
-            if success == 'success':
-                success = True
-            else:
-                success = False
-            reservation = get_object_or_404(Reservation, pk=reservation_id)
-            Transaction.objects.create(is_successful=success, reservation=reservation)
-            acc_id = reservation.roominfo.first().room.accommodation.pk
-            if success:
-                messages.success(request, 'پرداخت شما با موفقیت انجام شد.')
-                return redirect('user_reserve')
-            else:
-                messages.error(request, 'پرداخت شما با موفقیت انجام نشد. دوباره تلاش کنید.')
-                url = '/accommodation/' + str(acc_id)
-                return redirect(url)
