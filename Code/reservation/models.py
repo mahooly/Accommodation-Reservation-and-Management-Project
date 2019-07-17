@@ -1,7 +1,6 @@
 from django.db import models
 from registration.models import CustomUser
 from accommodation.models import RoomInfo, Amenity, Room
-# from payment.models import Transaction
 
 
 class Reservation(models.Model):
@@ -31,4 +30,3 @@ class Reservation(models.Model):
     @property
     def accommodation(self):
         return self.roominfo.first().room.accommodation
-

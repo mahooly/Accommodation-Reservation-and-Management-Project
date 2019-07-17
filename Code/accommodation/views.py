@@ -1,4 +1,3 @@
-import json
 from itertools import chain
 
 from django.contrib import messages
@@ -10,7 +9,6 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import ListView
 from django.views.generic.detail import DetailView
-from khayyam import JalaliDate
 
 from Code.settings import DEFAULT_FROM_EMAIL
 from reservation.models import Reservation
@@ -19,12 +17,9 @@ from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, Acc
 from .models import Accommodation, Amenity, Image, RoomInfo, Room, TouristAttraction, RoomOutOfService
 from registration.decorators import user_is_host, user_is_confirmed
 from .decorators import user_same_as_accommodation_user, user_host_or_superuser, user_same_as_image_user
-from datetime import timedelta, date
+from datetime import date
 from django.db.models import Q
-
-persian_numbers = '۱۲۳۴۵۶۷۸۹۰'
-english_numbers = '1234567890'
-trans_num = str.maketrans(persian_numbers, english_numbers)
+from utils.utils import convert_string_to_date
 
 
 @method_decorator([login_required, user_is_confirmed, user_is_host], name='dispatch')
@@ -60,14 +55,13 @@ class CreateAccommodationView(View):
 
 class AccommodationDetailView(DetailView):
     model = Accommodation
-    format = '%m/%d/%Y'
     template_name = 'accommodation/accommodation_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         form = RoomCreationForm()
         context['form'] = form
-        attractions = self.get_tourist_json(TouristAttraction.objects.all())
+        attractions = TouristAttraction.objects.get_json()
         pk = self.kwargs.get('pk')
         rooms = Room.objects.filter(accommodation__id__exact=pk)
         form = RoomSearchForm(self.request.GET)
@@ -84,19 +78,10 @@ class AccommodationDetailView(DetailView):
             price = form.cleaned_data.get('price', '')
 
             if check_in:
-                check_in = self.convert_string_to_date(check_in)
-                check_out = self.convert_string_to_date(check_out)
-
-                availableRoomInfos1 = RoomInfo.objects.all().exclude(
-                    Q(reservation__check_in__range=(check_in, check_out - timedelta(days=1))),
-                    Q(reservation__is_canceled=False))
-                availableRoomInfos2 = availableRoomInfos1.exclude(
-                    Q(reservation__check_out__range=(check_in + timedelta(days=1), check_out)),
-                    Q(reservation__is_canceled=False))
-                availableRoomInfos = availableRoomInfos2.exclude(
-                    Q(roomoutofservice__from_date__range=(check_in, check_out - timedelta(days=1))),
-                    Q(roomoutofservice__to_date__range=(check_in + timedelta(days=1), check_out)))
-                rooms = rooms.filter(roominfo__in=availableRoomInfos)
+                check_in = convert_string_to_date(check_in)
+                check_out = convert_string_to_date(check_out)
+                available_room_infos = RoomInfo.objects.get_available_room_infos(check_in, check_out)
+                rooms = rooms.filter(roominfo__in=available_room_infos)
                 for r in list(rooms):
                     rooms_count[r] = range(1, list(rooms).count(r) + 1)
                 rooms = rooms.distinct()
@@ -115,22 +100,6 @@ class AccommodationDetailView(DetailView):
         context['room_count'] = rooms_count
         context['attractions'] = attractions
         return context
-
-    def convert_string_to_date(self, date_string):
-        split_string = [int(x.translate(trans_num)) for x in date_string.split('/')]
-        return JalaliDate(split_string[0], split_string[1], split_string[2]).todate()
-
-    def get_tourist_json(self, attractions):
-        features = []
-        for attraction in attractions:
-            features.append(
-                {'type': 'Feature', 'properties': {'icon': attraction.get_attraction_type_display(),
-                                                   'description': '<strong class="map-popup-title">{}</strong>{}'.format(
-                                                       attraction.name,
-                                                       attraction.description)},
-                 'geometry': {'type': 'Point',
-                              'coordinates': [float(attraction.longitude), float(attraction.latitude)]}})
-        return json.dumps(features)
 
 
 @method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
@@ -333,14 +302,14 @@ class RoomInfoStatsView(ListView):
             room_report = Reservation.objects.filter(roominfo__number=room_number)
             service_report = RoomOutOfService.objects.filter(room_info__number=room_number)
         if from_date:
-            from_date = self.convert_string_to_date(from_date)
+            from_date = convert_string_to_date(from_date)
             room_report = room_report.filter(
                 Q(check_in__gt=from_date) |
                 Q(check_out__gt=from_date))
             service_report = service_report.filter(Q(from_date__gt=from_date) |
                                                    Q(to_date__gt=from_date))
         if to_date:
-            to_date = self.convert_string_to_date(to_date)
+            to_date = convert_string_to_date(to_date)
             room_report = room_report.filter(Q(check_in__lt=to_date) |
                                              Q(check_out__lt=to_date))
             service_report = service_report.filter(Q(from_date__lt=to_date) |
@@ -358,7 +327,3 @@ class RoomInfoStatsView(ListView):
         context['reserved'] = reserved
         context['out_of_service'] = out_of_service
         return context
-
-    def convert_string_to_date(self, date_string):
-        split_string = [int(x.translate(trans_num)) for x in date_string.split('/')]
-        return JalaliDate(split_string[0], split_string[1], split_string[2]).todate()

@@ -1,12 +1,10 @@
 import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView
-from khayyam import JalaliDate
 
 from accommodation.decorators import user_same_as_accommodation_user
 from registration.decorators import user_is_host, user_is_confirmed
@@ -16,10 +14,7 @@ from .models import Reservation
 from accommodation.models import Room, RoomInfo, Accommodation
 from Code.settings import DEFAULT_FROM_EMAIL
 from django.core.mail import send_mail
-
-persian_numbers = '۱۲۳۴۵۶۷۸۹۰'
-english_numbers = '1234567890'
-trans_num = str.maketrans(persian_numbers, english_numbers)
+from utils.utils import convert_string_to_date
 
 
 @method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
@@ -58,27 +53,10 @@ class UserReservationList(ListView):
 class MakeReservation(View):
     format = '%m/%d/%Y'
 
-    def convert_string_to_date(self, date_string):
-        split_string = [int(x.translate(trans_num)) for x in date_string.split('/')]
-        return JalaliDate(split_string[0], split_string[1], split_string[2]).todate()
-
-    def convert_date_to_string(self, datetime_object):
-        format2 = '%Y-%m-%d'
-        return datetime_object.strftime(format2)
-
     def get_available_room_infos(self, room, check_in, check_out):
-
-        availableRoomInfos1 = RoomInfo.objects.all().exclude(
-            Q(reservation__check_in__range=(check_in, check_out - datetime.timedelta(days=1))),
-            Q(reservation__is_canceled=False))
-        availableRoomInfos2 = availableRoomInfos1.exclude(
-            Q(reservation__check_out__range=(check_in + datetime.timedelta(days=1), check_out)),
-            Q(reservation__is_canceled=False))
-        availableRoomInfos = availableRoomInfos2.exclude(
-            Q(roomoutofservice__from_date__range=(check_in, check_out - datetime.timedelta(days=1))),
-            Q(roomoutofservice__to_date__range=(check_in + datetime.timedelta(days=1), check_out)))
-        availableRoomInfos = availableRoomInfos.filter(room=room)
-        return availableRoomInfos
+        available_room_infos = RoomInfo.objects.get_available_room_infos(check_in, check_out)
+        available_room_infos = available_room_infos.filter(room=room)
+        return available_room_infos
 
     def post(self, request, *args, **kwargs):
         form = MakeReservationForm(request.POST)
@@ -86,8 +64,8 @@ class MakeReservation(View):
         room = get_object_or_404(Room, pk=room_id)
         if form.is_valid():
             how_many = int(form.cleaned_data.get('how_many'))
-            check_in = self.convert_string_to_date(form.cleaned_data.get('check_in'))
-            check_out = self.convert_string_to_date(form.cleaned_data.get('check_out'))
+            check_in = convert_string_to_date(form.cleaned_data.get('check_in'))
+            check_out = convert_string_to_date(form.cleaned_data.get('check_out'))
             available_room_infos = self.get_available_room_infos(room, check_in, check_out)
             if len(available_room_infos) < how_many:
                 messages.error(request,
