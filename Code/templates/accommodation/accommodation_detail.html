@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load accommodation_extras %}
+{% load jalali_tags %}
 {% load staticfiles %}
 
 {% block main %}
@@ -123,16 +124,6 @@
                         </div>
                         <div class="right">
                             <a href="#map" class="icon scroll"><i class="fa fa-map-marker"></i>روی نقشه ببینید</a>
-                            {% if request.user.is_authenticated %}
-                                {% ifequal request.user.username accommodation.owner.user.username %}
-                                    <a href="" data-toggle="modal" data-tab="true"
-                                       data-target="#add-room-modal" class="btn btn-primary btn-rounded scroll">اضافه
-                                        کردن
-                                        اتاق</a>
-                                    <a href="{% url 'edit_accommodation' pk=accommodation.pk %}"
-                                       class="btn btn-primary btn-rounded scroll">تغییر مشخصات اقامتگاه</a>
-                                {% endifequal %}
-                            {% endif %}
                         </div>
                     </div>
 
@@ -192,10 +183,89 @@
                                     {% endfor %}
                                 </ul>
                             </section>
-                            <section id="map">
+                            <section>
                                 <h2>نقشه</h2>
-                                <div id="main-map" class="map height-300 box"></div>
+                                <div id="acc-map"></div>
                             </section>
+                            <script>
+                                mapboxgl.accessToken = 'pk.eyJ1IjoibWFob29seSIsImEiOiJjankxbnY2OXAwZXJvM25wY2pxb2cxaml2In0.pPibyeH8fp9snLodRu9QQg';
+
+                                var map = new mapboxgl.Map({
+                                    container: 'acc-map',
+                                    style: 'mapbox://styles/mapbox/streets-v11',
+                                    center: [{{ accommodation.longitude }}, {{ accommodation.latitude }}],
+                                    zoom: 15,
+                                    hash: true
+                                });
+                                mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.1.0/mapbox-gl-rtl-text.js');
+                                map.addControl(new MapboxLanguage({
+                                    defaultLanguage: 'ar'
+                                }));
+
+                                var acc_location = [{{ accommodation.longitude }}, {{ accommodation.latitude }}];
+                                var marker = new mapboxgl.Marker({
+                                    color: '#488f3e'
+                                }).setLngLat({
+                                    lng: {{ accommodation.longitude }},
+                                    lat: {{ accommodation.latitude }}
+                                }).addTo(map);
+
+                                var attractions = {{ attractions|safe }}
+                                var options = {units: 'kilometres'};
+                                attractions.forEach(function (attraction) {
+                                    Object.defineProperty(attraction.properties, 'distance', {
+                                        value: turf.distance(acc_location, attraction.geometry, options),
+                                        writable: true,
+                                        enumerable: true,
+                                        configurable: true
+                                    });
+                                });
+                                attractions = attractions.filter(function (attraction) {
+                                    return attraction.properties.distance < 2;
+                                });
+                                map.on('load', function () {
+
+                                    map.addLayer({
+                                        "id": "places",
+                                        "type": "symbol",
+                                        "source": {
+                                            "type": "geojson",
+                                            "data": {
+                                                "type": "FeatureCollection",
+                                                "features": attractions
+                                            }
+                                        },
+                                        "layout": {
+                                            "icon-image": "{icon}-15",
+                                            "text-field": "{title}",
+                                            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                                            "text-offset": [0, 0.6],
+                                            "text-anchor": "top"
+                                        }
+                                    });
+                                    map.on('click', 'places', function (e) {
+                                        var coordinates = e.features[0].geometry.coordinates.slice();
+                                        var description = e.features[0].properties.description;
+
+                                        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                                            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                                        }
+
+                                        new mapboxgl.Popup()
+                                            .setLngLat(coordinates)
+                                            .setHTML(description)
+                                            .addTo(map);
+                                    });
+
+                                    map.on('mouseenter', 'places', function () {
+                                        map.getCanvas().style.cursor = 'pointer';
+                                    });
+
+                                    map.on('mouseleave', 'places', function () {
+                                        map.getCanvas().style.cursor = '';
+                                    });
+                                });
+                            </script>
                         </div>
                         <div class="col-md-4 pull-right">
                             <div class="sidebar">
@@ -233,8 +303,17 @@
                                     <div class="col-md-3 pull-right">
                                         <div class="form-group">
                                             <label for="form-check-in">تاریخ ورود</label>
-                                            <input type="text" class="form-control date" id="form-check-in"
+                                            <input type="text" class="form-control" id="form-check-in"
                                                    name="check_in" placeholder="تاریخ ورود" value="{{ check_in }}">
+                                            <script>
+                                                $('#form-check-in').persianDatepicker({
+                                                    initialValue: false,
+                                                    format: 'YYYY/MM/DD',
+                                                    timePicker: {
+                                                        enabled: false
+                                                    }
+                                                });
+                                            </script>
                                         </div>
                                     </div>
                                     <div class="col-md-3 pull-right">
@@ -243,6 +322,15 @@
                                             <input type="text" class="form-control date"
                                                    id="form-check-out"
                                                    name="check_out" placeholder="تاریخ خروج" value="{{ check_out }}">
+                                            <script>
+                                                $('#form-check-out').persianDatepicker({
+                                                    initialValue: false,
+                                                    format: 'YYYY/MM/DD',
+                                                    timePicker: {
+                                                        enabled: false
+                                                    }
+                                                });
+                                            </script>
                                         </div>
                                     </div>
                                     <div class="col-md-3 pull-right">
@@ -291,12 +379,16 @@
                                             <th style="text-align: center">تعداد اتاق</th>
                                             <th style="text-align: center"></th>
                                         </tr>
+                                        <input type="hidden" value="{{ check_in }}" name="check_in"
+                                               id="hidden-check-in">
+                                        <input type="hidden" value="{{ check_out }}" name="check_out"
+                                               id="hidden-check-out">
+                                        <input type="hidden" value="{{ stay_length }}" id="stay_length">
                                         </thead>
                                     </table>
                                 </div>
                                 {% for room in rooms %}
-                                    <form method="post" action="{% url 'make_reservation' room.id %}"
-                                          onsubmit="reserveError(event)">
+                                    <form method="post" onsubmit="reserveError(event, {{ room.id }})">
                                         {% csrf_token %}
                                         <table class="table">
                                             <tbody>
@@ -310,22 +402,23 @@
                                                 <td class="persons"
                                                     style="text-align: center">{{ room.number_of_guests }}<i
                                                         class="fa fa-user"></i></td>
-                                                <td class="price" style="text-align: center">{{ room.price }}</td>
+                                                <td class="price" style="text-align: center"
+                                                    id="price-{{ room.id }}">{{ room.price }}</td>
                                                 <td class="rooms" style="text-align: center">
-                                                    <select class="framed" name="how_many">
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
+                                                    <select class="framed" name="how_many" id="how-many-{{ room.id }}">
+                                                        {% for r, count in room_count.items %}
+                                                            {% if r.id == room.id %}
+                                                                {% for i in count %}
+                                                                    <option value="{{ i }}">{{ i }}</option>
+                                                                {% endfor %}
+                                                            {% endif %}
+                                                        {% endfor %}
                                                     </select>
-                                                    <input type="hidden" value="{{ check_in }}" name="check_in"
-                                                           id="hidden-check-in">
-                                                    <input type="hidden" value="{{ check_out }}" name="check_out"
-                                                           id="hidden-check-out">
                                                 </td>
                                                 <td style="text-align: center">
                                                     <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary btn-rounded">رزرو
+                                                        <button type="submit" class="btn btn-primary btn-rounded">
+                                                            رزرو
                                                         </button>
                                                     </div>
                                                 </td>
@@ -333,6 +426,99 @@
                                             </tbody>
                                         </table>
                                     </form>
+                                    <div class="modal fade" id="reserve-{{ room.id }}" role="dialog"
+                                         aria-labelledby="sign-in-register-modal">
+                                        <div class="wrapper">
+                                            <div class="inner">
+                                                <div class="modal-dialog width-600px" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close"><span
+                                                                    aria-hidden="true">&times;</span></button>
+                                                            <ul class="nav nav-tabs ">
+                                                                <li role="presentation" class="active"><a
+                                                                        href="#tab-sign-in"
+                                                                        aria-controls="tab-sign-in"
+                                                                        role="tab"
+                                                                        data-toggle="tab"><h1
+                                                                        style="margin-left: 200px">رزرو اتاق</h1>
+                                                                </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row">
+                                                                <div class="row">
+                                                                    <div class="col-md-12 pull-right" dir="rtl">
+                                                                        <form method="post"
+                                                                              action="{% url 'make_reservation' room.id %}">
+                                                                            {% csrf_token %}
+                                                                            <table border="1">
+                                                                                <thead>
+                                                                                <th style="text-align: start; padding-right: 20px; padding-top: 10px">
+                                                                                    نوع اتاق
+                                                                                </th>
+                                                                                <th style="text-align: start; padding-right: 20px; padding-top: 10px">
+                                                                                    تاریخ ورود
+                                                                                </th>
+                                                                                <th style="text-align: start; padding-right: 20px; padding-top: 10px">
+                                                                                    تاریخ ورود
+                                                                                </th>
+                                                                                <th style="text-align: start; padding-right: 10px; padding-top: 10px">
+                                                                                    تعداد
+                                                                                </th>
+                                                                                <th style="text-align: start; padding-right: 20px; padding-top: 10px">
+                                                                                    قیمت
+                                                                                </th>
+                                                                                <th style="text-align: start; padding-right: 20px; padding-top: 10px">
+                                                                                    قیمت کل (تومان)
+                                                                                </th>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                <tr>
+                                                                                    <td>{% get_room_type room.bed_type %}</td>
+                                                                                    <td>{{ check_in }}</td>
+                                                                                    <td>{{ check_out }}</td>
+                                                                                    <td id="table-how-many-{{ room.id }}"></td>
+                                                                                    <td>{{ room.price }}</td>
+                                                                                    <td id="table-price-{{ room.id }}"></td>
+                                                                                    <input type="hidden"
+                                                                                           value="{{ check_in }}"
+                                                                                           name="check_in">
+                                                                                    <input type="hidden"
+                                                                                           value="{{ check_out }}"
+                                                                                           name="check_out">
+                                                                                    <input type="hidden"
+                                                                                           id="form-how-{{ room.id }}"
+                                                                                           name="how_many">
+                                                                                </tr>
+                                                                                <tr>
+                                                                                    <td colspan="5">مبلغ قابل پرداخت
+                                                                                        (تومان)
+                                                                                    </td>
+                                                                                    <td id="price-all-{{ room.id }}"
+                                                                                        style="text-align: center;"></td>
+                                                                                </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                            <div class="form-group"
+                                                                                 style="padding-top: 20px; padding-right: 500px">
+                                                                                <button type="submit"
+                                                                                        class="btn btn-primary btn-rounded">
+                                                                                    پرداخت
+                                                                                </button>
+                                                                            </div>
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 {% endfor %}
                             </div>
                         </section>
@@ -373,7 +559,7 @@
                                         <div class="col-md-3 pull-right">
                                             <div style="margin-right: 85px">
                                                 <aside class="name">{{ review.user.full_name }}</aside>
-                                                <aside class="date">{{ review.creation_date }}</aside>
+                                                <aside class="date">{{ review.creation_date|to_jalali:'%y/%m/%d' }}</aside>
                                             </div>
 
                                         </div>

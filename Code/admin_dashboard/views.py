@@ -6,6 +6,7 @@ from django.db.models.functions import TruncMonth
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
+from khayyam import JalaliDate
 
 from registration.models import CustomUser
 from accommodation.models import Accommodation
@@ -27,7 +28,8 @@ class AdminDashboard(View):
         houses = Accommodation.objects.filter(accommodation_type='منزل شخصی').count()
         users = CustomUser.objects.all().annotate(month=TruncMonth('date_joined')).values('month').annotate(
             count=Count('id'))
-        date_joined = list(set([x.strftime('%B') for x in list(users.values_list('date_joined', flat=True))]))
+        date_joined = list(
+            set([JalaliDate(x).strftime('%B') for x in list(users.values_list('date_joined', flat=True))]))
         user_count = list(users.values_list('count', flat=True))
         return render(request, self.template_name,
                       {'hotels': hotels, 'motels': motels, 'houses': houses, 'date_joined': date_joined,

@@ -1,48 +1,9 @@
 {% extends 'base.html' %}
+{% load jalali_tags %}
 
 {% block main %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
-            var doughnutPieData = {
-                datasets: [{
-                    data: [{{ hotels }}, {{ motels }}, {{ houses }}],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.5)',
-                        'rgba(54, 162, 235, 0.5)',
-                        'rgba(255, 206, 86, 0.5)'
-                    ],
-                    borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)'
-                    ]
-                }],
-
-                // These labels appear in the legend and in the tooltips when hovering different arcs
-                labels: [
-                    'هتل‌ها',
-                    'متل‌ها',
-                    'اقامتگاه‌های شخصی'
-                ]
-            };
-            var doughnutPieOptions = {
-                responsive: true,
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
-                }
-            };
-            var pieChartCanvas = $("#pieChart").get(0).getContext("2d");
-            var pieChart = new Chart(pieChartCanvas, {
-                type: 'pie',
-                data: doughnutPieData,
-                options: doughnutPieOptions
-            });
-        });
-    </script>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script src="https://code.highcharts.com/modules/variable-pie.js"></script>
     <script type="text/javascript">
         jQuery(document).ready(function ($) {
             var lineData = {
@@ -83,50 +44,126 @@
             {% endfor %}
         {% endif %}
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-9" dir="rtl">
                 {% block contents %}
-                    <div class="col-lg-4 grid-margin stretch-card" dir="rtl">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="chartjs-size-monitor"
-                                     style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-                                    <div class="chartjs-size-monitor-expand"
-                                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                        <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
-                                    </div>
-                                    <div class="chartjs-size-monitor-shrink"
-                                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                        <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
-                                    </div>
-                                </div>
-                                <h4 class="card-title">تعداد اقامتگاه‌ها</h4>
-                                <canvas id="pieChart" style="height: 262px; display: block; width: 525px;"
-                                        width="1500"
-                                        height="1000"
-                                        class="chartjs-render-monitor"></canvas>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div id="container"></div>
+                            <script type="text/javascript">
+                                Highcharts.chart('container', {
+                                    chart: {
+                                        plotBackgroundColor: null,
+                                        plotBorderWidth: null,
+                                        plotShadow: false,
+                                        type: 'pie',
+                                        style: {
+                                            fontFamily: "\'BKoodakBold\'"
+                                        }
+                                    },
+                                    title: {
+                                        text: 'تعداد اقامتگاه‌ها'
+                                    },
+                                    tooltip: {
+                                        pointFormat: '<div style="font-family: \'BKoodakBold\'">{series.name}: {point.y}</div>',
+                                        useHTML: true,
+                                        style: {
+                                            direction: 'rtl',
+                                            textAlign: 'right'
+                                        }
+                                    },
+                                    plotOptions: {
+                                        pie: {
+                                            allowPointSelect: true,
+                                            cursor: 'pointer',
+                                            dataLabels: {
+                                                enabled: false
+                                            },
+                                            showInLegend: true
+                                        }
+                                    },
+                                    series: [{
+                                        name: 'تعداد',
+                                        colorByPoint: true,
+                                        data: [{
+                                            name: 'هتل',
+                                            y: {{ hotels }},
+                                            sliced: true,
+                                            selected: true
+                                        }, {
+                                            name: 'اقامتگاه محلی',
+                                            y: {{ motels }}
+                                        }, {
+                                            name: 'منزل شخصی',
+                                            y: {{ houses }}
+                                        }]
+                                    }]
+                                });
+                            </script>
                         </div>
-                    </div>
-                    <div class="col-lg-4 grid-margin stretch-card" dir="rtl">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="chartjs-size-monitor"
-                                     style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-                                    <div class="chartjs-size-monitor-expand"
-                                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                        <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
-                                    </div>
-                                    <div class="chartjs-size-monitor-shrink"
-                                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                        <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
-                                    </div>
-                                </div>
-                                <h4 class="card-title">تعداد کاربران</h4>
-                                <canvas id="lineChart" style="height: 262px; display: block; width: 525px;"
-                                        width="2000"
-                                        height="1500"
-                                        class="chartjs-render-monitor"></canvas>
-                            </div>
+                        <div class="col-md-4">
+                            <div id="columns"></div>
+                            <script type="text/javascript">
+                                Highcharts.chart('columns', {
+                                    chart: {
+                                        style: {
+                                            fontFamily: "\'BKoodakBold\'"
+                                        }
+                                    },
+
+                                    title: {
+                                        text: 'تعداد کاربران'
+                                    },
+
+                                    legend: {
+                                        layout: 'vertical',
+                                        align: 'right',
+                                        verticalAlign: 'middle'
+                                    },
+                                    xAxis: {
+                                        categories: {{ date_joined|safe }},
+                                        crosshair: true
+                                    },
+                                    yAxis: {
+                                        title: {
+                                            text: ''
+                                        }
+                                    },
+                                    plotOptions: {
+                                        series: {
+                                            label: {
+                                                connectorAllowed: false
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        useHTML: true,
+                                        style: {
+                                            direction: 'rtl',
+                                            textAlign: 'right'
+                                        }
+                                    },
+                                    series: [{
+                                        name: 'تعداد',
+                                        data: {{ user_count }}
+                                    }],
+
+                                    responsive: {
+                                        rules: [{
+                                            condition: {
+                                                maxWidth: 500
+                                            },
+                                            chartOptions: {
+                                                legend: {
+                                                    layout: 'horizontal',
+                                                    align: 'center',
+                                                    verticalAlign: 'bottom'
+                                                }
+                                            }
+                                        }]
+                                    }
+
+                                });
+                            </script>
                         </div>
                     </div>
                 {% endblock %}

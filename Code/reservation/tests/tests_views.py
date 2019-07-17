@@ -1,3 +1,4 @@
+from django.contrib.messages import get_messages
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -75,7 +76,6 @@ class TestAccommocationView(TestCase):
         req = {'user': user, 'form': {'check_in': '12122019', 'check_out': '14122019', 'price': '100-200'}}
         view = AccommodationDetailView.as_view()
         response = view(req, pk=acc.pk)
-        print(response)
         return response
 
     def test_reserve(self):
@@ -98,11 +98,12 @@ class TestAccommocationView(TestCase):
         # try to reserve again
 
         response2 = self.client.post(reverse('make_reservation', kwargs={'rid': room.id}),
-                                    {'check_in': '07/12/2019', 'check_out': '07/14/2019',
-                                     'how_many': 1})
-        messages = list(response2.context['messages'])
-        self.assertEqual(len(messages), 1)
-        self.assertEqual(str(messages[0]),  'در رزرو کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید. به این تعداد اتاق خالی وجود ندارد.')
+                                     {'check_in': '07/12/2019', 'check_out': '07/14/2019',
+                                      'how_many': 1})
+        messages = list(get_messages(response2.wsgi_request))
+        self.assertEqual(len(messages), 2)
+        self.assertEqual(str(messages[1]),
+                         'در رزرو کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید. به این تعداد اتاق خالی وجود ندارد.')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Reservation.objects.count(), 1)
         reservation = Reservation.objects.get(reserver=the_user)

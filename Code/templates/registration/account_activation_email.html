@@ -1,0 +1,12 @@
+{% autoescape off %}
+
+    عزیز  {{ user.get_username }}
+
+    برای فعال‌سازی حساب کاربری مکان خود روی لینک زیر کلیک کنید:
+
+    http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+
+    در صورتی که با کلیک کردن لینک اتفاقی نیفتاد، آن را در یک پنجره‌ی جدید کپی کنید.
+
+    تیم مکان
+{% endautoescape %}

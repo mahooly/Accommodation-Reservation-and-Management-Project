@@ -40,6 +40,9 @@ $(document).ready(function ($) {
         });
     }
 
+    $('.mapboxgl-canvas').attr('style', function (i, style) {
+        return style.replace(/position[^;]+;?/g, '');
+    });
 //  iCheck -------------------------------------------------------------------------------------------------------------
 
     if ($("input[type=checkbox]").length) {
@@ -141,9 +144,6 @@ $(document).ready(function ($) {
         var messagesArray = [];
         $("[data-toggle=popover]").popover({
             template: '<div class="popover" role="tooltip"><div class="close"><i class="fa fa-close"></i></div><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'
-        });
-        $(".popover .close").live('click', function () {
-            $(this).closest(".popover").popover("hide");
         });
         $("[data-show-after-time]").each(function () {
             var _this = $(this);
@@ -339,13 +339,6 @@ $(document).ready(function ($) {
         $($(this).attr("data-switch")).toggleClass("switch");
     });
 
-//  Enable image previews in multi file input --------------------------------------------------------------------------
-
-    if ($("input[type=file].with-preview").length) {
-        $("input.file-upload-input").MultiFile({
-            list: ".file-upload-previews"
-        });
-    }
 
 //  Enable image preview in file upload with single image --------------------------------------------------------------
 
@@ -660,10 +653,22 @@ function checkOutError(e) {
     }
 }
 
-function reserveError(e) {
+function reserveError(e, id) {
     var checkIn = $('#hidden-check-in');
     var checkOut = $('#hidden-check-out');
     if (checkIn.val() && checkOut.val()) {
+        modal = $('#reserve-' + id).modal();
+        e.preventDefault();
+        var howMany = $("#how-many-" + id);
+        var selected = howMany.find(':selected').text();
+        var price = $('#price-' + id).text();
+        var stay = $('#stay_length').val();
+        var total = parseInt(price) * parseInt(selected) * parseInt(stay);
+        $('#table-how-many-' + id).html(selected);
+        $('#table-price-' + id).html(total);
+        $('#price-all-' + id).html(total);
+        $('#form-how-' + id).val(selected);
+        modal.show();
         return;
     }
     e.preventDefault();

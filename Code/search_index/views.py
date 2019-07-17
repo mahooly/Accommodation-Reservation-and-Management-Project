@@ -3,12 +3,17 @@ import datetime
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.views.generic import ListView
+from khayyam import JalaliDate
 
 from .filters import AccommodationFilter
 from accommodation.models import Accommodation, RoomInfo, Room
 from django.views import View
 from .forms import LocationSearchForm, FilterForm
 from django.db.models import Q
+
+persian_numbers = '۱۲۳۴۵۶۷۸۹۰'
+english_numbers = '1234567890'
+trans_num = str.maketrans(persian_numbers, english_numbers)
 
 
 class MainPageView(ListView):
@@ -142,4 +147,5 @@ class SearchView(View):
         return url
 
     def convert_string_to_date(self, date_string):
-        return datetime.datetime.strptime(date_string, '%m/%d/%Y')
+        split_string = [int(x.translate(trans_num)) for x in date_string.split('/')]
+        return JalaliDate(split_string[0], split_string[1], split_string[2]).todate()

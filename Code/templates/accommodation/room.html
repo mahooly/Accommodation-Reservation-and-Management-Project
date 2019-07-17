@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load jalali_tags %}
+{% load accommodation_extras %}
+{% block main %}
+    <div class="container">
+        <div class="main-content float-right" dir="rtl">
+            <div class="title">
+                <h1 class="inactive"><a href="{% url 'edit_accommodation' accommodation.pk %}">تغییر مشخصات اقامتگاه</a>
+                </h1>
+                <h1 class="inactive"><a href="{% url 'room_list' accommodation.pk %}">ویرایش اتاق‌ها</a></h1>
+                <h1 class="active"><a href="{% url 'room_stats' accommodation.pk %}">وضعیت اتاق‌ها</a></h1>
+                <h1 class="inactive"><a href="{% url 'accommodation_reserve' accommodation.pk %}">تاریخچه رزرو</a></h1>
+                <h1 class="inactive"><a href="{% url 'accommodation_review' accommodation.pk %}">نظرات</a></h1>
+            </div>
+            <div class="info">
+                <strong style="display: inline-block">اقامتگاه:</strong>
+                <h2 class="no-margin" style="display: inline-block"><a
+                        href="{% url 'accommodation_detail' pk=accommodation.pk %}">&nbsp;{{ accommodation.title }}&nbsp;</a>
+                </h2>
+                <hr>
+            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    {% ifequal message.tags 'success' %}
+                        <div class="alert alert-success" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                    {% ifequal message.tags 'error' %}
+                        <div class="alert alert-danger" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                {% endfor %}
+            {% endif %}
+            <h2>گزارش اتاق‌ها</h2>
+            <form class="labels-uppercase">
+                <div class="row">
+                    <div class="col-md-3 pull-right">
+                        <div class="form-group">
+                            <label for="form-room-number">شماره اتاق</label>
+                            <select class="framed width-100" name="room_number"
+                                    id="form-room-number"
+                                    dir="rtl" style="height: 40px">
+                                {% for room in object_list %}
+                                    {% for room_info in room.roominfo_set.all %}
+                                        <option value="{{ room_info.number }}">{{ room_info.number }}</option>
+                                    {% endfor %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 pull-right">
+                        <div class="form-group">
+                            <label for="form-check-in">از تاریخ</label>
+                            <input type="text" class="form-control" id="form-check-in"
+                                   name="from_date" placeholder="از تاریخ" value="{{ check_in }}">
+                            <script>
+                                $('#form-check-in').persianDatepicker({
+                                    initialValue: false,
+                                    format: 'YYYY/MM/DD',
+                                    timePicker: {
+                                        enabled: false
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    <div class="col-md-3 pull-right">
+                        <div class="form-group">
+                            <label for="form-check-out">تا تاریخ</label>
+                            <input type="text" class="form-control date"
+                                   id="form-check-out"
+                                   name="to_date" placeholder="تا تاریخ" value="{{ check_out }}">
+                            <script>
+                                $('#form-check-out').persianDatepicker({
+                                    initialValue: false,
+                                    format: 'YYYY/MM/DD',
+                                    timePicker: {
+                                        enabled: false
+                                    }
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label class="invisible">Hidden label</label>
+                            <button type="submit"
+                                    class="btn btn-primary btn-rounded btn-framed form-control">جست و جو
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            {% if report %}
+                <table class="table table-fixed-header">
+                    <thead class="header">
+                    <tr>
+                        <td style="padding-right: 25px">وضعیت</td>
+                        <td style="padding-right: 25px">از تاریخ</td>
+                        <td style="padding-right: 25px">تا تاریخ</td>
+                        <td style="padding-right: 25px">توضیحات</td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for stat in report %}
+                        <tr class="reservation table-responsive">
+                            {% if stat|verbose_name == 'reservation' %}
+                                <td style="padding-right: 25px">رزرو شده</td>
+                                <td style="padding-right: 25px">{{ stat.check_in|to_jalali:'%y/%m/%d' }}</td>
+                                <td style="padding-right: 25px">{{ stat.check_out|to_jalali:'%y/%m/%d' }}</td>
+                                <td></td>
+                            {% else %}
+                                <td style="padding-right: 25px">خارج از سرویس</td>
+                                <td style="padding-right: 25px">{{ stat.from_date|to_jalali:'%y/%m/%d' }}</td>
+                                <td style="padding-right: 25px">{{ stat.to_date|to_jalali:'%y/%m/%d' }}</td>
+                                <td>{{ stat.reason }}</td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            <hr>
+            <div class="row">
+                <div class="col-md-3 pull-right">
+                    <div class="box background-color-white">
+                        <h3 style="display: inline;">اتاق‌های خالی ({{ empty_rooms.count }})</h3>
+                        <i class="fa fa-arrow-circle-o-down" onclick="$('#empty').slideToggle(300);"
+                           style="display: inline; margin-right: 80px; color: #488f3e; cursor: pointer"></i>
+                        <div class="hidden-row" id="empty">
+                            <div class="table-responsive">
+                                <table class="table table-fixed-header text-center" style="margin-top: 20px">
+                                    <thead>
+                                    <tr>
+                                        <td>شماره</td>
+                                        <td>نوع</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for room in empty_rooms %}
+                                        <tr>
+                                            <td style="text-align: start; padding-left: -100px">{{ room.number }}</td>
+                                            <td style="text-align: start">{% get_room_type room.room.bed_type %}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 pull-right">
+                    <div class="box background-color-white">
+                        <h3 style="display: inline;">اتاق‌های رزرو شده ({{ reserved.count }})</h3>
+                        <i class="fa fa-arrow-circle-o-down" onclick="$('#reserved').slideToggle(300);"
+                           style="display: inline; margin-right: 160px; color: #488f3e; cursor: pointer"></i>
+                        <div class="hidden-row" id="reserved">
+                            <div class="table-responsive">
+                                <table class="table table-fixed-header text-center" style="margin-top: 20px">
+                                    <thead>
+                                    <tr>
+                                        <td>شماره</td>
+                                        <td>نوع</td>
+                                        <td>تا تاریخ</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for room in reserved %}
+                                        <tr>
+                                            <td>{{ room.number }}</td>
+                                            <td>{% get_room_type room.room.bed_type %}</td>
+                                            <td>{{ room.reservation_set.first.check_out|to_jalali:'%y/%m/%d' }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="box background-color-white">
+                        <h3 style="display: inline;">اتاق‌های خارج از سرویس ({{ out_of_service.count }})</h3>
+                        <i class="fa fa-arrow-circle-o-down" onclick="$('#out-of-service').slideToggle(300);"
+                           style="display: inline; margin-right: 210px; color: #488f3e; cursor: pointer"></i>
+                        <div class="hidden-row" id="out-of-service">
+                            <div class="table-responsive">
+                                <table class="table table-fixed-header text-center" style="margin-top: 20px">
+                                    <thead>
+                                    <tr>
+                                        <td>شماره</td>
+                                        <td>نوع</td>
+                                        <td>تا تاریخ</td>
+                                        <td>دلیل</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for room in out_of_service %}
+                                        <tr>
+                                            <td>{{ room.number }}</td>
+                                            <td>{% get_room_type room.room.bed_type %}</td>
+                                            <td>{{ room.roomoutofservice_set.first.to_date|to_jalali:'%y/%m/%d' }}</td>
+                                            <td>{{ room.roomoutofservice_set.first.reason }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

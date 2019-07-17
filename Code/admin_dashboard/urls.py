@@ -1,6 +1,4 @@
-from .decorators import user_is_superuser
 from django.urls import path
-from django.views.generic import TemplateView
 
 from admin_dashboard import views
 

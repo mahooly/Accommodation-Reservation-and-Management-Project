@@ -1,8 +1,343 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+{% load jalali_tags %}
+{% load accommodation_extras %}
 {% block main %}
-    <div class="main-content">
-            {% for room in object_list %}
-                <p>{{room.bed_type}} -- {{room.number_of_guests}}</p>
-            {%endfor%}
+    <div class="container">
+        <div class="main-content float-right" dir="rtl">
+            <div class="title">
+                <h1 class="inactive"><a href="{% url 'edit_accommodation' accommodation.pk %}">تغییر مشخصات اقامتگاه</a>
+                </h1>
+                <h1 class="active"><a href="{% url 'room_list' accommodation.pk %}">ویرایش اتاق‌ها</a></h1>
+                <h1 class="inactive"><a href="{% url 'room_stats' accommodation.pk %}">وضعیت اتاق‌ها</a></h1>
+                <h1 class="inactive"><a href="{% url 'accommodation_reserve' accommodation.pk %}">تاریخچه رزرو</a></h1>
+                <h1 class="inactive"><a href="{% url 'accommodation_review' accommodation.pk %}">نظرات</a></h1>
+            </div>
+            <div class="info">
+                <strong style="display: inline-block">اقامتگاه:</strong>
+                <h2 class="no-margin" style="display: inline-block"><a
+                        href="{% url 'accommodation_detail' pk=accommodation.pk %}">&nbsp;{{ accommodation.title }}&nbsp;</a>
+                </h2>
+                <a href="" data-toggle="modal" data-tab="true"
+                   data-target="#add-room-modal" class="btn btn-primary btn-rounded scroll">اضافه
+                    کردن
+                    اتاق</a>
+                <hr>
+            </div>
+            {% if messages %}
+                {% for message in messages %}
+                    {% ifequal message.tags 'success' %}
+                        <div class="alert alert-success" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                    {% ifequal message.tags 'error' %}
+                        <div class="alert alert-danger" dir="rtl" role="alert"
+                             style="padding: 5px; text-align: center;">
+                            <p style="display: inline-block;">{{ message }}</p>
+                        </div>
+                    {% endifequal %}
+                {% endfor %}
+            {% endif %}
+            <div class="reservations table-responsive">
+                <table class="table table-fixed-header">
+                    <thead class="header">
+                    <tr>
+                        <th>نوع اتاق</th>
+                        <th>تعداد اتاق</th>
+                        <th>تعداد مهمان</th>
+                        <th style="padding-right: 15px">قیمت (تومان)</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <script type="text/javascript">
+                        function show_hide_row(row) {
+                            $("#" + row).slideToggle(300);
+                        }
+                    </script>
+                    <tbody>
+                    {% for room in object_list %}
+                        <tr class="reservation">
+                            <td style="padding-right: 25px">{% get_room_type room.bed_type %}</td>
+                            <td style="padding-right: 25px">{{ room.how_many }}</td>
+                            <td style="padding-right: 25px">{{ room.number_of_guests }}</td>
+                            <td style="padding-right: 25px">{{ room.price }}</td>
+                            <td>
+                                <div class="edit-options" style="opacity: 0.5">
+                                    <a class="link icon"
+                                       onclick="show_hide_row('hidden-row-{{ room.id }}');"
+                                       style="color: black; cursor: pointer"><i
+                                            class="fa fa-arrow-down"></i>مشاهده‌ی
+                                        اتاق‌ها</a><br>
+                                    <a href="" class="link icon" data-toggle="modal" data-tab="true"
+                                       data-target="#add-room-info-modal-{{ room.id }}" style="color: black;"><i
+                                            class="fa fa-plus"></i>اضافه کردن اتاق</a><br>
+                                    <a href="{% url 'delete_room' room.pk %}"
+                                       class="link icon delete" style="color: black;"><i class="fa fa-trash"
+                                                                                         style="color: red;"></i>حذف</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-center room-list" colspan="5" style="padding: 0">
+                                <div class="row hidden-row" style="margin-top: -25px; margin-bottom: -25px"
+                                     id="hidden-row-{{ room.id }}">
+                                    {% for room_info in room.roominfo_set.all %}
+                                        <div class="col-md-1 pull-right" style="margin-right: 20px">
+                                            <a href="" data-toggle="modal" data-tab="true"
+                                               data-target="#change-room-info-modal-{{ room_info.id }}"><img
+                                                    style="height: 30px; width: 30px;"
+                                                    src="{% static 'assets/img/hotel.png' %}">
+                                                <p style="padding-right: 5px">{{ room_info.number }}</p></a>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% for room_info in room.roominfo_set.all %}
+                            <div class="modal fade" id="change-room-info-modal-{{ room_info.id }}"
+                                 role="dialog"
+                                 aria-labelledby="sign-in-register-modal">
+                                <div class="wrapper">
+                                    <div class="inner">
+                                        <div class="modal-dialog width-600px" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close"><span
+                                                            aria-hidden="true">&times;</span></button>
+                                                    <ul class="nav nav-tabs ">
+                                                        <li role="presentation" class="active"><a
+                                                                href="#tab-sign-in"
+                                                                aria-controls="tab-sign-in"
+                                                                role="tab"
+                                                                data-toggle="tab"><h1
+                                                                style="margin-left: 250px">تغییر اتاق</h1>
+                                                        </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form class="form-submit labels-uppercase"
+                                                          enctype="multipart/form-data"
+                                                          method="post"
+                                                          action="{% url 'change_room_info' room_info.id %}">
+                                                        {% csrf_token %}
+                                                        <div class="row">
+                                                            <div class="col-md-4 col-md-offset-4 text-center">
+                                                                <div class="form-group-inline">
+                                                                    <div class="form-group">
+                                                                        <label class="pull-right">شماره</label>
+                                                                        <input type="number"
+                                                                               class="form-control"
+                                                                               name="number"
+                                                                               value="{{ room_info.number }}" dir="ltr">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        <section>
+                                                            <div class="form-group center">
+                                                                <button type="submit"
+                                                                        class="btn btn-primary btn-rounded btn-large">
+                                                                    ثبت
+                                                                    تغییرات
+                                                                </button>
+                                                                <a href="{% url 'delete_room_info' room_info.pk %}"
+                                                                   class="btn btn-danger btn-rounded btn-large">
+                                                                    حذف اتاق
+                                                                </a>
+                                                            </div>
+                                                        </section>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <div class="modal fade" id="add-room-info-modal-{{ room.id }}" role="dialog"
+                             aria-labelledby="sign-in-register-modal">
+                            <div class="wrapper">
+                                <div class="inner">
+                                    <div class="modal-dialog width-600px" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close"><span
+                                                        aria-hidden="true">&times;</span></button>
+                                                <ul class="nav nav-tabs ">
+                                                    <li role="presentation" class="active"><a href="#tab-sign-in"
+                                                                                              aria-controls="tab-sign-in"
+                                                                                              role="tab"
+                                                                                              data-toggle="tab"><h1
+                                                            style="margin-left: 200px">اضافه
+                                                        کردن {% get_room_type room.bed_type %}</h1></a></li>
+                                                </ul>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form class="form-submit labels-uppercase"
+                                                      enctype="multipart/form-data"
+                                                      method="post" action="{% url 'create_room_info' room.id %}">
+                                                    {% csrf_token %}
+                                                    <div class="row">
+                                                        <div class="col-md-4 col-md-offset-4 text-center">
+                                                            <div class="form-group-inline">
+                                                                <div class="form-group">
+                                                                    <label class="pull-right">شماره</label>
+                                                                    <input type="number" class="form-control"
+                                                                           name="number">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                    <section>
+                                                        <div class="form-group center">
+                                                            <button type="submit"
+                                                                    class="btn btn-primary btn-rounded btn-large">
+                                                                ثبت
+                                                                اتاق
+                                                            </button>
+                                                        </div>
+                                                    </section>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <div class="modal fade" id="add-room-modal" role="dialog"
+                     aria-labelledby="sign-in-register-modal">
+                    <div class="wrapper">
+                        <div class="inner">
+                            <div class="modal-dialog width-600px" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close"><span
+                                                aria-hidden="true">&times;</span></button>
+                                        <ul class="nav nav-tabs ">
+                                            <li role="presentation" class="active"><a href="#tab-sign-in"
+                                                                                      aria-controls="tab-sign-in"
+                                                                                      role="tab"
+                                                                                      data-toggle="tab"><h1
+                                                    style="margin-left: 200px">اضافه کردن اتاق</h1></a></li>
+                                        </ul>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form class="form-submit labels-uppercase"
+                                              enctype="multipart/form-data"
+                                              method="post" action="{% url 'create_room' accid=accommodation.pk %}">
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    <div class="form-group-inline">
+                                                        <div class="form-group width-60">
+                                                            <label class="pull-right">تعداد و نوع تخت</label>
+                                                            <select class="framed width-100" name="bed_type"
+                                                                    id="room-type_1"
+                                                                    dir="rtl">
+                                                                <option value="Single">تخت یک نفره</option>
+                                                                <option value="Double">تخت دو نفره</option>
+                                                                <option value="Twin">دو تخت یک نفره</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    <div class="form-group-inline">
+                                                        <div class="form-group width-60">
+                                                            <label for="description" class="pull-right">توضیحات</label>
+                                                            <textarea class="form-control" required id="description"
+                                                                      name="description" rows="3" dir="rtl"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12 text-center">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group" style="padding-right: 20px">
+                                                            <label for="number-of-rooms_1">تعداد اتاق</label>
+                                                            <input type="number" class="form-control"
+                                                                   id="number-of-rooms_1"
+                                                                   name="how_many"
+                                                                   placeholder="1" value="1">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group" style="padding-right: 20px">
+                                                            <label for="number-of-guests_1">تعداد مهمان</label>
+                                                            <input type="number" class="form-control"
+                                                                   id="number-of-guests_1"
+                                                                   name="number_of_guests"
+                                                                   placeholder="1" value="1">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4 text-center">
+                                                        <div class="form-group-inline">
+                                                            <div class="form-group">
+                                                                <label for="price" dir="rtl">نرخ هر شب اقامت (به
+                                                                    تومان)</label>
+                                                                <input type="number" class="form-control" id="price"
+                                                                       name="price"
+                                                                       placeholder="10000">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <section id="facilities">
+                                                <div class="row">
+                                                    <div class="pull-right" style="margin-right: 20px;">
+                                                        <h4 style="color: #488f3e;">امکانات</h4>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-12" dir="rtl">
+                                                        <ul class="checkboxes half inline list-unstyled">
+                                                            {% for amenity in form.amenity %}
+                                                                <li><label> {{ amenity }} </label></li>
+                                                            {% endfor %}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <section>
+                                                <div id="profile-picture" class="profile-picture single-file-preview">
+                                                    <div class="input">
+                                                        <input name="image" type="file">
+                                                        <span style="z-index: auto">برای آپلود عکس اتاق کلیک کنید</span>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                            <hr>
+                                            <section>
+                                                <div class="form-group center">
+                                                    <button type="submit" class="btn btn-primary btn-rounded btn-large">
+                                                        ثبت
+                                                        اتاق
+                                                    </button>
+                                                </div>
+                                            </section>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-{%endblock%}
+{% endblock %}

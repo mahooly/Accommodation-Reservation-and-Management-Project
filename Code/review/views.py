@@ -6,12 +6,14 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.generic import ListView
 
+from accommodation.decorators import user_same_as_accommodation_user
 from accommodation.models import Accommodation
+from registration.decorators import user_is_host, user_is_confirmed
 from review.forms import ReviewForm, RatingForm, ReplyForm
 from review.models import Review
 
 
-@method_decorator(login_required, name='dispatch')
+@method_decorator([login_required, user_is_confirmed], name='dispatch')
 class CreateReview(View):
     def post(self, request, *args, **kwargs):
         form = ReviewForm(request.POST)
@@ -34,6 +36,7 @@ class CreateReview(View):
         return redirect(reverse('accommodation_detail', kwargs={'pk': accommodation_id}))
 
 
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class AccommodationReviews(ListView):
     template_name = 'review/accommodation_reviews.html'
 
@@ -52,6 +55,7 @@ class AccommodationReviews(ListView):
         return Accommodation.objects.get(pk=pk)
 
 
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class CreateReply(View):
     def post(self, request, *args, **kwargs):
         form = ReplyForm(request.POST)

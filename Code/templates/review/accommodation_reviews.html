@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-
+{% load jalali_tags %}
 {% block main %}
     <div class="container">
         <div class="main-content float-right" dir="rtl">
@@ -23,7 +23,9 @@
             <div class="title">
                 <h1 class="inactive"><a href="{% url 'edit_accommodation' accommodation.pk %}">تغییر مشخصات اقامتگاه</a>
                 </h1>
-                <h1 class="inactive"><a href="reservations.html">تاریخچه رزرو</a></h1>
+                <h1 class="inactive"><a href="{% url 'room_list' accommodation.pk %}">ویرایش اتاق‌ها</a></h1>
+                <h1 class="inactive"><a href="{% url 'room_stats' accommodation.pk %}">وضعیت اتاق‌ها</a></h1>
+                <h1 class="inactive"><a href="{% url 'accommodation_reserve' accommodation.pk %}">تاریخچه رزرو</a></h1>
                 <h1><a href="{% url 'accommodation_review' accommodation.pk %}">نظرات</a></h1>
             </div>
             <div class="info">
@@ -44,7 +46,7 @@
                             <div class="row">
                                 <div class="col-md-2 pull-right">
                                     <aside class="name">{{ review.user.full_name }}</aside>
-                                    <aside class="date">{{ review.creation_date }}</aside>
+                                    <aside class="date">{{ review.creation_date|to_jalali:'%y/%m/%d' }}</aside>
                                 </div>
                                 <div class="col-md-10">
                                     <div class="comment">
@@ -108,7 +110,7 @@
                             <div class="row">
                                 <div class="col-md-2 pull-right">
                                     <aside class="name">{{ review.user.full_name }}</aside>
-                                    <aside class="date">{{ review.creation_date }}</aside>
+                                    <aside class="date">{{ review.creation_date|to_jalali:'%y/%m/%d' }}</aside>
                                 </div>
                                 <div class="col-md-10">
                                     <div class="comment">

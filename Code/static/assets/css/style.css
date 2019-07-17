@@ -2761,11 +2761,6 @@ ul.half li {
     text-align: center;
 }
 
-.map {
-    width: 100%;
-    position: relative;
-}
-
 .main-content h2 {
     margin-bottom: 20px;
     margin-top: 0;
@@ -3147,6 +3142,7 @@ ul.half li {
     text-align: start;
     font-size: large;
 }
+
 .my-items .my-item {
     -moz-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
     -webkit-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
@@ -3844,6 +3840,14 @@ ul.half li {
     -webkit-box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
     box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.07);
     background-color: #fff;
+}
+
+.reservations .reservation td {
+    text-align: start;
+}
+
+.reservations .header th {
+    text-align: start;
 }
 
 .reservations .header-copy {
@@ -5979,4 +5983,39 @@ body::before {
 
 .none {
     display: none;
+}
+
+.mapboxgl-popup {
+    max-width: 400px;
+    font-family: 'BKoodakBold';
+    direction: rtl;
+    text-align: right !important;
+}
+
+.hidden-row {
+    display: none;
+}
+
+.room-list {
+    background-color: white;
+}
+
+.highcharts-title tspan {
+    font-family: BKoodakBold;
+}
+
+.highcharts-label text tspan {
+    font-family: BKoodakBold;
+}
+
+.highcharts-legend {
+    font-family: BKoodakBold;
+}
+
+.highcharts-data-label {
+    font-family: BKoodakBold;
+}
+
+.highcharts-point {
+    font-family: BKoodakBold;
 }

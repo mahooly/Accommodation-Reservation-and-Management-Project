@@ -1,7 +1,7 @@
 from django.db import models
-from django.db.models import Min, Max
+from django.db.models import Min, Max, deletion
 
-from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES
+from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES, TOURIST_ATTRACTION_TYPE_CHOICES
 from registration.models import Host, CustomUser
 
 
@@ -23,46 +23,43 @@ class Accommodation(models.Model):
     address = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
+    latitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
     amenity = models.ManyToManyField(Amenity)
     is_authenticated = models.BooleanField(default=False)
 
-    def _get_singles(self):
+    @property
+    def single_beds(self):
         try:
             return Room.objects.get(accommodation=self, bed_type='Single').how_many
         except Room.DoesNotExist:
             return 0
 
-    single_beds = property(_get_singles)
-
-    def _get_doubles(self):
+    @property
+    def double_beds(self):
         try:
             return Room.objects.get(accommodation=self, bed_type='Double').how_many
         except Room.DoesNotExist:
             return 0
 
-    double_beds = property(_get_doubles)
-
-    def _get_twins(self):
+    @property
+    def twin_beds(self):
         try:
             return Room.objects.get(accommodation=self, bed_type='Twin').how_many
         except Room.DoesNotExist:
             return 0
 
-    twin_beds = property(_get_twins)
-
-    def _get_guests(self):
+    @property
+    def guests(self):
         rooms = Room.objects.filter(accommodation=self)
         guests = 0
         for r in rooms:
             guests += (r.how_many * r.number_of_guests)
         return guests
 
-    guests = property(_get_guests)
-
-    def _get_all_rooms(self):
+    @property
+    def rooms(self):
         return self.single_beds + self.double_beds + self.twin_beds
-
-    rooms = property(_get_all_rooms)
 
     @property
     def overall_score(self):
@@ -149,6 +146,9 @@ class Accommodation(models.Model):
     def max_price(self):
         return self.room_set.all().aggregate(Max('price')).get('price__max')
 
+    def __str__(self):
+        return self.title
+
 
 class Room(models.Model):
     accommodation = models.ForeignKey(Accommodation, on_delete=models.CASCADE)
@@ -163,9 +163,8 @@ class Room(models.Model):
     def how_many(self):
         return RoomInfo.objects.filter(room=self).count()
 
-    @property
-    def reservable_count(self):
-        return RoomInfo.objects.filter(room=self, is_reserved=False).count()
+    def __str__(self):
+        return self.accommodation.title
 
 
 class Image(models.Model):
@@ -175,5 +174,22 @@ class Image(models.Model):
 
 class RoomInfo(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
-    is_reserved = models.BooleanField(default=False)
-    out_of_service = models.BooleanField(default=False)
+    number = models.IntegerField(default=None, null=True)
+
+    def __str__(self):
+        return '{} - {} - {}'.format(str(self.room), self.room.bed_type, str(self.number))
+
+
+class RoomOutOfService(models.Model):
+    room_info = models.ForeignKey(RoomInfo, on_delete=deletion.CASCADE)
+    from_date = models.DateField()
+    to_date = models.DateField()
+    reason = models.TextField()
+
+
+class TouristAttraction(models.Model):
+    name = models.CharField(max_length=40)
+    attraction_type = models.CharField(max_length=1, choices=TOURIST_ATTRACTION_TYPE_CHOICES)
+    description = models.TextField(blank=True, null=True)
+    latitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
