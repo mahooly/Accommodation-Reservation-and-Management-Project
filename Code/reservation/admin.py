@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Reservation, Transaction
+from .models import Reservation
 
 
 class ReservationAdmin(admin.ModelAdmin):
@@ -7,4 +7,4 @@ class ReservationAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Reservation, ReservationAdmin)
-admin.site.register(Transaction)
+

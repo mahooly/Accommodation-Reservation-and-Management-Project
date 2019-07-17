@@ -1,7 +1,12 @@
 from django.db import models
 from registration.models import CustomUser
 from accommodation.models import RoomInfo, Amenity, Room
+<<<<<<< HEAD
 import datetime
+=======
+# from payment.models import Transaction
+
+>>>>>>> e7a8c008fc222a518460401edca60daacda0d144
 
 class Reservation(models.Model):
     reserver = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -10,12 +15,8 @@ class Reservation(models.Model):
     check_out = models.DateField()
     is_canceled = models.BooleanField(default=False)
 
-    @property
-    def is_confirmed(self):
-        try:
-            return Transaction.objects.filter(reservation=self.pk).is_successful
-        except:
-            return False
+    class Meta:
+        ordering = ['-check_out']
 
     @property
     def total_price(self):
@@ -35,14 +36,3 @@ class Reservation(models.Model):
     def accommodation(self):
         return self.roominfo.first().room.accommodation
 
-
-class Transaction(models.Model):
-    is_successful = models.BooleanField(default=False)
-    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
-    creation_date = models.DateTimeField(auto_now_add=True)
-
-    @property
-    def total_price(self):
-        stay_len = self.reservation.check_out - self.reservation.check_in
-        stay_len = stay_len.days
-        return self.reservation.roominfo.first().room.price * stay_len * self.reservation.roominfo.count()

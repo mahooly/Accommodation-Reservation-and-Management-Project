@@ -5984,3 +5984,38 @@ body::before {
 .none {
     display: none;
 }
+
+.mapboxgl-popup {
+    max-width: 400px;
+    font-family: 'BKoodakBold';
+    direction: rtl;
+    text-align: right !important;
+}
+
+.hidden-row {
+    display: none;
+}
+
+.room-list {
+    background-color: white;
+}
+
+.highcharts-title tspan {
+    font-family: BKoodakBold;
+}
+
+.highcharts-label text tspan {
+    font-family: BKoodakBold;
+}
+
+.highcharts-legend {
+    font-family: BKoodakBold;
+}
+
+.highcharts-data-label {
+    font-family: BKoodakBold;
+}
+
+.highcharts-point {
+    font-family: BKoodakBold;
+}

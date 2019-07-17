@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Min, Max, deletion
 
-from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES
+from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES, TOURIST_ATTRACTION_TYPE_CHOICES
 from registration.models import Host, CustomUser
 
 
@@ -26,6 +26,7 @@ class Accommodation(models.Model):
     latitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
     longitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
     amenity = models.ManyToManyField(Amenity)
+    is_inactive = models.BooleanField(default=False)
     is_authenticated = models.BooleanField(default=False)
 
     @property
@@ -177,7 +178,7 @@ class RoomInfo(models.Model):
     number = models.IntegerField(default=None, null=True)
 
     def __str__(self):
-        return str(self.room) + self.room.bed_type
+        return '{} - {} - {}'.format(str(self.room), self.room.bed_type, str(self.number))
 
 
 class RoomOutOfService(models.Model):
@@ -185,3 +186,11 @@ class RoomOutOfService(models.Model):
     from_date = models.DateField()
     to_date = models.DateField()
     reason = models.TextField()
+
+
+class TouristAttraction(models.Model):
+    name = models.CharField(max_length=40)
+    attraction_type = models.CharField(max_length=1, choices=TOURIST_ATTRACTION_TYPE_CHOICES)
+    description = models.TextField(blank=True, null=True)
+    latitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)

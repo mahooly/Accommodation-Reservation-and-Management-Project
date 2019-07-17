@@ -1,73 +1,9 @@
 {% extends 'base.html' %}
+{% load jalali_tags %}
 
 {% block main %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script type="text/javascript"
-            src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.bundle.min.js"></script>
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
-            var doughnutPieData = {
-                datasets: [{
-                    data: [{{ hotels }}, {{ motels }}, {{ houses }}],
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.5)',
-                        'rgba(54, 162, 235, 0.5)',
-                        'rgba(255, 206, 86, 0.5)'
-                    ],
-                    borderColor: [
-                        'rgba(255,99,132,1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)'
-                    ]
-                }],
-
-                // These labels appear in the legend and in the tooltips when hovering different arcs
-                labels: [
-                    'هتل‌ها',
-                    'متل‌ها',
-                    'اقامتگاه‌های شخصی'
-                ]
-            };
-            var doughnutPieOptions = {
-                responsive: true,
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
-                }
-            };
-            var pieChartCanvas = $("#pieChart").get(0).getContext("2d");
-            var pieChart = new Chart(pieChartCanvas, {
-                type: 'pie',
-                data: doughnutPieData,
-                options: doughnutPieOptions
-            });
-        });
-    </script>
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
-            var lineData = {
-                datasets: [{
-                    data: {{ user_count }}
-                }],
-
-                labels: {{ date_joined|safe }},
-
-            };
-            var lineOptions = {
-                responsive: true,
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
-                }
-            };
-            var lineChartCanvas = $("#lineChart").get(0).getContext("2d");
-            var myLineChart = new Chart(lineChartCanvas, {
-                type: 'line',
-                data: lineData,
-                options: lineOptions
-            });
-        });
-    </script>
+    <script src="https://code.highcharts.com/highcharts.src.js"></script>
+    <script src="https://code.highcharts.com/modules/variable-pie.js"></script>
     <div class="container">
         <div class="row">
             <div class="pull-right" style="margin-right: 20px;">
@@ -83,49 +19,130 @@
             {% endfor %}
         {% endif %}
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-9" dir="rtl">
                 {% block contents %}
-                    <div class="col-lg-4 grid-margin stretch-card" dir="rtl">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="chartjs-size-monitor"
-                                     style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-                                    <div class="chartjs-size-monitor-expand"
-                                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                        <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
-                                    </div>
-                                    <div class="chartjs-size-monitor-shrink"
-                                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                        <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
-                                    </div>
-                                </div>
-                                <h4 class="card-title">تعداد اقامتگاه‌ها</h4>
-                                <canvas id="pieChart" style="height: 262px; display: block; width: 525px;"
-                                        width="1500"
-                                        height="1000"
-                                        class="chartjs-render-monitor"></canvas>
-                            </div>
-                        </div>
+                    <div class="row">
+                        <div id="earnings"></div>
+                        <script>
+                            Highcharts.chart('earnings', {
+                                chart: {
+                                    zoomType: 'x',
+                                    style: {
+                                        fontFamily: "\'BKoodakBold\'"
+                                    }
+                                },
+                                title: {
+                                    text: 'درآمد کسب شده'
+                                },
+                                subtitle: {
+                                    text: document.ontouchstart === undefined ?
+                                        'برای زوم کردن روی نمودار کلیک کنید و بکشید' : 'Pinch the chart to zoom in'
+                                },
+                                xAxis: {
+                                    type: 'datetime',
+                                    units: [['days', [1]]]
+                                },
+                                yAxis: {
+                                    title: {
+                                        text: 'درآمد کسب شده (تومان)',
+                                        style: {
+                                            direction: "rtl"
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    enabled: false
+                                },
+                                plotOptions: {
+                                    area: {
+                                        fillColor: {
+                                            linearGradient: {
+                                                x1: 0,
+                                                y1: 0,
+                                                x2: 0,
+                                                y2: 1
+                                            },
+                                            stops: [
+                                                [0, Highcharts.getOptions().colors[0]],
+                                                [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                                            ]
+                                        },
+                                        marker: {
+                                            radius: 2
+                                        },
+                                        lineWidth: 1,
+                                        states: {
+                                            hover: {
+                                                lineWidth: 1
+                                            }
+                                        },
+                                        threshold: null
+                                    }
+                                },
+
+                                series: [{
+                                    type: 'area',
+                                    name: 'درآمد',
+                                    data: {{ earnings|safe }}
+                                }]
+                            });
+                        </script>
                     </div>
-                    <div class="col-lg-4 grid-margin stretch-card" dir="rtl">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="chartjs-size-monitor"
-                                     style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
-                                    <div class="chartjs-size-monitor-expand"
-                                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                        <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
-                                    </div>
-                                    <div class="chartjs-size-monitor-shrink"
-                                         style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
-                                        <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
-                                    </div>
-                                </div>
-                                <h4 class="card-title">تعداد کاربران</h4>
-                                <canvas id="lineChart" style="height: 262px; display: block; width: 525px;"
-                                        width="2000"
-                                        height="1500"
-                                        class="chartjs-render-monitor"></canvas>
+                    <div class="row" style="margin-top: 20px; margin-left: -30px; margin-right: -31px">
+                        <div class="col-md-6" style="width: 650px;">
+                            <div id="reserve" class="box background-color-white"></div>
+                            <script>
+                                Highcharts.chart('reserve', {
+                                    chart: {
+                                        type: 'column',
+                                        style: {
+                                            fontFamily: "\'BKoodakBold\'"
+                                        }
+                                    },
+                                    title: {
+                                        text: 'رزروهای انجام شده و لغو شده'
+                                    },
+                                    xAxis: {
+                                        categories: {{ reserve_month|safe }},
+                                        crosshair: true
+                                    },
+                                    yAxis: {
+                                        min: 0,
+                                        title: {
+                                            text: 'تعداد رزروها'
+                                        }
+                                    },
+                                    tooltip: {
+                                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                            '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                                        footerFormat: '</table>',
+                                        shared: true,
+                                        useHTML: true,
+                                        style: {
+                                            direction: 'rtl',
+                                            textAlign: 'right'
+                                        }
+                                    },
+                                    plotOptions: {
+                                        column: {
+                                            pointPadding: 0.2,
+                                            borderWidth: 0
+                                        }
+                                    },
+                                    series: [{
+                                        name: 'رزروهای انجام شده',
+                                        data: {{ reserve_count|safe }}
+
+                                    },
+                                        {name: 'رزروهای لغو شده'}]
+                                });
+                            </script>
+                        </div>
+                        <div class="col-md-3 pull-right" style="width: 250px">
+                            <div class="box background-color-white" style="height: 150px">
+                                <p>تعداد رزروها: {{ all_count }}</p>
+                                <p>تعداد رزروهای لغو شده: {{ all_cancelled_count }}</p>
                             </div>
                         </div>
                     </div>
@@ -137,11 +154,12 @@
                         <ul class="links" dir="rtl">
                             <li><a href="{% url 'admin_dashboard_users' %}">کاربران</a></li>
                             <li><a href="{% url 'admin_dashboard_accommodations' %}">اقامتگاه‌ها</a>
-                            <ul class="links" dir="rtl">
-                                {% block auth %}
-                                {% endblock %}
-                            </ul>
+                                <ul class="links" dir="rtl">
+                                    {% block auth %}
+                                    {% endblock %}
+                                </ul>
                             </li>
+                            <li><a href="{% url 'admin_dashboard_accommodations_stats' %}">آمار اقامتگاه‌ها</a>
                         </ul>
                     </div>
                 </div>

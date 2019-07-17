@@ -124,16 +124,6 @@
                         </div>
                         <div class="right">
                             <a href="#map" class="icon scroll"><i class="fa fa-map-marker"></i>روی نقشه ببینید</a>
-                            {% if request.user.is_authenticated %}
-                                {% ifequal request.user.username accommodation.owner.user.username %}
-                                    <a href="" data-toggle="modal" data-tab="true"
-                                       data-target="#add-room-modal" class="btn btn-primary btn-rounded scroll">اضافه
-                                        کردن
-                                        اتاق</a>
-                                    <a href="{% url 'edit_accommodation' pk=accommodation.pk %}"
-                                       class="btn btn-primary btn-rounded scroll">تغییر مشخصات اقامتگاه</a>
-                                {% endifequal %}
-                            {% endif %}
                         </div>
                     </div>
 
@@ -195,13 +185,13 @@
                             </section>
                             <section>
                                 <h2>نقشه</h2>
-                                <div id="map"></div>
+                                <div id="acc-map"></div>
                             </section>
                             <script>
                                 mapboxgl.accessToken = 'pk.eyJ1IjoibWFob29seSIsImEiOiJjankxbnY2OXAwZXJvM25wY2pxb2cxaml2In0.pPibyeH8fp9snLodRu9QQg';
 
                                 var map = new mapboxgl.Map({
-                                    container: 'map',
+                                    container: 'acc-map',
                                     style: 'mapbox://styles/mapbox/streets-v11',
                                     center: [{{ accommodation.longitude }}, {{ accommodation.latitude }}],
                                     zoom: 15,
@@ -212,14 +202,69 @@
                                     defaultLanguage: 'ar'
                                 }));
 
+                                var acc_location = [{{ accommodation.longitude }}, {{ accommodation.latitude }}];
                                 var marker = new mapboxgl.Marker({
-                                    draggable: true,
                                     color: '#488f3e'
                                 }).setLngLat({
                                     lng: {{ accommodation.longitude }},
                                     lat: {{ accommodation.latitude }}
                                 }).addTo(map);
 
+                                var attractions = {{ attractions|safe }}
+                                var options = {units: 'kilometres'};
+                                attractions.forEach(function (attraction) {
+                                    Object.defineProperty(attraction.properties, 'distance', {
+                                        value: turf.distance(acc_location, attraction.geometry, options),
+                                        writable: true,
+                                        enumerable: true,
+                                        configurable: true
+                                    });
+                                });
+                                attractions = attractions.filter(function (attraction) {
+                                    return attraction.properties.distance < 2;
+                                });
+                                map.on('load', function () {
+
+                                    map.addLayer({
+                                        "id": "places",
+                                        "type": "symbol",
+                                        "source": {
+                                            "type": "geojson",
+                                            "data": {
+                                                "type": "FeatureCollection",
+                                                "features": attractions
+                                            }
+                                        },
+                                        "layout": {
+                                            "icon-image": "{icon}-15",
+                                            "text-field": "{title}",
+                                            "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+                                            "text-offset": [0, 0.6],
+                                            "text-anchor": "top"
+                                        }
+                                    });
+                                    map.on('click', 'places', function (e) {
+                                        var coordinates = e.features[0].geometry.coordinates.slice();
+                                        var description = e.features[0].properties.description;
+
+                                        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                                            coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+                                        }
+
+                                        new mapboxgl.Popup()
+                                            .setLngLat(coordinates)
+                                            .setHTML(description)
+                                            .addTo(map);
+                                    });
+
+                                    map.on('mouseenter', 'places', function () {
+                                        map.getCanvas().style.cursor = 'pointer';
+                                    });
+
+                                    map.on('mouseleave', 'places', function () {
+                                        map.getCanvas().style.cursor = '';
+                                    });
+                                });
                             </script>
                         </div>
                         <div class="col-md-4 pull-right">

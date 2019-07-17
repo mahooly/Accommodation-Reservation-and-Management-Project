@@ -6,7 +6,8 @@
             <div class="title">
                 <h1 class="active"><a href="{% url 'edit_accommodation' form.instance.pk %}">تغییر مشخصات اقامتگاه</a>
                 </h1>
-                <h1 class="inactive"><a href="{% url 'room_list' accommodation.pk %}">اتاق‌ها</a></h1>
+                <h1 class="inactive"><a href="{% url 'room_list' form.instance.pk %}">ویرایش اتاق‌ها</a></h1>
+                <h1 class="inactive"><a href="{% url 'room_stats' form.instance.pk %}">وضعیت اتاق‌ها</a></h1>
                 <h1 class="inactive"><a href="{% url 'accommodation_reserve' form.instance.pk %}">تاریخچه رزرو</a></h1>
                 <h1 class="inactive"><a href="{% url 'accommodation_review' form.instance.pk %}">نظرات</a></h1>
             </div>
@@ -147,12 +148,44 @@
                             </div>
                             <div class="form-group text-center">
                                 <label>محل روی نقشه</label>
-                                <div class="map height-300 box" id="main-map"></div>
+                                <div id="map"></div>
                             </div>
                             <div class="form-group hidden">
-                                <input type="text" class="form-control" id="latitude" name="latitude" hidden="">
-                                <input type="text" class="form-control" id="longitude" name="longitude" hidden="">
+                                <input type="hidden" class="form-control" id="latitude" name="latitude">
+                                <input type="hidden" class="form-control" id="longitude" name="longitude">
                             </div>
+                            <script>
+                                mapboxgl.accessToken = 'pk.eyJ1IjoibWFob29seSIsImEiOiJjankxbnY2OXAwZXJvM25wY2pxb2cxaml2In0.pPibyeH8fp9snLodRu9QQg';
+
+                                var map = new mapboxgl.Map({
+                                    container: 'map',
+                                    style: 'mapbox://styles/mapbox/streets-v11',
+                                    center: [{{ form.instance.longitude }}, {{ form.instance.latitude }}],
+                                    zoom: 15,
+                                    hash: true
+                                });
+                                mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.1.0/mapbox-gl-rtl-text.js');
+                                map.addControl(new MapboxLanguage({
+                                    defaultLanguage: 'ar'
+                                }));
+
+                                var marker = new mapboxgl.Marker({
+                                    draggable: true,
+                                    color: '#488f3e'
+                                }).setLngLat({
+                                    lng: {{ form.instance.longitude }},
+                                    lat: {{ form.instance.latitude }}
+                                }).addTo(map);
+
+                                function onDragEnd() {
+                                    var lngLat = marker.getLngLat();
+                                    $('#latitude').val(lngLat.lat);
+                                    $('#longitude').val(lngLat.lng);
+                                }
+
+                                marker.on('dragend', onDragEnd);
+
+                            </script>
                         </div>
                         <div class="col-md-5 pull-right">
                             <h2>راه‌های ارتباطی</h2>

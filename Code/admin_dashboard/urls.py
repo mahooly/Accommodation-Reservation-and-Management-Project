@@ -7,6 +7,8 @@ urlpatterns = [
     path('admin_dashboard/users', views.AdminUserDashboard.as_view(), name='admin_dashboard_users'),
     path('admin_dashboard/accommodations', views.AdminAccommodationDashboard.as_view(),
          name='admin_dashboard_accommodations'),
+    path('admin_dashboard/accommodations/stats', views.AdminAccommodationStatsDashboard.as_view(),
+         name='admin_dashboard_accommodations_stats'),
     path('delete_user/<int:pk>/', views.DeleteUser.as_view(), name='delete_user'),
     path('authenticate_accommodation/<int:pk>/', views.AuthenticateAccommodation.as_view(),
          name='authenticate_accommodation'),
