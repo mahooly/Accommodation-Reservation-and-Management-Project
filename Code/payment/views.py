@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.views import View
+
+from reservation.models import Reservation
 from .forms import PaymentForm
 from .models import Transaction
 from django.utils.decorators import method_decorator
@@ -7,6 +9,7 @@ from registration.decorators import user_is_confirmed
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
+
 
 @method_decorator([login_required, user_is_confirmed], name='dispatch')
 class PaymentView(View):

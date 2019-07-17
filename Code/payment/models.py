@@ -1,6 +1,7 @@
 from django.db import models
 from reservation.models import Reservation
 
+
 class Transaction(models.Model):
     is_successful = models.BooleanField(default=False)
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
