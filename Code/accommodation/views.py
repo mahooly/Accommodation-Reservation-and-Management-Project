@@ -106,9 +106,8 @@ class AccommodationDetailView(DetailView):
 class CreateRoomView(View):
     def post(self, request, *args, **kwargs):
         form = RoomCreationForm(request.POST, request.FILES)
-        accommodation_id = kwargs['accid']
+        accommodation = get_object_or_404(Accommodation, pk=kwargs['accid'])
         if form.is_valid():
-            accommodation = get_object_or_404(Accommodation, pk=accommodation_id)
             room = form.save(commit=False)
             room.accommodation = accommodation
             room.save()
@@ -117,12 +116,9 @@ class CreateRoomView(View):
             for i in range(how_many):
                 RoomInfo.objects.create(room=room)
             messages.success(request, 'اتاق با موفقیت اضافه شد.')
-            url = '/accommodation/' + str(accommodation_id)
-            return redirect(url)
         else:
             messages.error(request, 'در اضافه کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
-            url = '/accommodation/' + str(accommodation_id)
-            return redirect(url)
+        return redirect(reverse('room_list', kwargs={'pk': accommodation.pk}))
 
 
 @method_decorator([login_required, user_is_confirmed, user_host_or_superuser], name='dispatch')
@@ -205,9 +201,8 @@ class DeleteImage(View):
         img = get_object_or_404(Image, pk=img_pk)
         accommodation = img.accommodation
         img.delete()
-        url = '/edit_accommodation/' + str(accommodation.pk)
         messages.success(request, 'عکس با موفقیت حذف شد.')
-        return redirect(url)
+        return redirect(reverse('edit_accommodation', kwargs={'pk': accommodation.pk}))
 
 
 @method_decorator([login_required, user_is_confirmed, user_is_host], name='dispatch')
@@ -222,6 +217,7 @@ class CreateAmenityView(View):
         return redirect('/create_accommodation/')
 
 
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class RoomListView(ListView):
     template_name = 'accommodation/room_list.html'
 
@@ -231,12 +227,13 @@ class RoomListView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(RoomListView, self).get_context_data(**kwargs)
         accommodation = get_object_or_404(Accommodation, pk=self.kwargs['pk'])
-        context['accommodation'] = accommodation
         form = RoomCreationForm()
+        context['accommodation'] = accommodation
         context['form'] = form
         return context
 
 
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class DeleteRoomView(View):
     def get(self, request, *args, **kwargs):
         room = get_object_or_404(Room, pk=kwargs['pk'])
@@ -246,6 +243,7 @@ class DeleteRoomView(View):
         return redirect(reverse('room_list', kwargs={'pk': accommodation.pk}))
 
 
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class CreateRoomInfo(View):
     def post(self, request, *args, **kwargs):
         room = get_object_or_404(Room, pk=kwargs['pk'])
@@ -260,6 +258,7 @@ class CreateRoomInfo(View):
         return redirect(reverse('room_list', kwargs={'pk': room.accommodation.pk}))
 
 
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class ChangeRoomInfoView(View):
     def post(self, request, *args, **kwargs):
         room_info = get_object_or_404(RoomInfo, pk=kwargs['pk'])
@@ -274,6 +273,7 @@ class ChangeRoomInfoView(View):
         return redirect(reverse('room_list', kwargs={'pk': room_info.room.accommodation.pk}))
 
 
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class DeleteRoomInfoView(View):
     def get(self, request, *args, **kwargs):
         room_info = get_object_or_404(RoomInfo, pk=kwargs['pk'])
@@ -283,6 +283,7 @@ class DeleteRoomInfoView(View):
         return redirect(reverse('room_list', kwargs={'pk': accommodation.pk}))
 
 
+@method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
 class RoomInfoStatsView(ListView):
     template_name = 'accommodation/room.html'
 
@@ -292,38 +293,64 @@ class RoomInfoStatsView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(RoomInfoStatsView, self).get_context_data(**kwargs)
         accommodation = get_object_or_404(Accommodation, pk=self.kwargs['pk'])
+        rooms = self.get_all_rooms(accommodation)
         context['accommodation'] = accommodation
+        context['report'] = self.get_report()
+        context['empty_rooms'] = self.get_empty_rooms(rooms)
+        context['reserved'] = self.get_reserved_rooms(rooms)
+        context['out_of_service'] = self.get_out_of_service_rooms(rooms)
+        return context
+
+    def get_all_rooms(self, accommodation):
+        return RoomInfo.objects.filter(room__accommodation=accommodation)
+
+    def get_reserved_rooms(self, all_rooms):
+        return all_rooms.filter(Q(reservation__check_in__gte=date.today()) |
+                                Q(reservation__check_out__lte=date.today()), reservation__is_canceled=False)
+
+    def get_out_of_service_rooms(self, all_rooms):
+        return all_rooms.filter(Q(roomoutofservice__from_date__gte=date.today()) |
+                                Q(roomoutofservice__to_date__lte=date.today()))
+
+    def get_empty_rooms(self, all_rooms):
+        reserved = self.get_reserved_rooms(all_rooms)
+        out_of_service = self.get_out_of_service_rooms(all_rooms)
+        empty_rooms = all_rooms.difference(reserved)
+        return empty_rooms.difference(out_of_service)
+
+    def get_report(self):
         from_date = self.request.GET.get('from_date', '')
         to_date = self.request.GET.get('to_date', '')
         room_number = self.request.GET.get('room_number', '')
         room_report = {}
         service_report = {}
         if room_number:
-            room_report = Reservation.objects.filter(roominfo__number=room_number)
-            service_report = RoomOutOfService.objects.filter(room_info__number=room_number)
+            room_report, service_report = self.filter_by_number(room_report)
         if from_date:
-            from_date = convert_string_to_date(from_date)
-            room_report = room_report.filter(
-                Q(check_in__gt=from_date) |
-                Q(check_out__gt=from_date))
-            service_report = service_report.filter(Q(from_date__gt=from_date) |
-                                                   Q(to_date__gt=from_date))
+            room_report, service_report = self.filter_by_from_date(from_date, room_report, service_report)
         if to_date:
-            to_date = convert_string_to_date(to_date)
-            room_report = room_report.filter(Q(check_in__lt=to_date) |
-                                             Q(check_out__lt=to_date))
-            service_report = service_report.filter(Q(from_date__lt=to_date) |
-                                                   Q(to_date__lt=to_date))
+            room_report, service_report = self.filter_by_to_date(to_date, room_report, service_report)
         report = list(chain(room_report, service_report))
-        all_rooms = RoomInfo.objects.filter(room__accommodation=accommodation)
-        reserved = all_rooms.filter(Q(reservation__check_in__gte=date.today()) |
-                                    Q(reservation__check_out__lte=date.today()), reservation__is_canceled=False)
-        out_of_service = all_rooms.filter(Q(roomoutofservice__from_date__gte=date.today()) |
-                                          Q(roomoutofservice__to_date__lte=date.today()))
-        empty_rooms = all_rooms.difference(reserved)
-        empty_rooms = empty_rooms.difference(out_of_service)
-        context['report'] = report
-        context['empty_rooms'] = empty_rooms
-        context['reserved'] = reserved
-        context['out_of_service'] = out_of_service
-        return context
+        return report
+
+    def filter_by_number(self, room_number):
+        room_report = Reservation.objects.filter(roominfo__number=room_number)
+        service_report = RoomOutOfService.objects.filter(room_info__number=room_number)
+        return room_report, service_report
+
+    def filter_by_from_date(self, from_date, room_report, service_report):
+        from_date = convert_string_to_date(from_date)
+        room_report = room_report.filter(
+            Q(check_in__gt=from_date) |
+            Q(check_out__gt=from_date))
+        service_report = service_report.filter(Q(from_date__gt=from_date) |
+                                               Q(to_date__gt=from_date))
+        return room_report, service_report
+
+    def filter_by_to_date(self, to_date, room_report, service_report):
+        to_date = convert_string_to_date(to_date)
+        room_report = room_report.filter(Q(check_in__lt=to_date) |
+                                         Q(check_out__lt=to_date))
+        service_report = service_report.filter(Q(from_date__lt=to_date) |
+                                               Q(to_date__lt=to_date))
+        return room_report, service_report
