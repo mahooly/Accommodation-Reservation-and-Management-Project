@@ -15,6 +15,7 @@ from .decorators import user_same_as_comment_user_or_admin, user_same_as_dashboa
 from django.db.models import Q
 from .forms import BlogSearchForm
 
+
 class BlogListView(ListView):
     template_name = "blog/blog-list.html"
     model = Post
@@ -24,12 +25,10 @@ class BlogListView(ListView):
     def get_queryset(self):
         form = BlogSearchForm(self.request.GET)
         posts = Post.objects.all()
-        print("I am here")
         if 'uid' in self.kwargs.keys():
             user = get_object_or_404(CustomUser, id=self.kwargs['uid'])
             posts = Post.objects.filter(owner=user)
         if 'makan' in self.request.GET:
-            print("hoora!!!")
             if form.is_valid():
                 makan = form.cleaned_data.get('makan')
                 if makan != '':
@@ -38,9 +37,9 @@ class BlogListView(ListView):
             if form.is_valid():
                 keyword = form.cleaned_data.get('keyword')
                 if keyword != '':
-                    posts = posts.filter(Q(title__contains=keyword) | Q(owner__first_name=keyword) | Q(owner__last_name=keyword)
-                                     | Q(description__contains=keyword))
-
+                    posts = posts.filter(
+                        Q(title__contains=keyword) | Q(owner__first_name=keyword) | Q(owner__last_name=keyword)
+                        | Q(description__contains=keyword))
 
         return posts
 
@@ -75,12 +74,9 @@ class BlogEditView(View):
     template_name = "blog/create_blog.html"
 
     def get(self, request, uid, blog_id):
-        flag = (CustomUser.objects.get(post__pk=blog_id) == self.request.user)
-        if flag == False:
-            return redirect('/')
         blog = Post.objects.get(pk=int(blog_id))
-        initial = {'title':blog.title, 'description':blog.description, 'province':blog.province,
-                   'city':blog.city, 'image':blog.image}
+        initial = {'title': blog.title, 'description': blog.description, 'province': blog.province,
+                   'city': blog.city, 'image': blog.image}
         form = BlogCreationForm(initial=initial)
         return render(request, self.template_name, {'form': form})
 
@@ -100,14 +96,17 @@ class BlogEditView(View):
         else:
             return render(request, self.template_name, {'form': form})
 
+
 class BlogDetailView(DetailView):
     template_name = "blog/blog_detail.html"
     model = Post
+
     def get_context_data(self, **kwargs):
         context = super(BlogDetailView, self).get_context_data(**kwargs)
-        context['flag'] =  (CustomUser.objects.get(post__pk=self.kwargs['pk']) == self.request.user)
+        context['flag'] = (CustomUser.objects.get(post__pk=self.kwargs['pk']) == self.request.user)
         context['uid'] = self.request.user.pk
         return context
+
 
 @method_decorator([login_required, user_is_confirmed], name='dispatch')
 class CreateCommentView(View):

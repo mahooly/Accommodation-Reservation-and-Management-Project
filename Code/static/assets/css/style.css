@@ -5999,3 +5999,23 @@ body::before {
 .room-list {
     background-color: white;
 }
+
+.highcharts-title tspan {
+    font-family: BKoodakBold;
+}
+
+.highcharts-label text tspan {
+    font-family: BKoodakBold;
+}
+
+.highcharts-legend {
+    font-family: BKoodakBold;
+}
+
+.highcharts-data-label {
+    font-family: BKoodakBold;
+}
+
+.highcharts-point {
+    font-family: BKoodakBold;
+}
