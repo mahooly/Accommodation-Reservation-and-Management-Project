@@ -140,7 +140,7 @@
                             </script>
                         </div>
                         <div class="col-md-3 pull-right" style="width: 250px">
-                            <div class="box background-color-white">
+                            <div class="box background-color-white" style="height: 150px">
                                 <p>تعداد رزروها: {{ all_count }}</p>
                                 <p>تعداد رزروهای لغو شده: {{ all_cancelled_count }}</p>
                             </div>
@@ -154,12 +154,12 @@
                         <ul class="links" dir="rtl">
                             <li><a href="{% url 'admin_dashboard_users' %}">کاربران</a></li>
                             <li><a href="{% url 'admin_dashboard_accommodations' %}">اقامتگاه‌ها</a>
-                            <li><a href="{% url 'admin_dashboard_accommodations_stats' %}">آمار اقامتگاه‌ها</a>
                                 <ul class="links" dir="rtl">
                                     {% block auth %}
                                     {% endblock %}
                                 </ul>
                             </li>
+                            <li><a href="{% url 'admin_dashboard_accommodations_stats' %}">آمار اقامتگاه‌ها</a>
                         </ul>
                     </div>
                 </div>

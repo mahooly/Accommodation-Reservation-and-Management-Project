@@ -1,53 +1,85 @@
 {% extends 'base.html' %}
 {% load jalali_tags %}
 {% block main %}
-        <div class="box filter" dir="rtl">
-            <h2>جست و جو</h2>
-            <form id="form-filter" class="labels-uppercase">
-                <div class="row">
-                    <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="form-filter-destination">مکان</label>
-                        <input type="text" class="form-control" id="form-filter-destination" name="makan" placeholder="Destination">
+    <div class="container">
+        {% if not blog_user %}
+            <div class="row" dir="rtl">
+                <h2>جست و جو</h2>
+                <form class="labels-uppercase">
+                    <div class="row">
+                        <div class="col-md-5 pull-right">
+                            <div class="form-group">
+                                <label class="invisible" for="form-check-in">Hidden Label</label>
+                                <input type="text" class="form-control" id="form-check-in"
+                                       name="keyword" placeholder="عبارت جست و جو">
+                            </div>
+                        </div>
+                        <div class="ir-select">
+                            <div class="col-md-2 pull-right">
+                                <div class="form-group">
+                                    <label for="province">استان</label>
+                                    <select class="ir-province framed width-100" id="province"
+                                            name="province" style="height: 40px">
+                                        <option hidden value="{{ province }}" selected>{{ province }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2 pull-right">
+                                <div class="form-group">
+                                    <label for="city">شهر</label>
+                                    <select class="ir-city framed width-100" id="city" name="city" style="height: 40px">
+                                        <option hidden value="{{ city }}" selected>{{ city }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="invisible">Hidden label</label>
+                                <button type="submit"
+                                        class="btn btn-primary btn-rounded btn-framed form-control">جست و جو
+                                </button>
+                            </div>
+                        </div>
                     </div>
-                    </div>
-                    <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="form-filter-destination">کلید واژه</label>
-                        <input type="text" class="form-control" id="form-filter-destination" name="keyword" placeholder="Destination">
-                    </div>
-                    </div>
+                </form>
+            </div>
+            <hr>
+        {% endif %}
+        <div class="row">
+            {% if blog_user %}
+                <div class="pull-right" style="margin-right: 20px;">
+                    <h1><a href="{% url 'profile' blog_user.id %}" style="color: #488f3e;">{{ blog_user.username }}</a>&nbsp;تجربیات
+                        سفر</h1>
                 </div>
-                <div class="form-group center">
-                    <button type="submit" class="btn btn-primary btn-rounded form-control">جست و جو</button>
-                </div>
-            </form>
-            <!--end form-filter-->
-        </div>
-
-        <div class="container">
-            <div class="row">
-                {% if blog_user %}
-                    <div class="pull-right" style="margin-right: 20px;">
-                        <h1><a href="{% url 'profile' blog_user.id %}" style="color: #488f3e;">{{ blog_user.username }}</a>&nbsp;تجربیات
-                            سفر</h1>
+            {% else %}
+                {% if keyword %}
+                    <div class="pull-right" style="margin-right: 20px; margin-bottom: 40px">
+                        <h1>نتایج جست و جو برای <span style="color: #488f3e;">{{ keyword }}</span></h1>
+                    </div>
+                {% elif province or city %}
+                    <div class="pull-right" style="margin-right: 20px; margin-bottom: 40px">
+                        <h1>&nbsp;نتایج جست و جو</h1>
                     </div>
                 {% else %}
                     <div class="pull-right" style="margin-right: 20px; margin-bottom: 40px">
                         <h1>&nbsp;تجربیات سفر</h1>
                     </div>
                 {% endif %}
-            </div>
-            <div class="row">
-                <div class="col-md-10 col-md-offset-1">
-                    <div class="main-content">
-                        {% for post in object_list %}
+            {% endif %}
+        </div>
+        <div class="row">
+            <div class="col-md-10 col-md-offset-1">
+                <div class="main-content">
+                    {% for post in object_list %}
+                        <div class="box background-color-white" style="margin-bottom: 20px">
                             <article class="blog-post">
                                 {% if post.image %}
                                     <a href="{% url 'blog_detail' post.id %}"><img src="{{ post.image.url }}"
                                                                                    style="width: 100%"></a>
                                 {% endif %}
-                                <header dir="rtl"><a href="{% url 'blog_detail' post.id %}"><h2>{{ post.title }}</h2></a>
+                                <header dir="rtl"><a href="{% url 'blog_detail' post.id %}"><h2>{{ post.title }}</h2>
+                                </a>
                                 </header>
                                 <figure class="meta">
                                     <a href="#" class="link icon" dir="rtl"><i
@@ -66,42 +98,41 @@
                                    class="btn btn-rounded btn-default btn-framed btn-small">ادامه
                                     مطلب</a>
                             </article>
-                        {% endfor %}
-                        <div class="center">
-                            {% if object_list %}
-                                <ul class="pagination">
-                                    {% if page_obj.has_previous %}
-                                        <li class="prev">
-                                            <a href="?page={{ page_obj.previous_page_number }}"><i
-                                                    class="arrow_left"></i></a>
-                                        </li>
-                                        <li>
-                                            <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
-                                        </li>
-                                    {% endif %}
-                                    <li class="active">
-                                        <a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
-
-                                    </li>
-
-                                    {% if page_obj.has_next %}
-                                        <li>
-                                            <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
-                                        </li>
-                                        <li class="next">
-                                            <a href="{{ page_url }}?page={{ page_obj.next_page_number }}"><i
-                                                    class="arrow_right"></i></a>
-                                        </li>
-                                    {% endif %}
-                                </ul>
-                            {% else %}
-                                <h4 dir="rtl" style="margin-top: 100px">کاربر هنوز تجربه‌ای به اشتراک نگذاشته است.</h4>
-                            {% endif %}
                         </div>
+                    {% endfor %}
+                    <div class="center">
+                        {% if object_list %}
+                            <ul class="pagination">
+                                {% if page_obj.has_previous %}
+                                    <li class="prev">
+                                        <a href="?page={{ page_obj.previous_page_number }}"><i
+                                                class="arrow_left"></i></a>
+                                    </li>
+                                    <li>
+                                        <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+                                    </li>
+                                {% endif %}
+                                <li class="active">
+                                    <a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+
+                                </li>
+
+                                {% if page_obj.has_next %}
+                                    <li>
+                                        <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                                    </li>
+                                    <li class="next">
+                                        <a href="{{ page_url }}?page={{ page_obj.next_page_number }}"><i
+                                                class="arrow_right"></i></a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        {% else %}
+                            <h4 dir="rtl" style="margin-top: 100px">کاربر هنوز تجربه‌ای به اشتراک نگذاشته است.</h4>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
-
-
+    </div>
 {% endblock %}
