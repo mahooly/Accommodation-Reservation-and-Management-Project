@@ -27,7 +27,8 @@ SECRET_KEY = 't5e8^w_h%xp9m7#&iyyu55j8whfj^&-wokth#w)=fa7curyf^2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['makan-system.herokuapp.com', '127.0.0.1', 'localhost', 'makan2-app.herokuapp.com']
+#'makan-system.herokuapp.com', '127.0.0.1', 'localhost',
+ALLOWED_HOSTS = ['makan2-app.herokuapp.com']
 
 # Application definition
 
