@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from django.db.models import Count
-from django.db.models.functions import TruncMonth
+from django.db.models.functions import TruncMonth, ExtractMonth
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView
@@ -12,6 +12,7 @@ from registration.models import CustomUser
 from accommodation.models import Accommodation
 from django.views import View
 from Code.settings import DEFAULT_FROM_EMAIL
+from reservation.models import Reservation, Transaction
 from search_index.filters import AccommodationFilter
 from .decorators import user_is_superuser
 
@@ -29,8 +30,13 @@ class AdminDashboard(View):
         users = CustomUser.objects.all().annotate(month=TruncMonth('date_joined')).values('month').annotate(
             count=Count('id'))
         date_joined = list(
-            set([JalaliDate(x).strftime('%B') for x in list(users.values_list('date_joined', flat=True))]))
+            set([JalaliDate(x).strftime('%B') for x in list(users.values_list('month', flat=True))]))
         user_count = list(users.values_list('count', flat=True))
+        reservations = Reservation.objects.annotate(month=TruncMonth('transaction__creation_date')).values(
+            'month').annotate(count=Count('id'))
+        reservations_month = list(
+            set([JalaliDate(x).strftime('%B') for x in list(reservations.values_list('month', flat=True))]))
+        reservations_count = list(reservations.values_list('count', flat=True))
         return render(request, self.template_name,
                       {'hotels': hotels, 'motels': motels, 'houses': houses, 'date_joined': date_joined,
                        'user_count': user_count})

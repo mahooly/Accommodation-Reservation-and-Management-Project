@@ -26,6 +26,7 @@ class Accommodation(models.Model):
     latitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
     longitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
     amenity = models.ManyToManyField(Amenity)
+    is_inactive = models.BooleanField(default=False)
     is_authenticated = models.BooleanField(default=False)
 
     @property
