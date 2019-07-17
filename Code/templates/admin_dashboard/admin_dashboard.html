@@ -4,31 +4,6 @@
 {% block main %}
     <script src="https://code.highcharts.com/highcharts.src.js"></script>
     <script src="https://code.highcharts.com/modules/variable-pie.js"></script>
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
-            var lineData = {
-                datasets: [{
-                    data: {{ user_count }}
-                }],
-
-                labels: {{ date_joined|safe }},
-
-            };
-            var lineOptions = {
-                responsive: true,
-                animation: {
-                    animateScale: true,
-                    animateRotate: true
-                }
-            };
-            var lineChartCanvas = $("#lineChart").get(0).getContext("2d");
-            var myLineChart = new Chart(lineChartCanvas, {
-                type: 'line',
-                data: lineData,
-                options: lineOptions
-            });
-        });
-    </script>
     <div class="container">
         <div class="row">
             <div class="pull-right" style="margin-right: 20px;">
@@ -47,123 +22,128 @@
             <div class="col-md-9" dir="rtl">
                 {% block contents %}
                     <div class="row">
-                        <div class="col-md-5">
-                            <div id="container"></div>
-                            <script type="text/javascript">
-                                Highcharts.chart('container', {
-                                    chart: {
-                                        plotBackgroundColor: null,
-                                        plotBorderWidth: null,
-                                        plotShadow: false,
-                                        type: 'pie',
-                                        style: {
-                                            fontFamily: "\'BKoodakBold\'"
-                                        }
-                                    },
+                        <div id="earnings"></div>
+                        <script>
+                            Highcharts.chart('earnings', {
+                                chart: {
+                                    zoomType: 'x',
+                                    style: {
+                                        fontFamily: "\'BKoodakBold\'"
+                                    }
+                                },
+                                title: {
+                                    text: 'درآمد کسب شده'
+                                },
+                                subtitle: {
+                                    text: document.ontouchstart === undefined ?
+                                        'برای زوم کردن روی نمودار کلیک کنید و بکشید' : 'Pinch the chart to zoom in'
+                                },
+                                xAxis: {
+                                    type: 'datetime',
+                                    units: [['days', [1]]]
+                                },
+                                yAxis: {
                                     title: {
-                                        text: 'تعداد اقامتگاه‌ها'
-                                    },
-                                    tooltip: {
-                                        pointFormat: '<div style="font-family: \'BKoodakBold\'">{series.name}: {point.y}</div>',
-                                        useHTML: true,
+                                        text: 'درآمد کسب شده (تومان)',
                                         style: {
-                                            direction: 'rtl',
-                                            textAlign: 'right'
+                                            direction: "rtl"
                                         }
-                                    },
-                                    plotOptions: {
-                                        pie: {
-                                            allowPointSelect: true,
-                                            cursor: 'pointer',
-                                            dataLabels: {
-                                                enabled: false
+                                    }
+                                },
+                                legend: {
+                                    enabled: false
+                                },
+                                plotOptions: {
+                                    area: {
+                                        fillColor: {
+                                            linearGradient: {
+                                                x1: 0,
+                                                y1: 0,
+                                                x2: 0,
+                                                y2: 1
                                             },
-                                            showInLegend: true
-                                        }
-                                    },
-                                    series: [{
-                                        name: 'تعداد',
-                                        colorByPoint: true,
-                                        data: [{
-                                            name: 'هتل',
-                                            y: {{ hotels }},
-                                            sliced: true,
-                                            selected: true
-                                        }, {
-                                            name: 'اقامتگاه محلی',
-                                            y: {{ motels }}
-                                        }, {
-                                            name: 'منزل شخصی',
-                                            y: {{ houses }}
-                                        }]
-                                    }]
-                                });
-                            </script>
-                        </div>
-                        <div class="col-md-4">
-                            <div id="columns"></div>
-                            <script type="text/javascript">
-                                Highcharts.chart('columns', {
+                                            stops: [
+                                                [0, Highcharts.getOptions().colors[0]],
+                                                [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                                            ]
+                                        },
+                                        marker: {
+                                            radius: 2
+                                        },
+                                        lineWidth: 1,
+                                        states: {
+                                            hover: {
+                                                lineWidth: 1
+                                            }
+                                        },
+                                        threshold: null
+                                    }
+                                },
+
+                                series: [{
+                                    type: 'area',
+                                    name: 'درآمد',
+                                    data: {{ earnings|safe }}
+                                }]
+                            });
+                        </script>
+                    </div>
+                    <div class="row" style="margin-top: 20px; margin-left: -30px; margin-right: -31px">
+                        <div class="col-md-6" style="width: 650px;">
+                            <div id="reserve" class="box background-color-white"></div>
+                            <script>
+                                Highcharts.chart('reserve', {
                                     chart: {
+                                        type: 'column',
                                         style: {
                                             fontFamily: "\'BKoodakBold\'"
                                         }
                                     },
-
                                     title: {
-                                        text: 'تعداد کاربران'
-                                    },
-
-                                    legend: {
-                                        layout: 'vertical',
-                                        align: 'right',
-                                        verticalAlign: 'middle'
+                                        text: 'رزروهای انجام شده و لغو شده'
                                     },
                                     xAxis: {
-                                        categories: {{ date_joined|safe }},
+                                        categories: {{ reserve_month|safe }},
                                         crosshair: true
                                     },
                                     yAxis: {
+                                        min: 0,
                                         title: {
-                                            text: ''
-                                        }
-                                    },
-                                    plotOptions: {
-                                        series: {
-                                            label: {
-                                                connectorAllowed: false
-                                            }
+                                            text: 'تعداد رزروها'
                                         }
                                     },
                                     tooltip: {
+                                        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                            '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                                        footerFormat: '</table>',
+                                        shared: true,
                                         useHTML: true,
                                         style: {
                                             direction: 'rtl',
                                             textAlign: 'right'
                                         }
                                     },
+                                    plotOptions: {
+                                        column: {
+                                            pointPadding: 0.2,
+                                            borderWidth: 0
+                                        }
+                                    },
                                     series: [{
-                                        name: 'تعداد',
-                                        data: {{ user_count }}
-                                    }],
+                                        name: 'رزروهای انجام شده',
+                                        data: {{ reserve_count|safe }}
 
-                                    responsive: {
-                                        rules: [{
-                                            condition: {
-                                                maxWidth: 500
-                                            },
-                                            chartOptions: {
-                                                legend: {
-                                                    layout: 'horizontal',
-                                                    align: 'center',
-                                                    verticalAlign: 'bottom'
-                                                }
-                                            }
-                                        }]
-                                    }
-
+                                    },
+                                        {name: 'رزروهای لغو شده'}]
                                 });
                             </script>
+                        </div>
+                        <div class="col-md-3 pull-right" style="width: 250px">
+                            <div class="box background-color-white">
+                                <p>تعداد رزروها: {{ all_count }}</p>
+                                <p>تعداد رزروهای لغو شده: {{ all_cancelled_count }}</p>
+                            </div>
                         </div>
                     </div>
                 {% endblock %}
@@ -174,6 +154,7 @@
                         <ul class="links" dir="rtl">
                             <li><a href="{% url 'admin_dashboard_users' %}">کاربران</a></li>
                             <li><a href="{% url 'admin_dashboard_accommodations' %}">اقامتگاه‌ها</a>
+                            <li><a href="{% url 'admin_dashboard_accommodations_stats' %}">آمار اقامتگاه‌ها</a>
                                 <ul class="links" dir="rtl">
                                     {% block auth %}
                                     {% endblock %}

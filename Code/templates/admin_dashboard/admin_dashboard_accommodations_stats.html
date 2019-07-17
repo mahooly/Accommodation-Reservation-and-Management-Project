@@ -1,0 +1,60 @@
+{% extends 'admin_dashboard/admin_dashboard.html' %}
+{% block contents %}
+    <div class="main-content">
+        <div class="row">
+            <div class="col-md-7">
+                <div id="container"></div>
+                <script type="text/javascript">
+                    Highcharts.chart('container', {
+                        chart: {
+                            plotBackgroundColor: null,
+                            plotBorderWidth: null,
+                            plotShadow: false,
+                            type: 'pie',
+                            style: {
+                                fontFamily: "\'BKoodakBold\'"
+                            }
+                        },
+                        title: {
+                            text: 'تعداد اقامتگاه‌ها'
+                        },
+                        tooltip: {
+                            pointFormat: '<div style="font-family: \'BKoodakBold\'">{series.name}: {point.y}</div>',
+                            useHTML: true,
+                            style: {
+                                direction: 'rtl',
+                                textAlign: 'right'
+                            }
+                        },
+                        plotOptions: {
+                            pie: {
+                                allowPointSelect: true,
+                                cursor: 'pointer',
+                                dataLabels: {
+                                    enabled: false
+                                },
+                                showInLegend: true
+                            }
+                        },
+                        series: [{
+                            name: 'تعداد',
+                            colorByPoint: true,
+                            data: [{
+                                name: 'هتل',
+                                y: {{ hotels }},
+                                sliced: true,
+                                selected: true
+                            }, {
+                                name: 'اقامتگاه محلی',
+                                y: {{ motels }}
+                            }, {
+                                name: 'منزل شخصی',
+                                y: {{ houses }}
+                            }]
+                        }]
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+{% endblock %}

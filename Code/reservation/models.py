@@ -14,13 +14,6 @@ class Reservation(models.Model):
     class Meta:
         ordering = ['-check_out']
 
-    # @property
-    # def is_confirmed(self):
-    #     try:
-    #         return Transaction.objects.filter(reservation=self.pk).is_successful
-    #     except:
-    #         return False
-
     @property
     def total_price(self):
         stay_len = self.stay_length

@@ -13,7 +13,6 @@ from registration.decorators import user_is_host, user_is_confirmed
 from reservation.filters import ReservationFilter
 from .forms import MakeReservationForm
 from .models import Reservation
-from payment.models import Transaction
 from accommodation.models import Room, RoomInfo, Accommodation
 from Code.settings import DEFAULT_FROM_EMAIL
 from django.core.mail import send_mail
@@ -177,4 +176,3 @@ class CancelReservation(View):
         )
         messages.success(request, 'لغو رزرو با موفقیت انجام شد.')
         return redirect('user_reserve')
-
