@@ -1,25 +1,22 @@
 import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Q
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView
-from khayyam import JalaliDate
 
 from accommodation.decorators import user_same_as_accommodation_user
 from registration.decorators import user_is_host, user_is_confirmed
 from reservation.filters import ReservationFilter
 from .forms import MakeReservationForm
 from .models import Reservation
+from payment.models import Transaction
 from accommodation.models import Room, RoomInfo, Accommodation
 from Code.settings import DEFAULT_FROM_EMAIL
 from django.core.mail import send_mail
-
-persian_numbers = '۱۲۳۴۵۶۷۸۹۰'
-english_numbers = '1234567890'
-trans_num = str.maketrans(persian_numbers, english_numbers)
+from utils.utils import convert_string_to_date
 
 
 @method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
@@ -28,8 +25,7 @@ class AccommodationReservationList(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        id = self.kwargs['pk']
-        reserve_list = Reservation.objects.filter(roominfo__room__accommodation_id=id)
+        reserve_list = Reservation.objects.filter(roominfo__room__accommodation_id=self.kwargs['pk'])
         return ReservationFilter(self.request.GET, reserve_list).qs
 
     def get_context_data(self, **kwargs):
@@ -56,45 +52,24 @@ class UserReservationList(ListView):
 
 @method_decorator([login_required, user_is_confirmed], name='dispatch')
 class MakeReservation(View):
-    format = '%m/%d/%Y'
-
-    def convert_string_to_date(self, date_string):
-        split_string = [int(x.translate(trans_num)) for x in date_string.split('/')]
-        return JalaliDate(split_string[0], split_string[1], split_string[2]).todate()
-
-    def convert_date_to_string(self, datetime_object):
-        format2 = '%Y-%m-%d'
-        return datetime_object.strftime(format2)
 
     def get_available_room_infos(self, room, check_in, check_out):
-
-        availableRoomInfos1 = RoomInfo.objects.all().exclude(
-            Q(reservation__check_in__range=(check_in, check_out - datetime.timedelta(days=1))),
-            Q(reservation__is_canceled=False))
-        availableRoomInfos2 = availableRoomInfos1.exclude(
-            Q(reservation__check_out__range=(check_in + datetime.timedelta(days=1), check_out)),
-            Q(reservation__is_canceled=False))
-        availableRoomInfos = availableRoomInfos2.exclude(
-            Q(roomoutofservice__from_date__range=(check_in, check_out - datetime.timedelta(days=1))),
-            Q(roomoutofservice__to_date__range=(check_in + datetime.timedelta(days=1), check_out)))
-        availableRoomInfos = availableRoomInfos.filter(room=room)
-        return availableRoomInfos
+        available_room_infos = RoomInfo.objects.get_available_room_infos(check_in, check_out)
+        available_room_infos = available_room_infos.filter(room=room)
+        return available_room_infos
 
     def post(self, request, *args, **kwargs):
         form = MakeReservationForm(request.POST)
-        room_id = kwargs['rid']
-        room = get_object_or_404(Room, pk=room_id)
+        room = get_object_or_404(Room, pk=kwargs['rid'])
         if form.is_valid():
             how_many = int(form.cleaned_data.get('how_many'))
-            check_in = self.convert_string_to_date(form.cleaned_data.get('check_in'))
-            check_out = self.convert_string_to_date(form.cleaned_data.get('check_out'))
+            check_in = convert_string_to_date(form.cleaned_data.get('check_in'))
+            check_out = convert_string_to_date(form.cleaned_data.get('check_out'))
             available_room_infos = self.get_available_room_infos(room, check_in, check_out)
             if len(available_room_infos) < how_many:
                 messages.error(request,
                                'در رزرو کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید. به این تعداد اتاق خالی وجود ندارد.')
-                accommodation_id = room.accommodation.pk
-                url = '/accommodation/' + str(accommodation_id)
-                return redirect(url)
+                return redirect(reverse('accommodation_detail', kwargs={'pk': room.accommodation.pk}))
             count = 0
             reserve = Reservation.objects.create(reserver=request.user, check_in=check_in,
                                                  check_out=check_out)
@@ -115,14 +90,11 @@ class MakeReservation(View):
                 fail_silently=True,
             )
             messages.success(request, 'رزرو شما با موفقیت ثبت شد.')
-            url = '/payment/' + str(reserve.pk)
             context = {'rid': reserve.pk}
-            return redirect(url, context)
+            return redirect(reverse('payment', kwargs={'resid': reserve.pk}), context)
         else:
             messages.error(request, 'در رزرو کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
-            accommodation_id = room.accommodation.pk
-            url = '/accommodation/' + str(accommodation_id)
-            return redirect(url)
+            return redirect(reverse('accommodation_detail', kwargs={'pk': room.accommodation.pk}))
 
 
 @method_decorator([login_required, user_is_confirmed], name='dispatch')
@@ -154,6 +126,9 @@ class CancelReservation(View):
         if due > 0: text += 'مقدار {} به حساب شما واریز خواهد شد.'.format(str(due))
         return text
 
+    def create_opposite_transaction(self, reservation):
+        Transaction.objects.create(is_successful=True, reservation=reservation, coefficient=-1)
+
     def get(self, request, *args, **kwargs):
         res_id = kwargs['resid']
         reservation = get_object_or_404(Reservation, id=res_id)
@@ -174,5 +149,7 @@ class CancelReservation(View):
             [guest_email],
             fail_silently=False,
         )
+
+        self.create_opposite_transaction(reservation)
         messages.success(request, 'لغو رزرو با موفقیت انجام شد.')
         return redirect('user_reserve')

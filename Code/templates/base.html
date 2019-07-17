@@ -100,7 +100,7 @@
                                             data-placement="top"
                                             title="ثبت اقامتگاه"><img
                                             src="{% static 'assets/img/plus.png' %}" alt=""></i></a></li>
-                                {% elif request.user.is_authenticated %}
+                                {% elif request.user.is_authenticated and not user.is_superuser %}
                                     <li dir="rtl" class="btn btn-success btn-rounded btn-small"><a
                                             href="{% url 'become_host' %}"
                                             style="color: white; padding-left: 2px">میزبان

@@ -70,29 +70,26 @@ class BlogViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Comment.objects.count(), 0)
 
-
     def test_request_blog_search(self):
         CustomUser.objects.create(username='gatmiry', password='2471351khf',
                                   birth_date=datetime.today(), image=self.img, first_name='خشایار',
                                   last_name='گتمیری', gender='male')
         user = CustomUser.objects.get(username='gatmiry')
         self.client.force_login(user)
-        post1 = Post.objects.create(title='دریاچه سراوان', description='خیلی خوش گذشت!', owner=user,
-                                   province='گیلان', city='رشت', image=self.img)
-        post2 = Post.objects.create(title='دریاچه آرام', description='عجب جایی بود!', owner=user,
-                                   province='گیلان', city='رشت', image=self.img)
-        post3 = Post.objects.create(title='بازار جامع', description='بابا دس مریزاد!', owner=user,
-                                   province='گیلان', city='ترخو', image=self.img)
+        Post.objects.create(title='دریاچه سراوان', description='خیلی خوش گذشت!', owner=user,
+                            province='گیلان', city='رشت', image=self.img)
+        Post.objects.create(title='دریاچه آرام', description='عجب جایی بود!', owner=user,
+                            province='گیلان', city='رشت', image=self.img)
+        Post.objects.create(title='بازار جامع', description='بابا دس مریزاد!', owner=user,
+                            province='گیلان', city='ترخو', image=self.img)
 
-        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?makan=گیلان')
+        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?province=گیلان')
         self.assertContains(response, 'blog-post', 3)
-        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?makan=گیلان&keyword=دریاچه')
+        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?province=گیلان&keyword=دریاچه')
         self.assertContains(response, 'blog-post', 2)
-        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?makan=گیلان&keyword=گتمیری')
-        self.assertContains(response, 'blog-post', 3)
-        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?makan=آرام&keyword=عجب')
+        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?city=آرام&keyword=عجب')
         self.assertContains(response, 'blog-post', 0)
-        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?makan=رشت&keyword=خیلی')
+        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?city=رشت&keyword=خیلی')
         self.assertContains(response, 'blog-post', 1)
-        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?makan=ترخو&keyword=مریزاد')
+        response = self.client.get(reverse('blog_list', kwargs={'uid': user.pk}) + '?city=ترخو&keyword=مریزاد')
         self.assertContains(response, 'blog-post', 1)

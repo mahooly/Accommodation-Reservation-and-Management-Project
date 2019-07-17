@@ -1,19 +1,14 @@
-import datetime
-
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.views.generic import ListView
-from khayyam import JalaliDate
 
 from .filters import AccommodationFilter
 from accommodation.models import Accommodation, RoomInfo, Room
 from django.views import View
-from .forms import LocationSearchForm, FilterForm
+from .forms import LocationSearchForm
 from django.db.models import Q
 
-persian_numbers = '۱۲۳۴۵۶۷۸۹۰'
-english_numbers = '1234567890'
-trans_num = str.maketrans(persian_numbers, english_numbers)
+from utils.utils import convert_string_to_date
 
 
 class MainPageView(ListView):
@@ -90,17 +85,11 @@ class SearchView(View):
         return q
 
     def filter_by_date(self, q, check_in, check_out):
-        check_in = self.convert_string_to_date(check_in)
-        check_out = self.convert_string_to_date(check_out)
+        check_in = convert_string_to_date(check_in)
+        check_out = convert_string_to_date(check_out)
 
-        availableRoomInfos1 = RoomInfo.objects.all().exclude(
-            Q(reservation__check_in__range=(check_in, check_out - datetime.timedelta(days=1))),
-            Q(reservation__is_canceled=False))
-        availableRoomInfos2 = availableRoomInfos1.exclude(
-            Q(reservation__check_out__range=(check_in + datetime.timedelta(days=1), check_out)),
-            Q(reservation__is_canceled=False))
-        availableRoomInfos = availableRoomInfos2.filter(out_of_service=False)
-        rooms = Room.objects.filter(roominfo__in=availableRoomInfos).distinct()
+        available_room_infos = RoomInfo.objects.get_available_room_infos(check_in, check_out)
+        rooms = Room.objects.filter(roominfo__in=available_room_infos).distinct()
         q = q.filter(room__in=rooms).distinct()
         return q
 
@@ -145,7 +134,3 @@ class SearchView(View):
             url += '?price=' + price if first else '&price=' + price
             first = False
         return url
-
-    def convert_string_to_date(self, date_string):
-        split_string = [int(x.translate(trans_num)) for x in date_string.split('/')]
-        return JalaliDate(split_string[0], split_string[1], split_string[2]).todate()

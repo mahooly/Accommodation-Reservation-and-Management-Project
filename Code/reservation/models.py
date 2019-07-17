@@ -2,6 +2,7 @@ from django.db import models
 from registration.models import CustomUser
 from accommodation.models import RoomInfo, Amenity, Room
 
+
 class Reservation(models.Model):
     reserver = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     roominfo = models.ManyToManyField(RoomInfo)

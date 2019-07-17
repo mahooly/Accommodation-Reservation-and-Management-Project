@@ -2,7 +2,7 @@ from datetime import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from django.db.models import Count
+from django.db.models import Count, Sum
 from django.db.models.functions import TruncMonth
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils.decorators import method_decorator
@@ -24,6 +24,15 @@ decorators = [login_required, user_is_superuser]
 @method_decorator(decorators, name='dispatch')
 class AdminDashboard(View):
     template_name = 'admin_dashboard/admin_dashboard.html'
+    def get_daily_earn(self):
+        all_transactions = Transaction.objects.all()
+        daily_earn = {}
+        for transaction in all_transactions:
+            if transaction.creation_date in daily_earn:
+                daily_earn[transaction.creation_date] += transaction.total_price
+            else:
+                daily_earn[transaction.creation_date] = transaction.total_price
+        return daily_earn
 
     def get(self, request, *args, **kwargs):
         reservations = Reservation.objects.annotate(month=TruncMonth('transaction__creation_date')).values(
@@ -34,6 +43,7 @@ class AdminDashboard(View):
         earnings = [[datetime.combine(x.creation_date, datetime.min.time()).timestamp() * 1000, x.total_price * 0.05]
                     for x in
                     Transaction.objects.all()]
+        print(self.get_daily_earn())
         all_reservations_count = Reservation.objects.count()
         all_cancelled_reservations_count = Reservation.objects.filter(is_canceled=True).count()
         return render(request, self.template_name,

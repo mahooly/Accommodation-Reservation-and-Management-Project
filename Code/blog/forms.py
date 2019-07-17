@@ -16,7 +16,3 @@ class CommentCreationForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['comment']
-
-class BlogSearchForm(forms.Form):
-    makan = forms.CharField(required=False)
-    keyword = forms.CharField(required=False)

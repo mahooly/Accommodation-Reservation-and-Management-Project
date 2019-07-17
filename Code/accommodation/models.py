@@ -1,5 +1,7 @@
+import json
+from datetime import timedelta
 from django.db import models
-from django.db.models import Min, Max, deletion
+from django.db.models import Min, Max, deletion, Q
 
 from .choices import BED_TYPE_CHOICES, ACCOMMODATION_TYPE_CHOICES, TOURIST_ATTRACTION_TYPE_CHOICES
 from registration.models import Host, CustomUser
@@ -173,9 +175,25 @@ class Image(models.Model):
     image = models.ImageField(upload_to='../media/house_pics/')
 
 
+class RoomInfoManager(models.Manager):
+    def get_available_room_infos(self, check_in, check_out):
+        availableRoomInfos1 = self.all().exclude(
+            Q(reservation__check_in__range=(check_in, check_out - timedelta(days=1))),
+            Q(reservation__is_canceled=False))
+        availableRoomInfos2 = availableRoomInfos1.exclude(
+            Q(reservation__check_out__range=(check_in + timedelta(days=1), check_out)),
+            Q(reservation__is_canceled=False))
+        availableRoomInfos = availableRoomInfos2.exclude(
+            Q(roomoutofservice__from_date__range=(check_in, check_out - timedelta(days=1))),
+            Q(roomoutofservice__to_date__range=(check_in + timedelta(days=1), check_out)))
+        return availableRoomInfos
+
+
 class RoomInfo(models.Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     number = models.IntegerField(default=None, null=True)
+
+    objects = RoomInfoManager()
 
     def __str__(self):
         return '{} - {} - {}'.format(str(self.room), self.room.bed_type, str(self.number))
@@ -188,9 +206,25 @@ class RoomOutOfService(models.Model):
     reason = models.TextField()
 
 
+class TouristAttractionManager(models.Manager):
+    def get_json(self):
+        features = []
+        for attraction in self.all():
+            features.append(
+                {'type': 'Feature', 'properties': {'icon': attraction.get_attraction_type_display(),
+                                                   'description': '<strong class="map-popup-title">{}</strong>{}'.format(
+                                                       attraction.name,
+                                                       attraction.description)},
+                 'geometry': {'type': 'Point',
+                              'coordinates': [float(attraction.longitude), float(attraction.latitude)]}})
+        return json.dumps(features)
+
+
 class TouristAttraction(models.Model):
     name = models.CharField(max_length=40)
     attraction_type = models.CharField(max_length=1, choices=TOURIST_ATTRACTION_TYPE_CHOICES)
     description = models.TextField(blank=True, null=True)
     latitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
     longitude = models.DecimalField(max_digits=16, decimal_places=14, null=True, blank=True)
+
+    objects = TouristAttractionManager()

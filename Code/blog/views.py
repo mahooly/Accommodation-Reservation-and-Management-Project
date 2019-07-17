@@ -13,7 +13,6 @@ from django.shortcuts import get_object_or_404, redirect
 from registration.models import CustomUser
 from .decorators import user_same_as_comment_user_or_admin, user_same_as_dashboard_user
 from django.db.models import Q
-from .forms import BlogSearchForm
 
 
 class BlogListView(ListView):
@@ -23,23 +22,20 @@ class BlogListView(ListView):
     ordering = '-date'
 
     def get_queryset(self):
-        form = BlogSearchForm(self.request.GET)
         posts = Post.objects.all()
+        keyword = self.request.GET.get('keyword', '')
+        province = self.request.GET.get('province', '')
+        city = self.request.GET.get('city', '')
         if 'uid' in self.kwargs.keys():
             user = get_object_or_404(CustomUser, id=self.kwargs['uid'])
             posts = Post.objects.filter(owner=user)
-        if 'makan' in self.request.GET:
-            if form.is_valid():
-                makan = form.cleaned_data.get('makan')
-                if makan != '':
-                    posts = posts.filter(Q(city=makan) | Q(province=makan))
-        if 'keyword' in self.request.GET:
-            if form.is_valid():
-                keyword = form.cleaned_data.get('keyword')
-                if keyword != '':
-                    posts = posts.filter(
-                        Q(title__contains=keyword) | Q(owner__first_name=keyword) | Q(owner__last_name=keyword)
-                        | Q(description__contains=keyword))
+        if province:
+            posts = posts.filter(province=province)
+        if city:
+            posts = posts.filter(city=city)
+        if keyword:
+            posts = posts.filter(
+                Q(title__contains=keyword) | Q(description__contains=keyword))
 
         return posts
 
@@ -47,6 +43,9 @@ class BlogListView(ListView):
         context = super().get_context_data(**kwargs)
         if 'uid' in self.kwargs.keys():
             context['blog_user'] = get_object_or_404(CustomUser, id=self.kwargs['uid'])
+        context['keyword'] = self.request.GET.get('keyword', '')
+        context['province'] = self.request.GET.get('province', '')
+        context['city'] = self.request.GET.get('city', '')
         return context
 
 

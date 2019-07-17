@@ -13,16 +13,12 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
 from django.views.generic import DetailView
 from django.views.generic import ListView
-from khayyam import JalaliDate
 
 from registration.tokens import account_activation_token
 from .forms import *
 from accommodation.models import Accommodation
-from .decorators import user_is_host, user_is_confirmed
-
-persian_numbers = '۱۲۳۴۵۶۷۸۹۰'
-english_numbers = '1234567890'
-trans_num = str.maketrans(persian_numbers, english_numbers)
+from .decorators import user_is_confirmed
+from utils.utils import convert_string_to_date
 
 
 class RegistrationView(View):
@@ -38,7 +34,7 @@ class RegistrationView(View):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
-            birth_date = self.convert_string_to_date(form.cleaned_data['birthday'])
+            birth_date = convert_string_to_date(form.cleaned_data['birthday'])
             user = form.save(commit=False)
             user.birth_date = birth_date
             user.save()
@@ -56,10 +52,6 @@ class RegistrationView(View):
             return redirect('account_activation')
 
         return render(request, self.template_name, {'form': form})
-
-    def convert_string_to_date(self, date_string):
-        split_string = [int(x.translate(trans_num)) for x in date_string.split('/')]
-        return JalaliDate(split_string[0], split_string[1], split_string[2]).todate()
 
 
 class ActivateAccount(View):
