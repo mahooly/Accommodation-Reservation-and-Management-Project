@@ -1,6 +1,7 @@
 import datetime
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.shortcuts import redirect, get_object_or_404
@@ -24,8 +25,7 @@ class AccommodationReservationList(ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        id = self.kwargs['pk']
-        reserve_list = Reservation.objects.filter(roominfo__room__accommodation_id=id)
+        reserve_list = Reservation.objects.filter(roominfo__room__accommodation_id=self.kwargs['pk'])
         return ReservationFilter(self.request.GET, reserve_list).qs
 
     def get_context_data(self, **kwargs):
@@ -52,7 +52,6 @@ class UserReservationList(ListView):
 
 @method_decorator([login_required, user_is_confirmed], name='dispatch')
 class MakeReservation(View):
-    format = '%m/%d/%Y'
 
     def get_available_room_infos(self, room, check_in, check_out):
         available_room_infos = RoomInfo.objects.get_available_room_infos(check_in, check_out)
@@ -61,8 +60,7 @@ class MakeReservation(View):
 
     def post(self, request, *args, **kwargs):
         form = MakeReservationForm(request.POST)
-        room_id = kwargs['rid']
-        room = get_object_or_404(Room, pk=room_id)
+        room = get_object_or_404(Room, pk=kwargs['rid'])
         if form.is_valid():
             how_many = int(form.cleaned_data.get('how_many'))
             check_in = convert_string_to_date(form.cleaned_data.get('check_in'))
@@ -71,9 +69,7 @@ class MakeReservation(View):
             if len(available_room_infos) < how_many:
                 messages.error(request,
                                'در رزرو کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید. به این تعداد اتاق خالی وجود ندارد.')
-                accommodation_id = room.accommodation.pk
-                url = '/accommodation/' + str(accommodation_id)
-                return redirect(url)
+                return redirect(reverse('accommodation_detail', kwargs={'pk': room.accommodation.pk}))
             count = 0
             reserve = Reservation.objects.create(reserver=request.user, check_in=check_in,
                                                  check_out=check_out)
@@ -94,14 +90,11 @@ class MakeReservation(View):
                 fail_silently=True,
             )
             messages.success(request, 'رزرو شما با موفقیت ثبت شد.')
-            url = '/payment/' + str(reserve.pk)
             context = {'rid': reserve.pk}
-            return redirect(url, context)
+            return redirect(reverse('payment', kwargs={'resid': reserve.pk}), context)
         else:
             messages.error(request, 'در رزرو کردن اتاق مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.')
-            accommodation_id = room.accommodation.pk
-            url = '/accommodation/' + str(accommodation_id)
-            return redirect(url)
+            return redirect(reverse('accommodation_detail', kwargs={'pk': room.accommodation.pk}))
 
 
 @method_decorator([login_required, user_is_confirmed], name='dispatch')
@@ -156,7 +149,6 @@ class CancelReservation(View):
             [guest_email],
             fail_silently=False,
         )
-
 
         self.create_opposite_transaction(reservation)
         messages.success(request, 'لغو رزرو با موفقیت انجام شد.')
