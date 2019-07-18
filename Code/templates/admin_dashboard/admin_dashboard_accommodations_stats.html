@@ -1,5 +1,7 @@
 {% extends 'admin_dashboard/admin_dashboard.html' %}
 {% block contents %}
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/drilldown.js"></script>
     <div class="main-content">
         <div class="row">
             <div class="col-md-7">
@@ -15,11 +17,12 @@
                                 fontFamily: "\'BKoodakBold\'"
                             }
                         },
+                        colors: ['#77a1e5', '#c42525', '#a6c96a', '#2f7ed8', '#0d233a', '#8bbc21', '#910000'],
                         title: {
                             text: 'تعداد اقامتگاه‌ها'
                         },
                         tooltip: {
-                            pointFormat: '<div style="font-family: \'BKoodakBold\'">{series.name}: {point.y}</div>',
+                            pointFormat: '<p>{series.name}: {point.y}</p><p>غیرفعال: {point.z}</p>',
                             useHTML: true,
                             style: {
                                 direction: 'rtl',
@@ -42,16 +45,106 @@
                             data: [{
                                 name: 'هتل',
                                 y: {{ hotels }},
+                                z: {{ inactive_hotels }},
                                 sliced: true,
                                 selected: true
                             }, {
                                 name: 'اقامتگاه محلی',
-                                y: {{ motels }}
+                                y: {{ motels }},
+                                z: {{ inactive_motels }}
                             }, {
                                 name: 'منزل شخصی',
-                                y: {{ houses }}
+                                y: {{ houses }},
+                                z: {{ inactive_houses }}
                             }]
                         }]
+                    });
+                </script>
+            </div>
+            <div class="col-md-2" style="width: 350px">
+                <div class="box background-color-white" style="height: 400px">
+                    <h3 class="text-center">تعداد اقامتگاه به تفکیک شهر</h3>
+                    <div class="table-responsive">
+                        <table class="table table-fixed-header text-center" style="margin-top: 20px">
+                            <thead>
+                            <tr>
+                                <td>شهر</td>
+                                <td>تعداد</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for acc in location_filtered %}
+                                <tr>
+                                    <td>{{ acc.city }}</td>
+                                    <td>{{ acc.count }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" style="margin-top: 30px; margin-bottom: 30px">
+            <div class="col-md-9" style="width: 860px">
+                <div id="cities"></div>
+                <script>
+                    Highcharts.chart('cities', {
+                        chart: {
+                            type: 'column',
+                            style: {
+                                fontFamily: "\'BKoodakBold\'"
+                            }
+                        },
+                        colors: ['#488f3e', '#492970', '#f28f43', '#77a1e5', '#c42525', '#a6c96a', '#2f7ed8', '#0d233a', '#8bbc21', '#910000'],
+                        title: {
+                            text: 'تعداد اتاق‌های خالی در حال حاضر'
+                        },
+                        subtitle: {
+                            text: 'برای مشاهده‌ی اقامتگاه‌های شهر روی ستون‌ کلیک کنید'
+                        },
+                        xAxis: {
+                            type: 'category'
+                        },
+                        yAxis: {
+                            title: {
+                                text: 'تعداد اتاق‌های خالی'
+                            }
+
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        plotOptions: {
+                            series: {
+                                borderWidth: 0,
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '{point.y}'
+                                }
+                            }
+                        },
+
+                        tooltip: {
+                            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y}</b><br/>',
+                            useHTML: true,
+                            style: {
+                                direction: 'rtl',
+                                textAlign: 'right'
+                            }
+                        },
+
+                        series: [
+                            {
+                                name: "تعداد اتاق‌ها",
+                                colorByPoint: true,
+                                data: {{ data|safe }}
+                            }
+                        ],
+                        drilldown: {
+                            series: {{ series|safe }}
+                        }
                     });
                 </script>
             </div>

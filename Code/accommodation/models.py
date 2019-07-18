@@ -15,6 +15,17 @@ class Amenity(models.Model):
         return self.name
 
 
+class AccommodationManager(models.Manager):
+    def get_hotels(self):
+        return self.filter(accommodation_type='هتل')
+
+    def get_motels(self):
+        return self.filter(accommodation_type='اقامتگاه')
+
+    def get_houses(self):
+        return self.filter(accommodation_type='منزل شخصی')
+
+
 class Accommodation(models.Model):
     owner = models.ForeignKey(Host, related_name='owner', on_delete=models.CASCADE)
     title = models.CharField(max_length=20)
@@ -30,6 +41,8 @@ class Accommodation(models.Model):
     amenity = models.ManyToManyField(Amenity)
     is_inactive = models.BooleanField(default=False)
     is_authenticated = models.BooleanField(default=False)
+
+    objects = AccommodationManager()
 
     @property
     def single_beds(self):

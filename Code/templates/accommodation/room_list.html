@@ -86,10 +86,14 @@
                                     {% for room_info in room.roominfo_set.all %}
                                         <div class="col-md-1 pull-right" style="margin-right: 20px">
                                             <a href="" data-toggle="modal" data-tab="true"
-                                               data-target="#change-room-info-modal-{{ room_info.id }}"><img
-                                                    style="height: 30px; width: 30px;"
-                                                    src="{% static 'assets/img/hotel.png' %}">
-                                                <p style="padding-right: 5px">{{ room_info.number }}</p></a>
+                                               data-target="#change-room-info-modal-{{ room_info.id }}">
+                                                <img
+                                                        style="height: 30px; width: 30px;"
+                                                        src="{% static 'assets/img/hotel.png' %}">
+                                                {% if room_info.number %}
+                                                    <p style="padding-right: 7px"> {{ room_info.number }} </p>
+                                                {% endif %}
+                                            </a>
                                         </div>
                                     {% endfor %}
                                 </div>

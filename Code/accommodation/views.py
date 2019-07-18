@@ -13,7 +13,7 @@ from django.views.generic.detail import DetailView
 from Code.settings import DEFAULT_FROM_EMAIL
 from reservation.models import Reservation
 from .forms import AccommodationCreationForm, AmenityForm, RoomCreationForm, AccommodationChangeForm, FileFieldForm, \
-    RoomSearchForm, RoomInfoForm
+    RoomInfoForm
 from .models import Accommodation, Amenity, Image, RoomInfo, Room, TouristAttraction, RoomOutOfService
 from registration.decorators import user_is_host, user_is_confirmed
 from .decorators import user_same_as_accommodation_user, user_host_or_superuser, user_same_as_image_user
@@ -60,46 +60,52 @@ class AccommodationDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         form = RoomCreationForm()
+        rooms = Room.objects.filter(accommodation__id__exact=self.kwargs.get('pk'))
+        check_in = self.request.GET.get('check_in', '')
+        check_out = self.request.GET.get('check_out', '')
+        price = self.request.GET.get('price', '')
+        rooms, rooms_count, stay_length = self.get_filtered_info(check_in, check_out, price, rooms)
         context['form'] = form
-        attractions = TouristAttraction.objects.get_json()
-        pk = self.kwargs.get('pk')
-        rooms = Room.objects.filter(accommodation__id__exact=pk)
-        form = RoomSearchForm(self.request.GET)
-        stay_length = 0
-        rooms_count = {}
-        for r in list(rooms):
-            rooms_count[r] = range(1, r.how_many + 1)
-
-        if form.is_valid():
-            check_in = form.cleaned_data.get('check_in', '')
-            check_out = form.cleaned_data.get('check_out', '')
-            context['check_in'] = check_in
-            context['check_out'] = check_out
-            price = form.cleaned_data.get('price', '')
-
-            if check_in:
-                check_in = convert_string_to_date(check_in)
-                check_out = convert_string_to_date(check_out)
-                available_room_infos = RoomInfo.objects.get_available_room_infos(check_in, check_out)
-                rooms = rooms.filter(roominfo__in=available_room_infos)
-                for r in list(rooms):
-                    rooms_count[r] = range(1, list(rooms).count(r) + 1)
-                rooms = rooms.distinct()
-                stay_length = (check_out - check_in).days
-
-            if price:
-                price_low = int(price.split('-')[0]) * 1000
-                price_high = int(price.split('-')[1]) * 1000
-                if price_high == 900 * 1000:
-                    rooms = rooms.filter(price__gte=price_low)
-                else:
-                    rooms = rooms.filter(price__gte=price_low, price__lte=price_high)
-
+        context['check_in'] = check_in
+        context['check_out'] = check_out
         context['rooms'] = rooms
         context['stay_length'] = stay_length
         context['room_count'] = rooms_count
-        context['attractions'] = attractions
+        context['attractions'] = TouristAttraction.objects.get_json()
         return context
+
+    def get_filtered_info(self, check_in, check_out, price, rooms):
+        rooms_count = {}
+        stay_length = 0
+        if check_in:
+            check_in = convert_string_to_date(check_in)
+            check_out = convert_string_to_date(check_out)
+            rooms_count, rooms = self.filter_by_date(rooms, check_in, check_out)
+            stay_length = (check_out - check_in).days
+        else:
+            for r in list(rooms):
+                rooms_count[r] = range(1, r.how_many + 1)
+        if price:
+            rooms = self.filter_by_price(price, rooms)
+
+        return rooms, rooms_count, stay_length
+
+    def filter_by_date(self, rooms, check_in, check_out):
+        rooms_count = {}
+        available_room_infos = RoomInfo.objects.get_available_room_infos(check_in, check_out)
+        rooms = rooms.filter(roominfo__in=available_room_infos)
+        for r in list(rooms):
+            rooms_count[r] = range(1, list(rooms).count(r) + 1)
+        return rooms_count, rooms.distinct()
+
+    def filter_by_price(self, price, rooms):
+        price_low = int(price.split('-')[0]) * 1000
+        price_high = int(price.split('-')[1]) * 1000
+        if price_high == 900 * 1000:
+            rooms = rooms.filter(price__gte=price_low)
+        else:
+            rooms = rooms.filter(price__gte=price_low, price__lte=price_high)
+        return rooms
 
 
 @method_decorator([login_required, user_is_confirmed, user_is_host, user_same_as_accommodation_user], name='dispatch')
@@ -160,6 +166,7 @@ class EditAccommodation(View):
                                                 'city': accommodation.city,
                                                 'province': accommodation.province,
                                                 'images': images,
+                                                'is_inactive': accommodation.is_inactive,
                                                 'amenity': amenity})
         image_form = FileFieldForm()
         return render(request, self.template_name,
@@ -188,6 +195,7 @@ class EditAccommodation(View):
                                                 'city': accommodation.city,
                                                 'province': accommodation.province,
                                                 'images': images,
+                                                'is_inactive': accommodation.is_inactive,
                                                 'amenity': amenity})
         image_form = FileFieldForm()
         return render(request, self.template_name,
@@ -325,7 +333,7 @@ class RoomInfoStatsView(ListView):
         room_report = {}
         service_report = {}
         if room_number:
-            room_report, service_report = self.filter_by_number(room_report)
+            room_report, service_report = self.filter_by_number(room_number)
         if from_date:
             room_report, service_report = self.filter_by_from_date(from_date, room_report, service_report)
         if to_date:

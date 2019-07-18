@@ -9,6 +9,8 @@ urlpatterns = [
          name='admin_dashboard_accommodations'),
     path('admin_dashboard/accommodations/stats', views.AdminAccommodationStatsDashboard.as_view(),
          name='admin_dashboard_accommodations_stats'),
+    path('admin_dashboard/reservations', views.AdminReservationsDashboard.as_view(),
+         name='admin_dashboard_reservations'),
     path('delete_user/<int:pk>/', views.DeleteUser.as_view(), name='delete_user'),
     path('authenticate_accommodation/<int:pk>/', views.AuthenticateAccommodation.as_view(),
          name='authenticate_accommodation'),

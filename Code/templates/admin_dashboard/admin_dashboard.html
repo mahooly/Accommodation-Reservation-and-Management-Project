@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 {% load jalali_tags %}
+{% load staticfiles %}
 
 {% block main %}
     <script src="https://code.highcharts.com/highcharts.src.js"></script>
     <script src="https://code.highcharts.com/modules/variable-pie.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.13/moment-timezone-with-data-2012-2022.min.js"></script>
+    <script src="{% static 'assets/js/jdate.min.js' %}"></script>
     <div class="container">
         <div class="row">
             <div class="pull-right" style="margin-right: 20px;">
@@ -24,6 +28,14 @@
                     <div class="row">
                         <div id="earnings"></div>
                         <script>
+                            window.Date = JDate;
+                            Highcharts.setOptions({
+                                lang: {
+                                    months: ['فروردين', 'ارديبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
+                                    shortMonths: ['فروردين', 'ارديبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور', 'مهر', 'آبان', 'آذر', 'دی', 'بهمن', 'اسفند'],
+                                    weekdays: ["یکشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنج‌شنبه", "جمعه", "شنبه"]
+                                }
+                            });
                             Highcharts.chart('earnings', {
                                 chart: {
                                     zoomType: 'x',
@@ -40,7 +52,13 @@
                                 },
                                 xAxis: {
                                     type: 'datetime',
-                                    units: [['days', [1]]]
+                                    dateTimeLabelFormats: {
+                                        millisecond: '%H:%M'
+                                    },
+                                    style: {
+                                        direction: 'ltr',
+                                        textAlign: 'right'
+                                    }
                                 },
                                 yAxis: {
                                     title: {
@@ -48,6 +66,18 @@
                                         style: {
                                             direction: "rtl"
                                         }
+                                    }
+                                },
+                                tooltip: {
+                                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                                        '<td style="padding:0"><b dir="ltr">{point.y}</b>  تومان  </td></tr>',
+                                    footerFormat: '</table>',
+                                    shared: true,
+                                    useHTML: true,
+                                    style: {
+                                        direction: 'rtl',
+                                        textAlign: 'right'
                                     }
                                 },
                                 legend: {
@@ -79,12 +109,14 @@
                                         threshold: null
                                     }
                                 },
-
                                 series: [{
                                     type: 'area',
                                     name: 'درآمد',
                                     data: {{ earnings|safe }}
-                                }]
+                                }],
+                                time: {
+                                    timezone: 'Asia/Tehran'
+                                }
                             });
                         </script>
                     </div>
@@ -99,6 +131,7 @@
                                             fontFamily: "\'BKoodakBold\'"
                                         }
                                     },
+                                    colors: ['#492970', '#f28f43', '#77a1e5', '#c42525', '#a6c96a', '#2f7ed8', '#0d233a', '#8bbc21', '#910000'],
                                     title: {
                                         text: 'رزروهای انجام شده و لغو شده'
                                     },
@@ -134,15 +167,18 @@
                                         name: 'رزروهای انجام شده',
                                         data: {{ reserve_count|safe }}
 
-                                    },
-                                        {name: 'رزروهای لغو شده'}]
+                                    }, {
+                                        name: 'رزروهای لغو شده',
+                                        data: {{ cancelled_reserve_count|safe }}
+
+                                    }]
                                 });
                             </script>
                         </div>
                         <div class="col-md-3 pull-right" style="width: 250px">
                             <div class="box background-color-white" style="height: 150px">
-                                <p>تعداد رزروها: {{ all_count }}</p>
-                                <p>تعداد رزروهای لغو شده: {{ all_cancelled_count }}</p>
+                                <p>تعداد کل رزروها: {{ all_count }}</p>
+                                <p>تعداد کل رزروهای لغو شده: {{ all_cancelled_count }}</p>
                             </div>
                         </div>
                     </div>
@@ -160,6 +196,7 @@
                                 </ul>
                             </li>
                             <li><a href="{% url 'admin_dashboard_accommodations_stats' %}">آمار اقامتگاه‌ها</a>
+                            <li><a href="{% url 'admin_dashboard_reservations' %}">تاریخچه رزرو</a>
                         </ul>
                     </div>
                 </div>

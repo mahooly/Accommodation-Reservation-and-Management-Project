@@ -113,12 +113,18 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-7 pull-right">
+                        <div class="col-md-12 pull-right">
                             <div class="form-group">
                                 <label for="form-submit-description">توضیحات<em>*</em></label>
                                 <textarea class="form-control" id="form-submit-description" rows="10" name="description"
                                           placeholder="اقامتگاه خود را توصیف کنید">{{ form.initial.description }}</textarea>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12 pull-right float-right">
+                            <label>{{ form.is_inactive }}&nbsp;اقامتگاه غیر فعال
+                                است.</label>
                         </div>
                     </div>
                 </section>
@@ -187,7 +193,7 @@
 
                             </script>
                         </div>
-                        <div class="col-md-5 pull-right">
+                        <div class="col-md-5" style="margin-top: 20px">
                             <h2>راه‌های ارتباطی</h2>
                             <div class="form-group">
                                 <label for="form-submit-email">ایمیل</label>

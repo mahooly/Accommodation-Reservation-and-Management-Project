@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
                 (today.month, today.day) < (self.birth_date.month, self.birth_date.day))
 
     @property
-    def _full_name(self):
+    def full_name(self):
         return self.first_name + ' ' + self.last_name
 
 

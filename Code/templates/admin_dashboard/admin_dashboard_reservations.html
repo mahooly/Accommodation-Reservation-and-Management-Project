@@ -1,0 +1,112 @@
+{% extends 'admin_dashboard/admin_dashboard.html' %}
+{% load jalali_tags %}
+{% block contents %}
+    <div class="main-content" dir="rtl">
+        {% if object_list %}
+            <div class="reservations table-responsive">
+                <table class="table table-fixed-header">
+                    <thead class="header">
+                    <tr>
+                        <th>نام کاربر</th>
+                        <th style="padding-right: 10px">نام اقامتگاه</th>
+                        <th style="padding-right: 15px">از تاریخ</th>
+                        <th style="padding-right: 15px">تا تاریخ</th>
+                        <th>تعداد شب</th>
+                        <th>نوع اتاق</th>
+                        <th>تعداد اتاق</th>
+                        <th style="padding-right: 15px">قیمت</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for reserve in object_list %}
+                        <tr class="reservation">
+                            <td style="padding-right: 10px">{{ reserve.reserver.full_name}}</td>
+                            <td>
+                                <a href="{% url 'accommodation_detail' reserve.accommodation.pk %}">{{ reserve.accommodation.title }}</a>
+                            </td>
+                            <td>{{ reserve.check_in|to_jalali:'%y/%m/%d' }}</td>
+                            <td>{{ reserve.check_out|to_jalali:'%y/%m/%d' }}</td>
+                            <td style="padding-right: 25px">{{ reserve.stay_length }}</td>
+                            <td>{{ reserve.room_type }}</td>
+                            <td style="padding-right: 30px">{{ reserve.roominfo.count }}</td>
+                            <td>{{ reserve.total_price }}</td>
+                            {% if reserve.is_cancelled %}
+                                <td>لغو شده</td>
+                            {% else %}
+                                <td><span class="circle check"></span></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+        <div class="center" style="margin-top: 300px">
+            {% if object_list %}
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="prev">
+                            <a href="?page={{ page_obj.previous_page_number }}"><i
+                                    class="arrow_left"></i></a>
+                        </li>
+                        <li>
+                            <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+                        </li>
+                    {% endif %}
+                    <li class="active">
+                        <a href="?page={{ page_obj.number }}">{{ page_obj.number }}</a>
+
+                    </li>
+
+                    {% if page_obj.has_next %}
+                        <li>
+                            <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+                        </li>
+                        <li class="next">
+                            <a href="{{ page_url }}?page={{ page_obj.next_page_number }}"><i
+                                    class="arrow_right"></i></a>
+                        </li>
+                    {% endif %}
+                </ul>
+            {% else %}
+                <h4 dir="rtl" style="margin-top: 100px">هنوز اقامتگاهی رزرو نشده است.</h4>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+{% block sidebar %}
+    <div class="sidebar">
+        <div class="box filter">
+            <div class="text-center">
+                <h2 dir="rtl">فیلتر بر اساس تاریخ</h2>
+            </div>
+            <form method="get" dir="rtl">
+                <div class="form-group">
+                    <label for="id_check_in_range">تاریخ ورود</label>
+                    <select class="framed width-100" name="check_in_range" id="id_check_in_range">
+                        <option value="" selected="">هر تاریخی</option>
+                        <option value="1">امروز</option>
+                        <option value="2">۷ روز اخیر</option>
+                        <option value="3">این ماه</option>
+                        <option value="4">امسال</option>
+                        <option value="5">دیروز</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="id_check_out_range">تاریخ خروج</label>
+                    <select class="framed width-100" name="check_out_range" id="id_check_out_range">
+                        <option value="" selected="">هر تاریخی</option>
+                        <option value="1">امروز</option>
+                        <option value="2">۷ روز اخیر</option>
+                        <option value="3">این ماه</option>
+                        <option value="4">امسال</option>
+                        <option value="5">دیروز</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary btn-rounded form-control">اعمال فیلتر
+                </button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import CheckboxInput
 
 from .models import Accommodation, Amenity, Room, RoomInfo
 
@@ -41,7 +42,11 @@ class AccommodationChangeForm(forms.ModelForm):
     class Meta:
         model = Accommodation
         fields = ['accommodation_type', 'title', 'description', 'address', 'email',
-                  'phone', 'amenity', 'latitude', 'longitude']
+                  'phone', 'amenity', 'latitude', 'longitude', 'is_inactive']
+        widgets = {
+            'is_inactive': CheckboxInput(attrs={'class': 'required checkbox form-control'}),
+        }
+        labels = {'is_inactive': 'اقامتگاه غیرفعال است'}
 
     def __init__(self, *args, **kwargs):
         super(AccommodationChangeForm, self).__init__(*args, **kwargs)
@@ -51,12 +56,6 @@ class AccommodationChangeForm(forms.ModelForm):
 
 class FileFieldForm(forms.Form):
     image = forms.ImageField(widget=forms.ClearableFileInput(attrs={'multiple': True}), required=False)
-
-
-class RoomSearchForm(forms.Form):
-    check_in = forms.CharField(required=False)
-    check_out = forms.CharField(required=False)
-    price = forms.CharField(required=False)
 
 
 class RoomInfoForm(forms.ModelForm):

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.urls import reverse
 from django.views import View
 
 from reservation.models import Reservation
@@ -24,7 +25,6 @@ class PaymentView(View):
     def post(self, request, *args, **kwargs):
         reservation_id = kwargs['resid']
         form = PaymentForm(request.POST)
-        success = ''
         if form.is_valid():
             success = form.cleaned_data.get('success')
             if success == 'success':
@@ -39,5 +39,4 @@ class PaymentView(View):
                 return redirect('user_reserve')
             else:
                 messages.error(request, 'پرداخت شما با موفقیت انجام نشد. دوباره تلاش کنید.')
-                url = '/accommodation/' + str(acc_id)
-                return redirect(url)
+                return redirect(reverse('accommodation_detail', kwargs={'pk': acc_id}))
