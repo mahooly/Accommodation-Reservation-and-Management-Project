@@ -45,7 +45,7 @@ class RegistrationView(View):
             message = render_to_string('registration/account_activation_email.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)).decode(),
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)).encode().decode(),
                 'token': account_activation_token.make_token(user),
             })
             user.email_user(subject, message)

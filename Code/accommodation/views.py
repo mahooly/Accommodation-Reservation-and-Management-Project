@@ -57,6 +57,13 @@ class AccommodationDetailView(DetailView):
     model = Accommodation
     template_name = 'accommodation/accommodation_detail.html'
 
+    def can_user_comment(self, user, acc_id):
+        all_reservations = Reservation.objects.all()
+        this_user_reservations = all_reservations.filter(reserver=user)
+        this_user_acc_reservations = this_user_reservations.filter(roominfo__room__accommodation__id=acc_id)
+        if len(this_user_acc_reservations) > 0: return True
+        return False
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         form = RoomCreationForm()
